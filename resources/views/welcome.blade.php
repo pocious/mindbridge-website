@@ -46,9 +46,7 @@
       <li><a href="#africa">Africa</a></li>
       <li><a href="#insights">Insights</a></li>
       <li><a href="#faq">FAQ</a></li>
-      <li class="nav-links-cta-mobile"><button class="nav-cta" data-scroll-to="contact">Contact Us</button></li>
     </ul>
-    <button class="nav-cta nav-cta-desktop" data-scroll-to="contact">Contact Us</button>
     <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-links">
       <span></span><span></span><span></span>
     </button>
