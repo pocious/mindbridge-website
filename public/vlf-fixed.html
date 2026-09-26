@@ -1427,6 +1427,11 @@ input,select,textarea{font-family:var(--sans);}
   </div>
 </div>
 
+<!-- MODAL: WORKSPACE (task, time logger, invoice, matter edit, messages — filled by JS) -->
+<div class="m-ov" id="m-ob-workspace">
+  <div class="why-modal-wrap" id="ob-workspace-wrap"></div>
+</div>
+
 <!-- APP -->
 <div class="app" id="app">
 
@@ -2520,7 +2525,7 @@ input,select,textarea{font-family:var(--sans);}
             <span style="flex:1;"></span>
             <span class="comm-compose-meta-label" id="comm-compose-context">Matter · Internal · Firm only</span>
           </div>
-          <textarea class="comm-textarea" id="comm-textarea" placeholder="Write a message… @mention to notify someone" onkeydown="if(event.key='Enter'&&!event.shiftKey){event.preventDefault();postCommMessage();}"></textarea>
+          <textarea class="comm-textarea" id="comm-textarea" placeholder="Write a message… @mention to notify someone" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();postCommMessage();}"></textarea>
           <div class="comm-footer">
             <button class="comm-footer-btn" onclick="t('File attached','Document linked to this message','g')">📎 Attach</button>
             <button class="comm-footer-btn" onclick="insertMention()">@ Mention</button>
@@ -7984,5 +7989,6 @@ setTimeout(() => {
   <button class="fab-main" id="fab-main-btn" onclick="toggleFab()" title="Create something new">+</button>
 </div>
 
+<script src="js/vlf-api.js"></script>
 </body>
 </html>
