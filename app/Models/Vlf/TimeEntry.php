@@ -20,6 +20,7 @@ class TimeEntry extends Model
             'id' => $this->code,
             'matter' => $this->matter_ref,
             'task' => $this->task_code,
+            'invoice' => $this->invoice_code,
             'desc' => $this->description,
             'advocate' => $this->advocate,
             'date' => $this->displayTime($this->date_label),

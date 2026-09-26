@@ -13,19 +13,27 @@
   let MATTERS = {};
 
   function api(method, path, body) {
+    const isForm = body instanceof FormData;
     return fetch(API + path, {
       method,
-      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-      body: body === undefined ? undefined : JSON.stringify(body)
-    }).then(res => {
-      if (!res.ok) throw new Error(method + ' ' + path + ' → ' + res.status);
-      return res.json();
-    });
+      headers: isForm ? { 'Accept': 'application/json' } : { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: body === undefined ? undefined : (isForm ? body : JSON.stringify(body))
+    }).then(res => res.json().catch(() => ({})).then(json => {
+      if (!res.ok) {
+        const err = new Error(json.message || (method + ' ' + path + ' → ' + res.status));
+        err.fromServer = Boolean(json.message);
+        throw err;
+      }
+      return json;
+    }));
   }
 
+  // Server validation messages ("An invoice must be approved…") are shown as-is;
+  // anything else is treated as a connection problem.
   function saveFailed(err) {
     console.error('[vlf-api]', err);
-    t('Not saved to server', 'The change is only on this screen — check your connection and try again', 'r');
+    if (err && err.fromServer) t('Not saved', err.message, 'r');
+    else t('Not saved to server', 'The change is only on this screen — check your connection and try again', 'r');
   }
 
   function persona() {
@@ -96,6 +104,8 @@
       });
 
       rerenderVisible();
+      VLF.state = state;
+      document.dispatchEvent(new CustomEvent('vlf:state', { detail: state }));
     }).catch(err => {
       console.error('[vlf-api]', err);
       t('Offline mode', 'Could not reach the server — showing sample data, changes will not be saved', 'y');
@@ -117,6 +127,8 @@
     const key = Object.keys(TASKS).find(k => !before.has(k));
     if (!key) return;
     const task = TASKS[key];
+    // The form only knows two matter titles; use the real one for any matter.
+    if (MATTERS[task.matter]) task.matterTitle = MATTERS[task.matter].title;
     api('POST', 'tasks', task).then(saved => {
       delete TASKS[key];
       TASKS[saved.id] = Object.assign(task, saved);
@@ -174,11 +186,23 @@
 
   // Invoice line edits
   wrap('saveInvoiceEdits', function (original, args) {
-    original.apply(this, args);
     const inv = INVOICES.find(i => i.id === args[0]);
-    if (!inv) return;
-    api('PUT', 'invoices/' + encodeURIComponent(inv.id), { lines: inv.lines })
-      .then(saved => Object.assign(inv, saved)).catch(saveFailed);
+    // Read every row on the form — the original only reads rows that already existed,
+    // so lines added with "+ Add line item" would be dropped.
+    const lines = [];
+    document.querySelectorAll('[id^="inv-desc-"]').forEach(descEl => {
+      const i = descEl.id.slice('inv-desc-'.length);
+      const amtEl = document.getElementById('inv-amt-' + i);
+      const desc = descEl.value.trim();
+      if (!desc) return;
+      const existing = inv && inv.lines[i];
+      lines.push({ desc, hours: existing ? existing.hours : null, amount: parseInt((amtEl ? amtEl.value : '0').replace(/[^0-9]/g, '') || '0', 10) });
+    });
+    original.apply(this, args);
+    if (!inv || !lines.length) return;
+    api('PUT', 'invoices/' + encodeURIComponent(inv.id), { lines })
+      .then(saved => { Object.assign(inv, saved); document.dispatchEvent(new CustomEvent('vlf:invoices')); })
+      .catch(saveFailed);
   });
 
   // Matter details — read the form before the original closes it
@@ -217,16 +241,14 @@
     const explain = document.querySelector('#matter-risk-bar .mrs-explain');
     api('PUT', 'matters/' + EQUITY, { riskLevel: 'HIGH', riskNote: explain ? explain.textContent : null })
       .then(saved => { MATTERS[EQUITY] = saved; }).catch(saveFailed);
+    api('POST', 'notifications', {
+      recipient: 'Peter Ssali', type: 'action', label: 'Partner approval received',
+      text: persona().name + ' approved the witness statement (KSC-2026-0891). File with the Commercial Division registry before 5:00 PM.',
+      link: { matter: EQUITY, doc: 'witness-statement' }
+    }).catch(saveFailed);
   });
 
-  // Document drafts from the editor
-  wrap('saveDocDraft', function (original, args) {
-    const before = new Set(Object.keys(DOCUMENTS));
-    original.apply(this, args);
-    Object.keys(DOCUMENTS).filter(k => !before.has(k)).forEach(key => {
-      api('PUT', 'documents/' + encodeURIComponent(key), { data: DOCUMENTS[key] }).catch(saveFailed);
-    });
-  });
+  // Document drafts, review and uploads are handled in vlf-ops.js.
 
   // The original inserts a new queue header on every re-render; drop the old one first
   wrap('renderWorkQueueV3', function (original, args) {
@@ -237,6 +259,11 @@
     const body = page && page.querySelector('.pgbody');
     if (willRender && body && body.firstElementChild) body.firstElementChild.classList.add('vlf-wq-header');
   });
+
+  // Shared with vlf-ops.js
+  // MATTERS is replaced wholesale on load, so expose it through a getter.
+  window.VLF = { api, saveFailed, persona, state: null, reload: loadState };
+  Object.defineProperty(window.VLF, 'matters', { get: () => MATTERS });
 
   loadState();
 })();

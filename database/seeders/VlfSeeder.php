@@ -2,14 +2,21 @@
 
 namespace Database\Seeders;
 
+use App\Models\Vlf\Client;
 use App\Models\Vlf\Comment;
+use App\Models\Vlf\CourtEvent;
+use App\Models\Vlf\Deadline;
 use App\Models\Vlf\Document;
 use App\Models\Vlf\Invoice;
 use App\Models\Vlf\Matter;
 use App\Models\Vlf\Message;
+use App\Models\Vlf\Notification;
+use App\Models\Vlf\Setting;
+use App\Models\Vlf\Staff;
 use App\Models\Vlf\Task;
 use App\Models\Vlf\TimeEntry;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Resets the VLF prototype to its starting data (the values that were
@@ -19,26 +26,15 @@ class VlfSeeder extends Seeder
 {
     public function run(): void
     {
-        foreach ([Matter::class, Task::class, TimeEntry::class, Invoice::class, Message::class, Comment::class, Document::class] as $model) {
+        foreach ([Notification::class, Setting::class, Staff::class, Deadline::class, CourtEvent::class, Task::class, TimeEntry::class, Invoice::class, Message::class, Comment::class, Document::class, Matter::class, Client::class] as $model) {
             $model::query()->delete();
         }
+        Storage::deleteDirectory('vlf-uploads');
 
-        Matter::create([
-            'ref' => 'KSC-2026-0891',
-            'title' => 'Equity Bank Uganda Ltd v. Ssekandi Enterprises Ltd',
-            'court' => 'High Court · Commercial Division',
-            'judge' => 'Justice Tibatemwa',
-            'advocate' => 'Peter Ssali',
-            'stage' => 'Case management',
-        ]);
-        Matter::create([
-            'ref' => 'KSC-2026-0823',
-            'title' => 'Mubiru Estate — Succession & Land Dispute',
-            'court' => 'High Court · Land Division',
-            'judge' => 'Justice Mugenyi',
-            'advocate' => 'Peter Ssali',
-            'stage' => 'Hearing',
-        ]);
+        $this->seedFirm();
+        $clients = $this->seedClients();
+        $this->seedMatters($clients);
+        $this->seedDiary();
 
         $equity = ['matter_ref' => 'KSC-2026-0891', 'matter_title' => 'Equity Bank v Ssekandi'];
         foreach ([
@@ -61,7 +57,7 @@ class VlfSeeder extends Seeder
         }
 
         Invoice::create([
-            'code' => 'KSC-INV-2026-0077', 'matter_ref' => 'KSC-2026-0891', 'client' => 'Equity Bank Uganda Ltd',
+            'code' => 'KSC-INV-2026-0077', 'matter_ref' => 'KSC-2026-0891', 'client_id' => $clients['Equity Bank Uganda Ltd']->id, 'client' => 'Equity Bank Uganda Ltd',
             'status' => 'PAID', 'issue_date' => '31 Jul 2026', 'due_date' => '14 Aug 2026', 'paid_date' => '10 Aug 2026',
             'lines' => [
                 ['desc' => 'Professional fees — July 2026 (plaint review, interlocutory applications, client meetings)', 'hours' => '18h 30m', 'amount' => 6475000],
@@ -70,7 +66,7 @@ class VlfSeeder extends Seeder
             'total' => 6760000, 'paid' => 6760000,
         ]);
         Invoice::create([
-            'code' => 'KSC-INV-2026-0078', 'matter_ref' => 'KSC-2026-0891', 'client' => 'Equity Bank Uganda Ltd',
+            'code' => 'KSC-INV-2026-0078', 'matter_ref' => 'KSC-2026-0891', 'client_id' => $clients['Equity Bank Uganda Ltd']->id, 'client' => 'Equity Bank Uganda Ltd',
             'status' => 'ISSUED', 'issue_date' => '1 Aug 2026', 'due_date' => '15 Aug 2026', 'paid_date' => null,
             'lines' => [
                 ['desc' => 'Professional fees — August 2026 (witness statement preparation, case management)', 'hours' => '12h 15m', 'amount' => 4287500],
@@ -121,5 +117,150 @@ class VlfSeeder extends Seeder
             'text' => 'I have reviewed v2. Paragraph 7 is now acceptable. I will approve before 2:00 PM. Please ensure the conference brief is on my desk before 6:00 PM tonight.',
             'replies' => [],
         ]);
+
+        $this->seedNotifications();
+    }
+
+    private function seedFirm(): void
+    {
+        // Addresses use the reserved .example domain so no real mailbox is ever emailed.
+        foreach ([
+            ['Margaret Ssempebwa', 'MS', 'Senior Partner', 'margaret@ksc-advocates.example', 600000, 'Available', 52.0],
+            ['Peter Ssali', 'PS', 'Associate', 'peter@ksc-advocates.example', 450000, 'In court', 47.5],
+            ['Tendo Mukasa', 'TM', 'Junior Associate', 'tendo@ksc-advocates.example', 110000, 'Available', 38.0],
+            ['James Ouma', 'JO', 'Junior Associate', 'james.ouma@ksc-advocates.example', 110000, 'Available', 20.0],
+            ['Grace Akello', 'GA', 'Firm Administrator', 'grace@ksc-advocates.example', 0, 'Available', 0],
+        ] as [$name, $initials, $role, $email, $rate, $status, $hours]) {
+            Staff::create(compact('name', 'initials', 'role', 'email', 'rate', 'status') + ['month_hours' => $hours]);
+        }
+
+        foreach ([
+            'firm_name' => 'Katende, Ssempebwa & Co. Advocates',
+            'firm_address' => 'Plot 18 Hannington Road, Kampala',
+            'notify_deadlines' => true,
+            'notify_hearings' => true,
+            'notify_invoices' => true,
+            'notify_unassigned' => false,
+        ] as $key => $value) {
+            Setting::create(['key' => $key, 'value' => $value]);
+        }
+    }
+
+    /**
+     * @return array<string, Client>
+     */
+    private function seedClients(): array
+    {
+        $clients = [];
+        foreach ([
+            ['Equity Bank Uganda Ltd', 'Company', '1007-441-002', 'James Opolot', 'james.opolot@equitybank.example', true],
+            ['Mubiru Estate', 'Estate', null, 'Sarah Mubiru', null, true],
+            ['Stanbic Bank Uganda Ltd', 'Company', null, null, null, true],
+            ['Nile Breweries Ltd', 'Company', null, null, null, true],
+            ['ABC Ltd', 'Company', null, null, null, false],
+            ['Kampala Serena Hotel', 'Company', null, null, null, false],
+            ['Nile Trading Co.', 'Company', null, null, null, false],
+            ['Mukasa Holdings', 'Company', null, null, null, false],
+            ['Kyambogo University', 'Government', null, null, null, false],
+            ['Lakeside Traders Ltd', 'Company', null, null, null, false],
+        ] as [$name, $type, $tin, $contact, $email, $verified]) {
+            $clients[$name] = Client::create([
+                'name' => $name, 'type' => $type, 'tin' => $tin,
+                'contact_name' => $contact, 'contact_email' => $email, 'verified' => $verified,
+            ]);
+        }
+
+        return $clients;
+    }
+
+    /**
+     * @param  array<string, Client>  $clients
+     */
+    private function seedMatters(array $clients): void
+    {
+        $partner = 'Margaret Ssempebwa';
+        foreach ([
+            ['KSC-2026-0891', 'Equity Bank Uganda Ltd', 'Equity Bank Uganda Ltd v. Ssekandi Enterprises Ltd', 'Ssekandi Enterprises Ltd', 'Commercial Litigation', 'High Court · Commercial Division', 'Justice Tibatemwa', 'Peter Ssali', 'Case management', 'Witness stmt due 5PM', 'urgent', 'Hourly · UGX 450,000/hr', '2025-10-28'],
+            ['KSC-2026-0823', 'Mubiru Estate', 'Mubiru Estate — Succession & Land Dispute', 'Competing family claimants', 'Probate', 'High Court · Land Division', 'Justice Mugenyi', 'Peter Ssali', 'Hearing', 'Hearing today', 'urgent', 'Hourly · UGX 450,000/hr', '2025-09-02'],
+            ['KSC-2026-0944', 'Stanbic Bank Uganda Ltd', 'Stanbic Bank Uganda Ltd — ICC Arbitration', 'Respondent (confidential)', 'Arbitration', 'Arbitration · Kampala', 'Dr. Kamya', 'Peter Ssali', 'Arbitration Hearing', 'Submissions Fri', 'warn', 'Hourly · UGX 450,000/hr', '2026-01-15'],
+            ['KSC-2026-0771', 'ABC Ltd', 'ABC Ltd v. XYZ Ltd — Contract Dispute', 'XYZ Ltd', 'Litigation', 'Magistrates Court · Kampala', null, 'Peter Ssali', 'Pleadings', 'On track', 'ok', 'Fixed fee', '2025-07-20'],
+            ['KSC-2026-0856', 'Nile Breweries Ltd', 'Nile Breweries — Title Verification & Conveyance', null, 'Conveyancing', 'Registry · Kampala', null, 'Peter Ssali', 'Due Diligence', 'Title review pending', 'warn', 'Fixed fee', '2026-02-10'],
+            ['KSC-2026-0790', 'Kampala Serena Hotel', 'Kampala Serena Hotel — Employment Dispute', 'Former employee', 'Employment', 'Labour Tribunal', null, 'Peter Ssali', 'Mediation', 'On track', 'ok', 'Hourly · UGX 450,000/hr', '2025-11-04'],
+            ['KSC-2026-0834', 'Nile Trading Co.', 'Nile Trading Co. — Commercial Dispute', 'Kampala Wholesalers Ltd', 'Commercial Litigation', 'High Court · Commercial Division', null, $partner, 'Pleadings', 'Invoice 38 days', 'urgent', 'Hourly · UGX 600,000/hr', '2025-12-01'],
+            ['KSC-2026-0756', 'Mukasa Holdings', 'Mukasa Holdings — Shareholder Restructuring', null, 'Corporate', 'Registry · Kampala', null, 'Peter Ssali', 'Advisory', 'On track', 'ok', 'Retainer', '2025-06-18'],
+            ['KSC-2026-0987', 'Kyambogo University', 'Kyambogo University — Employment Dispute', 'Staff association', 'Employment', 'Labour Tribunal', null, null, 'Intake', 'No advocate', 'urgent', 'To be agreed', '2026-08-14'],
+            ['KSC-2026-0991', 'Lakeside Traders Ltd', 'Lakeside Traders Ltd — Lease Dispute', 'Landlord (to be confirmed)', 'Litigation', 'Magistrates Court · Kampala', null, null, 'Intake', 'No advocate', 'urgent', 'To be agreed', '2026-08-15'],
+        ] as [$ref, $client, $title, $opposing, $area, $court, $judge, $advocate, $stage, $label, $level, $fee, $date]) {
+            Matter::create([
+                'ref' => $ref, 'client_id' => $clients[$client]->id, 'title' => $title, 'opposing_party' => $opposing,
+                'practice_area' => $area, 'court' => $court, 'judge' => $judge, 'advocate' => $advocate, 'supervisor' => $partner,
+                'stage' => $stage, 'status_label' => $label, 'status_level' => $level, 'fee_arrangement' => $fee, 'instruction_date' => $date,
+            ]);
+        }
+    }
+
+    private function seedDiary(): void
+    {
+        $checklist = fn (array $done, array $pending) => array_merge(
+            array_map(fn ($t) => ['text' => $t, 'done' => true], $done),
+            array_map(fn ($t) => ['text' => $t, 'done' => false], $pending),
+        );
+
+        CourtEvent::create([
+            'key' => 'mubiru', 'matter_ref' => 'KSC-2026-0823', 'title' => 'Succession & Land Dispute — Substantive Hearing',
+            'court' => 'High Court — Land Division · Courtroom 4', 'judge' => 'Justice Mugenyi', 'date' => '2026-08-17', 'time' => '09:30',
+            'advocate' => 'Peter Ssali', 'level' => 'critical', 'notes' => 'All parties confirmed',
+            'checklist' => $checklist([
+                'Previous court order reviewed — 14 Jun 2026', 'Witness list confirmed — 3 witnesses', 'Hearing bundle prepared — 47 pages',
+                'Authorities filed — Mukasa v Mubiru [2018] UGCA', 'Client instructions received and confirmed',
+            ], ['Confirm client witness transport to court']),
+        ]);
+        CourtEvent::create([
+            'matter_ref' => 'KSC-2026-0771', 'title' => 'Contract Dispute — Mention', 'court' => 'Chief Magistrates Court — Kampala · Courtroom 2',
+            'date' => '2026-08-17', 'time' => '14:30', 'advocate' => 'James Ouma', 'level' => 'scheduled', 'checklist' => [],
+        ]);
+        CourtEvent::create([
+            'matter_ref' => 'KSC-2026-0891', 'title' => 'Scheduling Conference — Recovery UGX 847M', 'court' => 'High Court — Commercial Division · Courtroom 7',
+            'judge' => 'Justice Tibatemwa', 'date' => '2026-08-18', 'time' => '09:30', 'advocate' => 'Margaret Ssempebwa', 'level' => 'critical',
+            'notes' => 'Margaret Ssempebwa & Peter Ssali · Witness statement must be filed first',
+            'checklist' => $checklist(
+                ['Previous scheduling order reviewed', 'Witness statement drafted and under review', 'Client instructions received (Equity Bank in-house)', 'Brief for Margaret Ssempebwa prepared'],
+                ['Witness statement filed — partner approval needed', 'Authorities bundle attached', 'Court filing receipt confirmed'],
+            ),
+        ]);
+        CourtEvent::create([
+            'matter_ref' => 'KSC-2026-0944', 'title' => 'Arbitration — Preliminary Submissions Deadline', 'court' => 'CADER — Arbitration · Kampala',
+            'judge' => 'Arbitrator: Dr. Kamya', 'date' => '2026-08-22', 'time' => 'All day', 'advocate' => 'Peter Ssali', 'level' => 'scheduled',
+            'notes' => 'Submissions in drafting', 'checklist' => [],
+        ]);
+
+        foreach ([
+            ['KSC-2026-0891', 'Witness Statement — Equity Bank v Ssekandi', '2026-08-17', '5:00 PM', 'critical'],
+            ['KSC-2026-0856', 'Title Verification Advice — Nile Breweries', '2026-08-21', null, 'warn'],
+            ['KSC-2026-0944', 'Arbitration Preliminary Submissions', '2026-08-22', null, 'warn'],
+        ] as [$ref, $title, $date, $time, $severity]) {
+            Deadline::create(['matter_ref' => $ref, 'title' => $title, 'due_date' => $date, 'due_time' => $time, 'owner' => 'Peter Ssali', 'severity' => $severity]);
+        }
+    }
+
+    private function seedNotifications(): void
+    {
+        $witness = ['matter' => 'KSC-2026-0891', 'doc' => 'witness-statement'];
+        // Listed newest first; inserted oldest first so the newest gets the highest id.
+        foreach (array_reverse([
+            ['Peter Ssali', 'critical', '⛔', 'Critical — Action required', 'Witness statement filing deadline in 3 hours. Margaret\'s approval still pending.', $witness, 'Today · 2:00 PM', false],
+            ['Peter Ssali', 'action', '⚡', 'Action required', 'Scheduling Conference tomorrow at 9:30 AM — conference brief not yet prepared.', ['matter' => 'KSC-2026-0891', 'tab' => 'overview'], 'Today · 9:00 AM', false],
+            ['Peter Ssali', 'action', '📋', 'Task assigned', 'Margaret has assigned you to prepare the authorities bundle for KSC-2026-0891.', ['matter' => 'KSC-2026-0891', 'tab' => 'work'], 'Today · 8:44 AM', false],
+            ['Peter Ssali', 'info', '✓', 'Document sealed', 'Witness Statement (Draft v2) has been IRIS-sealed and is ready for partner approval.', $witness, 'Today · 8:30 AM', true],
+            ['Peter Ssali', 'warn', '⚠', 'Legal rule — verify required', 'DEBT-R-005 (Mediation regime) is flagged [VERIFY]. Check current instrument before the Scheduling Conference.', ['matter' => 'KSC-2026-0891', 'tab' => 'ai'], 'Yesterday · 4:15 PM', true],
+            ['Margaret Ssempebwa', 'critical', '⛔', 'Approval required', 'Witness statement (KSC-2026-0891) is waiting for your Class A partner approval — filing deadline 5:00 PM today.', $witness, 'Today · 9:30 AM', false],
+            ['Tendo Mukasa', 'action', '📋', 'Task assigned', 'Peter Ssali assigned you: Prepare authorities bundle for Scheduling Conference — due 4:00 PM.', ['matter' => 'KSC-2026-0891', 'tab' => 'work'], 'Today · 10:25 AM', false],
+            ['Grace Akello', 'warn', '⚠', 'Unassigned matters', 'KSC-2026-0987 and KSC-2026-0991 have no advocate assigned.', ['page' => 'adm-matters'], 'Today · 8:00 AM', false],
+        ]) as [$recipient, $type, $icon, $label, $text, $link, $ts, $read]) {
+            Notification::create([
+                'recipient' => $recipient, 'type' => $type, 'icon' => $icon, 'type_label' => $label, 'text' => $text,
+                'link' => $link, 'ts_label' => $ts, 'read_at' => $read ? now() : null,
+            ]);
+        }
     }
 }

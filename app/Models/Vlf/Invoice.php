@@ -17,6 +17,7 @@ class Invoice extends Model
         return [
             'id' => $this->code,
             'matter' => $this->matter_ref,
+            'clientId' => $this->client_id,
             'client' => $this->client,
             'status' => $this->status,
             'issueDate' => $this->issue_date,
