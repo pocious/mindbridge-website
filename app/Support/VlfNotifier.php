@@ -19,11 +19,11 @@ use Throwable;
 class VlfNotifier
 {
     public const TYPES = [
-        'critical' => ['⛔', 'Critical — Action required'],
-        'action' => ['⚡', 'Action required'],
-        'task' => ['📋', 'Task assigned'],
-        'info' => ['✓', 'Update'],
-        'warn' => ['⚠', 'Attention'],
+        'critical' => ['stop', 'Critical — Action required'],
+        'action' => ['bell', 'Action required'],
+        'task' => ['list', 'Task assigned'],
+        'info' => ['info', 'Update'],
+        'warn' => ['alert', 'Attention'],
     ];
 
     /**

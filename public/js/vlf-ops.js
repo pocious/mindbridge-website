@@ -18,6 +18,7 @@
 
   /* ── helpers ── */
 
+  const ic = (name, size) => (window.vlfIcon ? window.vlfIcon(name, size) : '');
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   // A value for an inline onclick argument: JSON-quoted, then HTML-escaped for the attribute.
   const arg = v => esc(JSON.stringify(String(v)));
@@ -94,7 +95,7 @@
           </div>
         </div>
         <div class="mr-right">${unassigned
-          ? `<button class="btn btn-ember btn-sm" onclick="event.stopPropagation();VLFOPS.assignMatter(${arg(m.ref)})">Assign →</button>`
+          ? `<button class="btn btn-ember btn-sm" onclick="event.stopPropagation();VLFOPS.assignMatter(${arg(m.ref)})">Assign</button>`
           : `<div class="mr-stage">${esc(m.stage || '')}</div>`}</div>
       </div>`;
   }
@@ -107,7 +108,7 @@
     const advList = document.querySelector('#pg-adv-matters .matter-list');
     if (advList) {
       advList.innerHTML = mine.map(m => matterRow(m, m.advocate !== user)).join('') ||
-        emptyBlock('⚖️', 'No matters yet', 'Matters you are responsible for or supervise will appear here.', `<button class="btn btn-v btn-sm" onclick="openIntake()">+ Open new matter</button>`);
+        emptyBlock('briefcase', 'No matters yet', 'Matters you are responsible for or supervise will appear here.', `<button class="btn btn-v btn-sm" onclick="openIntake()">+ Open new matter</button>`);
       const outside = document.getElementById('matters-empty-state');
       if (outside) outside.style.display = 'none';
       const hs = document.querySelector('#pg-adv-matters .hs');
@@ -172,7 +173,7 @@
         <button class="btn btn-v btn-sm" onclick="closeD();openCreateTask(${arg(ref)},'')">+ Task</button>
         <button class="btn btn-ghost btn-sm" onclick="closeD();VLFOPS.openEventForm(${arg(ref)})">+ Hearing</button>
         <button class="btn btn-ghost btn-sm" onclick="closeD();VLFOPS.openDeadlineForm(${arg(ref)})">+ Deadline</button>
-        <button class="btn btn-ghost btn-sm" onclick="closeD();VLFOPS.logTimeFor(${arg(ref)})">⏱ Log time</button>
+        <button class="btn btn-ghost btn-sm" onclick="closeD();VLFOPS.logTimeFor(${arg(ref)})">Log time</button>
         <button class="btn btn-ghost btn-sm" onclick="closeD();openNewInvoice(${arg(ref)})">Draft invoice</button>
       </div>
       ${list('Court diary', events.map(e => row(esc(e.title), esc(e.dateLabel + (e.time ? ' · ' + e.time : '') + ' · ' + (e.court || '')), `closeD();openDiaryEvent(${arg(e.id)})`)), 'No hearings scheduled.')}
@@ -193,7 +194,7 @@
       <div class="create-task-form">
         ${field('Responsible advocate', select('vlf-assign-advocate', staffOptions(advocates()), m.advocate || ''))}
         ${field('Supervising partner', select('vlf-assign-partner', staffOptions(partners()), m.supervisor || ''))}
-        <button class="btn btn-v btn-full" onclick="VLFOPS.saveAssignment(${arg(ref)})">Assign &amp; notify →</button>
+        <button class="btn btn-v btn-full" onclick="VLFOPS.saveAssignment(${arg(ref)})">Assign &amp; notify</button>
       </div>`);
   }
 
@@ -268,7 +269,7 @@
         ${formError()}`;
       case 2: return `
         ${field('Opposing party *', ik('opposingParty', input('ik-opposingParty', intake.opposingParty, 'e.g. Ssekandi Enterprises Ltd')))}
-        <button class="btn btn-v btn-full" onclick="VLFOPS.runConflictCheck()">Run conflict check →</button>
+        <button class="btn btn-v btn-full" onclick="VLFOPS.runConflictCheck()">Run conflict check</button>
         <div id="ik-conflict">${conflictHtml()}</div>
         ${formError()}`;
       case 3: return `
@@ -292,7 +293,7 @@
     const c = intake.conflict;
     if (!c || intake.conflictCheckedFor !== intake.opposingParty) return '';
     return c.conflict
-      ? `<div class="conflict-result conflict-found"><div style="font-size:11px;font-weight:600;color:var(--ember);margin-bottom:5px;">⚠ Conflict found — this matter cannot be opened</div>${c.matches.map(x => `<div style="font-size:11px;color:var(--ember);">• ${esc(x)}</div>`).join('')}<div style="font-size:10px;color:var(--slate);margin-top:6px;">Refer to the supervising partner before taking instructions.</div></div>`
+      ? `<div class="conflict-result conflict-found"><div style="font-size:11px;font-weight:600;color:var(--ember);margin-bottom:5px;">${ic('alert', 14)} Conflict found — this matter cannot be opened</div>${c.matches.map(x => `<div style="font-size:11px;color:var(--ember);">• ${esc(x)}</div>`).join('')}<div style="font-size:10px;color:var(--slate);margin-top:6px;">Refer to the supervising partner before taking instructions.</div></div>`
       : `<div class="conflict-result conflict-clear"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><div class="iris-dot"></div><div style="font-size:11px;font-weight:500;color:var(--vd);">✓ Conflict check clear</div></div><div style="font-size:11px;color:var(--vd);opacity:.8;">${esc(intake.opposingParty)} is not a client of the firm, and the client has not been an opposing party in any firm matter.</div></div>`;
   }
 
@@ -301,7 +302,7 @@
       <div class="matter-id-badge"><div class="matter-id-val">${esc(m.ref)}</div><div class="matter-id-label">Matter Reference · ${esc(firmName())}</div></div>
       <div class="m-info">✓ ${esc(m.title)}<br>✓ Client: ${esc(m.client)} · ✓ Conflict check cleared<br>✓ ${esc(m.advocate)} and ${esc(m.supervisor)} notified</div>
       <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:8px;">
-        <button class="btn btn-v btn-sm" onclick="closeM('m-intake');VLFOPS.openMatter(${arg(m.ref)})">Open matter →</button>
+        <button class="btn btn-v btn-sm" onclick="closeM('m-intake');VLFOPS.openMatter(${arg(m.ref)})">Open matter</button>
         <button class="btn btn-ghost btn-sm" onclick="closeM('m-intake');VLFOPS.openEventForm(${arg(m.ref)})">+ First hearing</button>
         <button class="btn btn-ghost btn-sm" onclick="closeM('m-intake');VLFOPS.openDeadlineForm(${arg(m.ref)})">+ Deadline</button>
       </div>`;
@@ -431,10 +432,10 @@
               <div style="font-size:13px;font-weight:500;color:var(--ink);">${esc(c.name)}</div>
               <div style="font-size:11px;color:var(--slate);margin-top:2px;">${esc(c.type)}${c.tin ? ' · TIN ' + esc(c.tin) : ''} · ${c.matters.length} matter${c.matters.length === 1 ? '' : 's'}${contact ? ' · ' + esc(contact) : ''}</div>
             </div>
-            <span class="pill ${c.verified ? 'ok' : 'info'}">${c.verified ? 'IRIS ✓' : 'Unverified'}</span>
+            <span class="pill ${c.verified ? 'ok' : 'info'}">${c.verified ? 'Verified' : 'Unverified'}</span>
           </div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid rgba(28,43,43,.06);padding-top:9px;">
-            ${c.matters.map(ref => `<button class="btn btn-ghost btn-sm" onclick="VLFOPS.openMatter(${arg(ref)})">${esc(ref)} →</button>`).join('')}
+            ${c.matters.map(ref => `<button class="btn btn-ghost btn-sm" onclick="VLFOPS.openMatter(${arg(ref)})">${esc(ref)}</button>`).join('')}
             <button class="btn btn-ghost btn-sm" onclick="VLFOPS.newMatterForClient(${arg(c.id)})">+ New matter</button>
             <button class="btn btn-ghost btn-sm" onclick="VLFOPS.openClientForm(${arg(c.id)})">Edit</button>
             ${c.contactEmail ? `<button class="btn btn-ghost btn-sm" onclick="VLFOPS.inviteClient(${arg(c.id)})">${(c.portalUsers || []).length ? 'Resend portal invite' : 'Invite to portal'}</button>` : ''}
@@ -442,7 +443,7 @@
           <div style="font-size:10px;color:var(--slate);margin-top:6px;">${(c.portalUsers || []).length ? 'Portal access: ' + esc(c.portalUsers.join(', ')) : c.contactEmail ? 'No portal access yet' : 'Add a contact email to invite them to the client portal'}
           </div>
         </div>`;
-    }).join('') || emptyBlock('👤', 'No clients on record', 'Clients are added here or created when a new matter is opened through intake.', `<button class="btn btn-v btn-sm" onclick="VLFOPS.openClientForm()">+ New client</button>`)}</div><div style="height:20px;"></div>`;
+    }).join('') || emptyBlock('users', 'No clients on record', 'Clients are added here or created when a new matter is opened through intake.', `<button class="btn btn-v btn-sm" onclick="VLFOPS.openClientForm()">+ New client</button>`)}</div><div style="height:20px;"></div>`;
   }
 
   function openClientForm(id) {
@@ -456,7 +457,7 @@
         ${field('Notes', textarea('vc-notes', c.notes, 'Internal notes', 2))}
         <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink);"><input type="checkbox" id="vc-verified" ${c.verified ? 'checked' : ''}> Identity verified (IRIS)</label>
         ${formError()}
-        <button class="btn btn-v btn-full" onclick="VLFOPS.saveClient(${arg(c.id || '')})">${c.id ? 'Save changes' : 'Add client'} →</button>
+        <button class="btn btn-v btn-full" onclick="VLFOPS.saveClient(${arg(c.id || '')})">${c.id ? 'Save changes' : 'Add client'}</button>
       </div>`);
   }
 
@@ -534,13 +535,13 @@
                 <div class="de-title">${esc(e.title)}</div>
                 <div class="de-court">${esc([e.court, e.judge].filter(Boolean).join(' · '))}</div>
                 <div class="de-advocate">${esc([e.advocate, e.notes].filter(Boolean).join(' · '))}</div>
-                ${pending ? `<div style="display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:4px 9px;background:rgba(184,92,42,.12);border-radius:var(--r-sm);font-size:10px;color:var(--ember);">⚠ ${pending} preparation item${pending === 1 ? '' : 's'} outstanding</div>` : ''}
+                ${pending ? `<div style="display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:4px 9px;background:rgba(184,92,42,.12);border-radius:var(--r-sm);font-size:10px;color:var(--ember);">${ic('alert', 13)} ${pending} preparation item${pending === 1 ? '' : 's'} outstanding</div>` : ''}
               </div>
-              <div class="de-right"><span class="pill ${pillCls}">${pillText}</span><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDiaryEvent(${arg(e.id)})">Prepare →</button></div>
+              <div class="de-right"><span class="pill ${pillCls}">${pillText}</span><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDiaryEvent(${arg(e.id)})">Prepare</button></div>
             </div>`;
         }).join('')}
       </div>`).join('');
-    body.innerHTML = (html || '<div class="empty-state"><div class="empty-state-icon">📅</div><div class="empty-state-title">No court events</div><div class="empty-state-desc">Add a hearing to start the diary.</div></div>') + '<div style="height:20px;"></div>';
+    body.innerHTML = (html || '<div class="empty-state"><div class="empty-state-icon">' + ic('calendar', 34) + '</div><div class="empty-state-title">No court events</div><div class="empty-state-desc">Add a hearing to start the diary.</div></div>') + '<div style="height:20px;"></div>';
 
     const badge = document.querySelector('#sbi-adv-diary .sb-b');
     if (badge) badge.textContent = S.events.filter(e => e.level === 'critical').length;
@@ -567,9 +568,9 @@
       </div>
       ${e.notes ? `<div class="box ink"><div class="box-text">${esc(e.notes)}</div></div>` : ''}
       <div style="display:flex;gap:7px;flex-wrap:wrap;">
-        ${e.level !== 'complete' ? `<button class="btn btn-v btn-sm" onclick="VLFOPS.setEventLevel(${arg(e.id)},'complete')">✓ Mark hearing done</button>` : `<button class="btn btn-ghost btn-sm" onclick="VLFOPS.setEventLevel(${arg(e.id)},'scheduled')">Reopen</button>`}
+        ${e.level !== 'complete' ? `<button class="btn btn-v btn-sm" onclick="VLFOPS.setEventLevel(${arg(e.id)},'complete')">Mark hearing done</button>` : `<button class="btn btn-ghost btn-sm" onclick="VLFOPS.setEventLevel(${arg(e.id)},'scheduled')">Reopen</button>`}
         ${e.level === 'scheduled' ? `<button class="btn btn-ember btn-sm" onclick="VLFOPS.setEventLevel(${arg(e.id)},'critical')">Flag critical</button>` : ''}
-        <button class="btn btn-ghost btn-sm" onclick="closeD();VLFOPS.openMatter(${arg(e.matter)})">Open matter →</button>
+        <button class="btn btn-ghost btn-sm" onclick="closeD();VLFOPS.openMatter(${arg(e.matter)})">Open matter</button>
       </div>`;
   }
 
@@ -625,7 +626,7 @@
         <div class="ctf-row">${field('Appearing advocate', select('ve-advocate', staffOptions(advocates()), (ref && m.advocate) || me()))}${field('Priority', select('ve-level', [['scheduled', 'Scheduled'], ['critical', 'Critical']], 'scheduled'))}</div>
         ${field('Preparation checklist (one item per line)', textarea('ve-checklist', '', 'Hearing bundle prepared\nClient instructions confirmed', 3))}
         ${formError()}
-        <button class="btn btn-v btn-full" onclick="VLFOPS.saveEvent()">Add to court diary →</button>
+        <button class="btn btn-v btn-full" onclick="VLFOPS.saveEvent()">Add to court diary</button>
       </div>`);
   }
 
@@ -660,7 +661,7 @@
           <div style="font-size:13px;font-weight:500;color:var(--ink);${d.done ? 'text-decoration:line-through;' : ''}">${esc(d.title)}</div>
           <div style="font-family:var(--mono);font-size:9px;color:var(--slate);margin-top:2px;">${esc(d.matter)}${withMatter && m ? ' · ' + esc(m.client || '') : ''} · ${esc(d.dueLabel)}${d.dueTime ? ' · ' + esc(d.dueTime) : ''}${d.owner ? ' · ' + esc(d.owner) : ''}</div>
         </div>
-        <button class="btn btn-ghost btn-sm" onclick="VLFOPS.openMatter(${arg(d.matter)})">Open →</button>
+        <button class="btn btn-ghost btn-sm" onclick="VLFOPS.openMatter(${arg(d.matter)})">Open</button>
       </div>`;
   }
 
@@ -706,7 +707,7 @@
         <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(28,43,43,.06);">
           <div class="cd ${e.level === 'critical' ? 'urg pulse' : 'warn'}"></div>
           <div style="flex:1;"><div style="font-size:12px;font-weight:500;color:var(--ink);">${esc(e.title)}</div><div style="font-family:var(--mono);font-size:9px;color:var(--slate);">${esc(e.matter)} · ${esc(e.dateLabel)}${e.time ? ' · ' + esc(e.time) : ''} · ${esc(e.advocate || '')}</div></div>
-          <button class="btn btn-ghost btn-sm" onclick="openDiaryEvent(${arg(e.id)})">Monitor →</button>
+          <button class="btn btn-ghost btn-sm" onclick="openDiaryEvent(${arg(e.id)})">Monitor</button>
         </div>`), 'No upcoming court events.')}
       <div style="height:20px;"></div>`;
     const badge = document.querySelector('#sbi-adm-deadlines .sb-b');
@@ -731,7 +732,7 @@
         <div class="ctf-row">${field('Due date *', input('vd-date', today(), '', 'date'))}${field('Time', input('vd-time', '5:00 PM', 'e.g. 5:00 PM'))}</div>
         <div class="ctf-row">${field('Responsible', select('vd-owner', staffOptions(advocates()), m.advocate || me()))}${field('Severity', select('vd-severity', [['normal', 'Normal'], ['warn', 'Important'], ['critical', 'Critical — court-ordered']], 'warn'))}</div>
         ${formError()}
-        <button class="btn btn-v btn-full" onclick="VLFOPS.saveDeadline()">Add deadline →</button>
+        <button class="btn btn-v btn-full" onclick="VLFOPS.saveDeadline()">Add deadline</button>
       </div>`);
   }
 
@@ -774,10 +775,10 @@
         <span style="font-family:var(--mono);font-size:9px;color:var(--slate);text-transform:uppercase;letter-spacing:.06em;">Status</span>
         <span class="pill ${TASK_PILL[s] || 'info'}">${esc(s.replace('_', ' '))}</span>
         <span style="flex:1;"></span>
-        ${s !== 'IN_PROGRESS' && s !== 'DONE' ? btn('IN_PROGRESS', '▶ Start', 'btn-ghost') : ''}
-        ${s !== 'BLOCKED' && s !== 'DONE' ? `<button class="btn btn-ghost btn-sm" onclick="document.getElementById('vlf-block-row').style.display='flex'">⛔ Blocked…</button>` : ''}
-        ${s !== 'DONE' ? btn('DONE', '✓ Mark done', 'btn-v') : ''}
-        ${s === 'DONE' || s === 'BLOCKED' ? btn('IN_PROGRESS', '↺ Reopen', 'btn-ghost') : ''}
+        ${s !== 'IN_PROGRESS' && s !== 'DONE' ? btn('IN_PROGRESS', 'Start', 'btn-ghost') : ''}
+        ${s !== 'BLOCKED' && s !== 'DONE' ? `<button class="btn btn-ghost btn-sm" onclick="document.getElementById('vlf-block-row').style.display='flex'">Blocked…</button>` : ''}
+        ${s !== 'DONE' ? btn('DONE', 'Mark done', 'btn-v') : ''}
+        ${s === 'DONE' || s === 'BLOCKED' ? btn('IN_PROGRESS', 'Reopen', 'btn-ghost') : ''}
       </div>
       <div id="vlf-block-row" style="display:none;gap:6px;margin-bottom:10px;">
         <input class="ctf-input" id="vlf-block-reason" placeholder="What is blocking this task?">
@@ -872,7 +873,7 @@
       <button class="btn btn-ghost btn-sm" onclick="VLFOPS.addExtraInvoiceLine()">+ Add line</button>
       <div style="display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid rgba(28,43,43,.08);margin-top:8px;font-size:13px;font-weight:600;"><span>Time subtotal</span><span style="font-family:var(--mono);color:var(--vd);">${money(subtotal)}</span></div>
       ${formError()}
-      <button class="btn btn-v btn-full" onclick="VLFOPS.createInvoice(${arg(ref)})">Create draft invoice →</button>
+      <button class="btn btn-v btn-full" onclick="VLFOPS.createInvoice(${arg(ref)})">Create draft invoice</button>
       <div style="margin-top:6px;font-size:10px;color:var(--slate);">Draft → partner approval → issued to client → paid. Included time entries are marked as billed.</div>`);
   };
 
@@ -907,10 +908,10 @@
     if (inv.status === 'DRAFT') {
       actions = `<button class="btn btn-ghost btn-sm" onclick="openEditableInvoice(${arg(inv.id)})">Edit lines</button>` +
         (isPartner(user)
-          ? `<button class="btn btn-v btn-sm" onclick="VLFOPS.invoiceAction(${arg(inv.id)},'approve')">✓ Approve for issue</button>`
+          ? `<button class="btn btn-v btn-sm" onclick="VLFOPS.invoiceAction(${arg(inv.id)},'approve')">Approve for issue</button>`
           : `<span style="font-size:11px;color:var(--slate);">Waiting for a partner to approve it for issue.</span>`);
     } else if (inv.status === 'APPROVED') {
-      actions = `<button class="btn btn-v btn-sm" onclick="VLFOPS.invoiceAction(${arg(inv.id)},'issue')">Issue to client →</button><button class="btn btn-ghost btn-sm" onclick="openEditableInvoice(${arg(inv.id)})">Edit lines</button>`;
+      actions = `<button class="btn btn-v btn-sm" onclick="VLFOPS.invoiceAction(${arg(inv.id)},'issue')">Issue to client</button><button class="btn btn-ghost btn-sm" onclick="openEditableInvoice(${arg(inv.id)})">Edit lines</button>`;
     } else if (inv.status === 'ISSUED' || inv.status === 'OVERDUE') {
       actions = `<input class="ctf-input" id="vlf-pay-amount" value="${inv.total - inv.paid}" style="width:150px;" inputmode="numeric"><button class="btn btn-v btn-sm" onclick="VLFOPS.invoiceAction(${arg(inv.id)},'pay')">Record payment</button>`;
     } else {
@@ -975,12 +976,12 @@
     const docs = workingDocs(EQUITY);
     const html = `
       <div class="doc-folder" id="vlf-working-docs">
-        <div class="doc-folder-head"><span style="font-size:14px;">📁</span><div class="doc-folder-name">Working documents</div><div class="doc-folder-count">${docs.length} document${docs.length === 1 ? '' : 's'} · drafts and uploads</div></div>
+        <div class="doc-folder-head"><span style="display:flex;color:var(--slate);">${ic('folder', 16)}</span><div class="doc-folder-name">Working documents</div><div class="doc-folder-count">${docs.length} document${docs.length === 1 ? '' : 's'} · drafts and uploads</div></div>
         <div class="doc-folder-body">
           ${docs.length ? docs.map(([key, d]) => {
             const [cls, label] = DOC_STATUS[d.currentStatus] || ['draft', d.currentStatus];
             const size = d.file ? ' · ' + Math.max(1, Math.round(d.file.size / 1024)) + ' KB' : '';
-            return `<div class="doc-item" onclick="VLFOPS.openDoc(${arg(key)})"><div class="doc-item-icon">${d.file ? '📎' : '📝'}</div><div style="flex:1;"><div class="doc-item-name">${esc(d.title)}</div><div class="doc-item-meta">${esc(d.author || '')}${esc(size)} · ${esc(d.folder || '')}</div></div><span class="doc-status ${cls}">${esc(label)}</span></div>`;
+            return `<div class="doc-item" onclick="VLFOPS.openDoc(${arg(key)})"><div class="doc-item-icon">${ic(d.file ? 'paperclip' : 'file', 16)}</div><div style="flex:1;"><div class="doc-item-name">${esc(d.title)}</div><div class="doc-item-meta">${esc(d.author || '')}${esc(size)} · ${esc(d.folder || '')}</div></div><span class="doc-status ${cls}">${esc(label)}</span></div>`;
           }).join('') : '<div style="padding:10px 13px;font-size:11px;color:var(--slate);">No drafts or uploads yet — use New document or Upload.</div>'}
         </div>
       </div>`;
@@ -1000,7 +1001,7 @@
       const preview = /pdf/.test(d.file.mime) ? `<iframe src="${url}?inline=1" style="width:100%;height:380px;border:0;border-radius:var(--r-sm);" title="${esc(d.file.name)}"></iframe>`
         : /^image\//.test(d.file.mime) ? `<img src="${url}?inline=1" alt="${esc(d.file.name)}" style="max-width:100%;border-radius:var(--r-sm);">`
         : `<div style="padding:20px;text-align:center;color:var(--slate);font-family:var(--sans);">No preview for this file type.</div>`;
-      return `<div style="font-family:var(--sans);font-size:11px;color:var(--slate);margin-bottom:8px;">📎 ${esc(d.file.name)} · ${Math.max(1, Math.round(d.file.size / 1024))} KB · SHA-256 ${esc(d.file.sha256.slice(0, 16))}… · <a href="${url}" style="color:var(--vd);">Download</a></div>${preview}`;
+      return `<div style="font-family:var(--sans);font-size:11px;color:var(--slate);margin-bottom:8px;">${ic('paperclip', 13)} ${esc(d.file.name)} · ${Math.max(1, Math.round(d.file.size / 1024))} KB · SHA-256 ${esc(d.file.sha256.slice(0, 16))}… · <a href="${url}" style="color:var(--vd);">Download</a></div>${preview}`;
     }
     if (d.content) return `<div style="white-space:pre-wrap;">${esc(d.content)}</div>`;
     return '<div style="color:var(--slate);font-family:var(--sans);">This draft is empty.</div>';
@@ -1017,13 +1018,13 @@
       text = s === 'REJECTED'
         ? `<strong>Returned for revision</strong>${d.returnReason ? ': ' + esc(d.returnReason) : ''}`
         : 'Draft — not yet submitted for review.';
-      buttons = (!d.author || isAuthor) ? act('submit', s === 'REJECTED' ? 'Resubmit for review →' : 'Submit for review →', 'btn-v')
+      buttons = (!d.author || isAuthor) ? act('submit', s === 'REJECTED' ? 'Resubmit for review' : 'Submit for review', 'btn-v')
         : `<span style="font-size:11px;color:var(--slate);">Waiting for ${esc(d.author)} to ${s === 'REJECTED' ? 'revise and resubmit' : 'submit'}.</span>`;
     } else if (s === 'UNDER_REVIEW' || s === 'PENDING_PARTNER_APPROVAL') {
       text = `With ${esc(d.reviewer || 'the supervising partner')} for review.`;
       buttons = isAuthor
         ? '<span style="font-size:11px;color:var(--slate);">You can’t review your own document.</span>'
-        : act('approve', '✓ Approve', 'btn-v') + `<button class="btn btn-ghost btn-sm" onclick="VLFOPS.openReturnFor(${arg(key)})">Return for revision</button>`;
+        : act('approve', 'Approve', 'btn-v') + `<button class="btn btn-ghost btn-sm" onclick="VLFOPS.openReturnFor(${arg(key)})">Return for revision</button>`;
     } else if (s === 'APPROVED') {
       text = 'Approved — ready to seal and file.';
       // Filing is a Class A act: partners only (enforced on the server too).
@@ -1094,7 +1095,7 @@
       <div class="create-task-form">
         ${field('What needs to change? *', textarea('vlf-return-reason', '', 'e.g. Paragraph 7 needs the full interest computation', 4))}
         ${formError()}
-        <button class="btn btn-ember btn-full" onclick="VLFOPS.confirmReturn(${arg(key)})">Return to ${esc(d.author || 'author')} →</button>
+        <button class="btn btn-ember btn-full" onclick="VLFOPS.confirmReturn(${arg(key)})">Return to ${esc(d.author || 'author')}</button>
       </div>`);
   }
 
@@ -1276,7 +1277,7 @@
           : 'With an email, they get an account and an email to set their password. Partners and the administrator can manage the firm; everyone else works on matters.'}</div>
         ${s.id ? `<label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink);"><input type="checkbox" id="vs-active" ${s.active ? 'checked' : ''}> Active — can sign in and be assigned work</label>` : ''}
         ${formError()}
-        <button class="btn btn-v btn-full" onclick="VLFOPS.saveStaff(${arg(s.id || '')})">${s.id ? 'Save changes' : 'Add to firm'} →</button>
+        <button class="btn btn-v btn-full" onclick="VLFOPS.saveStaff(${arg(s.id || '')})">${s.id ? 'Save changes' : 'Add to firm'}</button>
       </div>`);
   }
 
@@ -1337,7 +1338,7 @@
         ${field('Firm name', input('vf-name', firmName()))}
         ${field('Address', input('vf-address', S.settings.firm_address))}
         ${formError()}
-        <button class="btn btn-v btn-full" onclick="VLFOPS.saveFirm()">Save →</button>
+        <button class="btn btn-v btn-full" onclick="VLFOPS.saveFirm()">Save</button>
       </div>`);
   }
 
@@ -1358,6 +1359,7 @@
 
   /* ══ NOTIFICATIONS ══ */
 
+  const NOTIF_ICON = { critical: 'stop', action: 'bell', warn: 'alert', info: 'info' };
   const myNotifications = () => S.notifications[me()] || [];
 
   window.renderNotifPanel = function () {
@@ -1373,12 +1375,12 @@
     if (!list) return;
     list.innerHTML = items.length ? items.map(n => `
       <div class="notif-item ${n.unread ? 'unread' : 'read'}" onclick="VLFOPS.openNotification(${arg(n.id)})">
-        <div class="notif-icon">${esc(n.icon || '•')}</div>
+        <div class="notif-icon">${ic(NOTIF_ICON[n.type] || 'info', 18)}</div>
         <div class="notif-body">
           <div class="notif-type ${esc(n.type)}">${esc(n.typeLabel)}</div>
           <div class="notif-text">${esc(n.text)}</div>
           <div class="notif-ts">${esc(n.ts)}${n.emailed ? ' · emailed' : ''}</div>
-          ${n.link ? '<div class="notif-cta">→ Open</div>' : ''}
+          ${n.link ? '<div class="notif-cta">Open</div>' : ''}
         </div>
       </div>`).join('') : `<div class="notif-empty">No notifications for ${esc(me())}</div>`;
   };
@@ -1431,7 +1433,7 @@
       S.notifications[user] = list;
       list.forEach(n => lastSeen.add(n.id));
       renderNotifPanel();
-      if (fresh.length && user === me()) t('🔔 ' + fresh[0].typeLabel, fresh[0].text.slice(0, 90), fresh[0].type === 'critical' ? 'r' : 'b');
+      if (fresh.length && user === me()) t(fresh[0].typeLabel, fresh[0].text.slice(0, 90), fresh[0].type === 'critical' ? 'r' : 'b');
     }).catch(err => console.error('[vlf-ops] notifications', err));
   }
 
@@ -1451,20 +1453,20 @@
   const byDate = (a, b) => (a || '').localeCompare(b || '');
 
   function emptyBlock(icon, title, desc, buttons) {
-    return `<div class="empty-state"><div class="empty-state-icon">${icon}</div><div class="empty-state-title">${esc(title)}</div><div class="empty-state-desc">${esc(desc)}</div>${buttons ? `<div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:center;">${buttons}</div>` : ''}</div>`;
+    return `<div class="empty-state"><div class="empty-state-icon">${ic(icon, 34)}</div><div class="empty-state-title">${esc(title)}</div><div class="empty-state-desc">${esc(desc)}</div>${buttons ? `<div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:center;">${buttons}</div>` : ''}</div>`;
   }
 
   function section(title, more, content) {
     return `<div><div class="sh"><div class="st"><div class="r-rule"><div class="a"></div><div class="b"></div><div class="c"></div></div><div class="stitle">${esc(title)}</div></div>${more || ''}</div>${content}</div>`;
   }
   const quiet = text => `<div class="card" style="font-size:12px;color:var(--slate);">${esc(text)}</div>`;
-  const moreBtn = (label, onclick) => `<button class="smore" onclick="${onclick}">${esc(label)} →</button>`;
+  const moreBtn = (label, onclick) => `<button class="smore" onclick="${onclick}">${esc(label)}</button>`;
 
   function heroHtml(kicker, title, sub, figure, figureLabel, figureColour) {
     return `<div class="hero-i"><div class="hero-row">
-      <div><div style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);opacity:.4;margin-bottom:6px;">${esc(kicker)}</div>
+      <div><div class="vlf-kicker">${esc(kicker)}</div>
       <div class="hg" style="font-size:22px;">${title}</div><div class="hs">${esc(sub)}</div></div>
-      ${figure === undefined ? '' : `<div style="text-align:right;"><div style="font-family:var(--serif);font-size:40px;font-weight:300;line-height:1;color:${figureColour || 'var(--white)'};">${esc(figure)}</div><div style="font-family:var(--mono);font-size:9px;color:var(--slate);opacity:.4;letter-spacing:.1em;text-transform:uppercase;margin-top:3px;">${esc(figureLabel)}</div></div>`}
+      ${figure === undefined ? '' : `<div style="text-align:right;"><div style="font-family:var(--serif);font-size:40px;font-weight:300;line-height:1;color:${figureColour || 'var(--white)'};">${esc(figure)}</div><div class="vlf-figure-label">${esc(figureLabel)}</div></div>`}
     </div></div>`;
   }
 
@@ -1489,9 +1491,9 @@
 
   function attentionRow(icon, bg, border, title, meta, onclick, cta) {
     return `<div style="display:flex;align-items:flex-start;gap:9px;padding:10px 12px;background:${bg};border-radius:var(--r-sm);border-left:3px solid ${border};cursor:pointer;" onclick="${onclick}">
-      <span style="font-size:16px;flex-shrink:0;">${icon}</span>
+      <span style="flex-shrink:0;display:flex;color:${border};padding-top:1px;">${ic(icon, 18)}</span>
       <div style="flex:1;"><div style="font-size:12px;font-weight:500;color:var(--ink);">${esc(title)}</div><div style="font-size:11px;color:var(--slate);">${esc(meta)}</div></div>
-      <span style="font-family:var(--mono);font-size:9px;color:${border};">${esc(cta)} →</span></div>`;
+      <span style="font-family:var(--mono);font-size:9px;color:${border};">${esc(cta)}</span></div>`;
   }
 
   function reviewsFor(user) {
@@ -1524,15 +1526,15 @@
     if (!body) return;
     if (!matters().length) {
       body.innerHTML = `<div class="mb-greeting" style="padding:6px 0 0;">${greeting()}, ${esc(firstName(d.user))}.</div>` +
-        emptyBlock('⚖️', 'No matters yet', 'The firm has no matters on record. Open a new matter through intake to get started — deadlines, hearings, tasks and notifications will appear here.',
+        emptyBlock('briefcase', 'No matters yet', 'The firm has no matters on record. Open a new matter through intake to get started — deadlines, hearings, tasks and notifications will appear here.',
           `<button class="btn btn-v btn-sm" onclick="openIntake()">+ Open new matter</button><button class="btn btn-ghost btn-sm" onclick="VLFOPS.openClientForm()">+ Add client</button>`);
       return;
     }
 
     const attention = [
-      ...critical.map(x => attentionRow('⛔', 'var(--ember-p)', 'var(--ember)', x.title, `${x.matter} · due ${x.dueLabel}${x.dueTime ? ' ' + x.dueTime : ''}`, `showPg('adv-deadlines')`, 'Deadline')),
-      ...d.reviews.map(([key, doc]) => attentionRow('📝', 'rgba(37,99,168,.06)', 'var(--sky)', `Review: ${doc.title}`, `${doc.matterId} · submitted by ${doc.author || '—'}`, `VLFOPS.goTo({matter:${arg(doc.matterId)},doc:${arg(key)}})`, 'Review')),
-      ...d.blockedForMe.map(tk => attentionRow('⚠', 'rgba(139,115,53,.07)', 'var(--gold-d)', `Blocked: ${tk.title}`, `${tk.assignedTo} · ${tk.blockedBy || ''}`, `openTaskWorkspace(${arg(tk.id)})`, 'Unblock'))
+      ...critical.map(x => attentionRow('stop', 'var(--ember-p)', 'var(--ember)', x.title, `${x.matter} · due ${x.dueLabel}${x.dueTime ? ' ' + x.dueTime : ''}`, `showPg('adv-deadlines')`, 'Deadline')),
+      ...d.reviews.map(([key, doc]) => attentionRow('pen', 'rgba(37,99,168,.06)', 'var(--sky)', `Review: ${doc.title}`, `${doc.matterId} · submitted by ${doc.author || '—'}`, `VLFOPS.goTo({matter:${arg(doc.matterId)},doc:${arg(key)}})`, 'Review')),
+      ...d.blockedForMe.map(tk => attentionRow('alert', 'rgba(139,115,53,.07)', 'var(--gold-d)', `Blocked: ${tk.title}`, `${tk.assignedTo} · ${tk.blockedBy || ''}`, `openTaskWorkspace(${arg(tk.id)})`, 'Unblock'))
     ];
 
     body.innerHTML = `
@@ -1588,9 +1590,9 @@
     if (!body) return;
 
     const alerts = [
-      ...critical.map(d => attentionRow('⛔', 'var(--white)', 'var(--ember)', d.title, `${d.matter} · ${d.owner || 'Unassigned'} · due ${d.dueLabel}`, `showPg('adm-deadlines')`, 'Critical')),
-      ...(inv.outstanding.length ? [attentionRow('💰', 'var(--white)', 'var(--ember)', `${inv.outstanding.length} invoice${inv.outstanding.length === 1 ? '' : 's'} outstanding — ${money(inv.outstandingSum)}`, 'Awaiting client payment', `showPg('adm-billing')`, 'Billing')] : []),
-      ...(unassigned.length ? [attentionRow('⚠', 'var(--white)', 'var(--gold-d)', `${unassigned.length} matter${unassigned.length === 1 ? '' : 's'} without an advocate`, unassigned.map(m => m.ref).join(' · '), `showPg('adm-matters')`, 'Assign')] : [])
+      ...critical.map(d => attentionRow('stop', 'var(--white)', 'var(--ember)', d.title, `${d.matter} · ${d.owner || 'Unassigned'} · due ${d.dueLabel}`, `showPg('adm-deadlines')`, 'Critical')),
+      ...(inv.outstanding.length ? [attentionRow('wallet', 'var(--white)', 'var(--ember)', `${inv.outstanding.length} invoice${inv.outstanding.length === 1 ? '' : 's'} outstanding — ${money(inv.outstandingSum)}`, 'Awaiting client payment', `showPg('adm-billing')`, 'Billing')] : []),
+      ...(unassigned.length ? [attentionRow('alert', 'var(--white)', 'var(--gold-d)', `${unassigned.length} matter${unassigned.length === 1 ? '' : 's'} without an advocate`, unassigned.map(m => m.ref).join(' · '), `showPg('adm-matters')`, 'Assign')] : [])
     ];
 
     body.innerHTML = `
@@ -1681,7 +1683,7 @@
 
   function renderClientPortal() {
     const { client, list, refs } = clientContext();
-    const noMatters = emptyBlock('⚖️', 'No active matters', 'When the firm opens a matter for you, its progress, documents and invoices will appear here.');
+    const noMatters = emptyBlock('briefcase', 'No active matters', 'When the firm opens a matter for you, its progress, documents and invoices will appear here.');
     const setBody = (id, html) => { const b = document.querySelector('#' + id + ' > .pgbody'); if (b) b.innerHTML = html + '<div style="height:20px;"></div>'; };
 
     const home = document.getElementById('pg-cli-home');
@@ -1697,12 +1699,12 @@
           <div class="cm-row"><div><div class="cm-label">Your legal team</div><div class="cm-val">${esc(m.advocate || 'Being assigned')}${m.supervisor ? ' · ' + esc(m.supervisor) + ' (partner)' : ''}</div></div></div>
           <div class="cm-row"><div><div class="cm-label">Next court event</div><div class="cm-val">${next ? esc(next.title + ' — ' + next.dateLabel + (next.time ? ' · ' + next.time : '')) : 'None scheduled'}</div></div></div>
         </div></div>`;
-    }).join('') + (owed.length ? `<div class="card" style="border-left:3px solid var(--ember);"><div class="section-label" style="color:var(--ember);">Outstanding balance</div><div style="font-family:var(--serif);font-size:26px;font-weight:300;color:var(--ember);">${money(owed.reduce((s, i) => s + i.total - i.paid, 0))}</div><button class="btn btn-ember btn-sm" style="margin-top:8px;" onclick="showPg('cli-billing')">View invoices →</button></div>` : ''));
+    }).join('') + (owed.length ? `<div class="card" style="border-left:3px solid var(--ember);"><div class="section-label" style="color:var(--ember);">Outstanding balance</div><div style="font-family:var(--serif);font-size:26px;font-weight:300;color:var(--ember);">${money(owed.reduce((s, i) => s + i.total - i.paid, 0))}</div><button class="btn btn-ember btn-sm" style="margin-top:8px;" onclick="showPg('cli-billing')">View invoices</button></div>` : ''));
 
     setBody('pg-cli-matter', !list.length ? noMatters : list.map(m => `<div class="card"><div class="cm-label">${esc(m.ref)}</div><div style="font-size:14px;font-weight:500;color:var(--ink);margin:4px 0;">${esc(m.title)}</div><div style="font-size:11px;color:var(--slate);">${esc([m.court, m.stage, m.advocate].filter(Boolean).join(' · '))}</div>${m.description ? `<div style="font-size:12px;color:var(--ink);margin-top:6px;">${esc(m.description)}</div>` : ''}</div>`).join(''));
 
     const docs = Object.values(DOCUMENTS).filter(d => d && refs.has(d.matterId) && d.visibility === 'CLIENT_APPROVED');
-    setBody('pg-cli-docs', !list.length ? noMatters : docs.length ? docs.map(d => `<div class="card" style="display:flex;align-items:center;gap:10px;"><div style="font-size:18px;">📄</div><div style="flex:1;"><div style="font-size:12px;font-weight:500;color:var(--ink);">${esc(d.title)}</div><div style="font-family:var(--mono);font-size:9px;color:var(--slate);margin-top:2px;">${esc(d.matterId)} · ${esc(docStatusLabel(d.currentStatus))}</div></div>${d.file ? `<a class="btn btn-ghost btn-sm" href="${esc(d.file.url)}">Download</a>` : ''}</div>`).join('') : emptyBlock('📄', 'No documents shared yet', 'Documents your legal team approves for you will appear here.'));
+    setBody('pg-cli-docs', !list.length ? noMatters : docs.length ? docs.map(d => `<div class="card" style="display:flex;align-items:center;gap:10px;"><div style="display:flex;color:var(--slate);">${ic('file', 18)}</div><div style="flex:1;"><div style="font-size:12px;font-weight:500;color:var(--ink);">${esc(d.title)}</div><div style="font-family:var(--mono);font-size:9px;color:var(--slate);margin-top:2px;">${esc(d.matterId)} · ${esc(docStatusLabel(d.currentStatus))}</div></div>${d.file ? `<a class="btn btn-ghost btn-sm" href="${esc(d.file.url)}">Download</a>` : ''}</div>`).join('') : emptyBlock('file', 'No documents shared yet', 'Documents your legal team approves for you will appear here.'));
 
     // One conversation with the legal team per matter ("client-{ref}").
     setBody('pg-cli-messages', !list.length ? noMatters : list.map(m => {
@@ -1719,7 +1721,7 @@
       </div>`;
     }).join(''));
 
-    setBody('pg-cli-billing', !list.length ? noMatters : invoices.length ? `<div class="card">${invoices.map(i => `<div class="recv-row"><div><div class="recv-matter">${esc(i.id)} · ${esc(i.matter)}</div><div class="recv-client">Issued ${esc(i.issueDate || '—')} · Due ${esc(i.dueDate || '—')}</div></div><div style="text-align:right;"><div class="recv-amt" style="color:${i.status === 'PAID' ? 'var(--vd)' : 'var(--ember)'};">${money(i.status === 'PAID' ? i.total : i.total - i.paid)}</div><div class="recv-age">${esc(i.status === 'PAID' ? 'Paid' : 'Outstanding')}</div></div></div>`).join('')}</div>` : emptyBlock('💰', 'No invoices', 'Invoices from the firm will appear here.'));
+    setBody('pg-cli-billing', !list.length ? noMatters : invoices.length ? `<div class="card">${invoices.map(i => `<div class="recv-row"><div><div class="recv-matter">${esc(i.id)} · ${esc(i.matter)}</div><div class="recv-client">Issued ${esc(i.issueDate || '—')} · Due ${esc(i.dueDate || '—')}</div></div><div style="text-align:right;"><div class="recv-amt" style="color:${i.status === 'PAID' ? 'var(--vd)' : 'var(--ember)'};">${money(i.status === 'PAID' ? i.total : i.total - i.paid)}</div><div class="recv-age">${esc(i.status === 'PAID' ? 'Paid' : 'Outstanding')}</div></div></div>`).join('')}</div>` : emptyBlock('wallet', 'No invoices', 'Invoices from the firm will appear here.'));
 
     const link = document.getElementById('sbi-cli-matter');
     if (link) {
@@ -1761,16 +1763,16 @@
   function commChannels() {
     const list = [];
     matters().sort((a, b) => b.ref.localeCompare(a.ref)).forEach(m => {
-      list.push({ group: 'Matter discussions', id: 'matter-' + m.ref, name: '⚖️ ' + m.ref, sub: m.title, title: m.ref + ' — internal', desc: 'Matter discussion · ' + m.title + ' · Firm only', context: 'Matter · Internal · Firm only' });
+      list.push({ group: 'Matter discussions', id: 'matter-' + m.ref, name: m.ref, sub: m.title, title: m.ref + ' — internal', desc: 'Matter discussion · ' + m.title + ' · Firm only', context: 'Matter · Internal · Firm only' });
     });
     matters().filter(m => m.client).sort((a, b) => b.ref.localeCompare(a.ref)).forEach(m => {
-      list.push({ group: 'Client conversations', id: 'client-' + m.ref, name: '👤 ' + m.client, sub: m.ref, title: m.client + ' — ' + m.ref, desc: 'Visible to the client · logged', context: 'Client channel · Visible to client' });
+      list.push({ group: 'Client conversations', id: 'client-' + m.ref, name: m.client, sub: m.ref, title: m.client + ' — ' + m.ref, desc: 'Visible to the client · logged', context: 'Client channel · Visible to client' });
     });
     const mine = myStaff();
     if (mine) {
       S.staff.filter(s => s.id !== mine.id && s.userId && s.active).forEach(s => {
         const ids = [mine.id, s.id].sort((a, b) => a - b).join('-');
-        list.push({ group: 'Direct messages', id: 'dm-' + ids, name: '👤 ' + s.name, sub: s.role, title: s.name, desc: 'Direct message · ' + s.role, context: 'Direct message · Internal' });
+        list.push({ group: 'Direct messages', id: 'dm-' + ids, name: s.name, sub: s.role, title: s.name, desc: 'Direct message · ' + s.role, context: 'Direct message · Internal' });
       });
     }
     list.forEach(c => {
@@ -1824,7 +1826,7 @@
     if (old) old.remove();
     const body = page.querySelector(':scope > .pgbody');
     if (body && !Object.keys(TASKS).length) {
-      body.insertAdjacentHTML('beforeend', `<div id="vlf-queue-empty">${emptyBlock('📋', 'Your queue is clear', 'No tasks yet. Tasks appear here when work is assigned on a matter.', `<button class="btn btn-ghost btn-sm" onclick="showPg('adv-command')">Go to Command Centre</button>`)}</div>`);
+      body.insertAdjacentHTML('beforeend', `<div id="vlf-queue-empty">${emptyBlock('list', 'Your queue is clear', 'No tasks yet. Tasks appear here when work is assigned on a matter.', `<button class="btn btn-ghost btn-sm" onclick="showPg('adv-command')">Go to Command Centre</button>`)}</div>`);
     }
   }
 
@@ -1908,6 +1910,30 @@
 
   const ROLE_CLASS = { partner: 'partner', associate: 'assoc', junior: 'junior', clerk: 'junior', admin: 'admin', client: 'client' };
   const allowedShells = () => (ME.shells && ME.shells.length ? ME.shells : ['adv']);
+
+  const SIDEBAR_ICONS = {
+    'adv-command': 'dashboard', 'adv-matters': 'briefcase', 'adv-matter-open': 'folder', 'adv-intake': 'plus', 'adv-diary': 'calendar',
+    'adv-deadlines': 'flag', 'adv-queue': 'list', 'adv-approvals': 'approve', 'adv-time': 'timer', 'adv-research': 'book',
+    'adv-templates': 'file', 'adv-comms': 'message', 'adv-clients': 'users',
+    'cli-home': 'briefcase', 'cli-matter': 'folder', 'cli-docs': 'file', 'cli-messages': 'message', 'cli-billing': 'wallet',
+    'adm-home': 'dashboard', 'adm-matters': 'briefcase', 'adm-deadlines': 'flag', 'adm-billing': 'wallet', 'adm-time': 'timer',
+    'adm-people': 'users', 'adm-settings': 'settings'
+  };
+
+  function applyIcons() {
+    Object.entries(SIDEBAR_ICONS).forEach(([id, name]) => {
+      const slot = document.querySelector('#sbi-' + id + ' .sb-ic');
+      if (slot) slot.innerHTML = ic(name, 17);
+    });
+    const search = document.querySelector('.global-search-btn span:first-child');
+    if (search) search.innerHTML = ic('search', 15);
+    ['file', 'list', 'message', 'timer', 'briefcase'].forEach((name, i) => {
+      const slot = document.querySelectorAll('.fab-item-icon')[i];
+      if (slot) slot.innerHTML = ic(name, 17);
+    });
+    const fab = document.getElementById('fab-main-btn');
+    if (fab && !fab.querySelector('svg')) fab.innerHTML = ic('plus', 22);
+  }
 
   function showAccount() {
     const av = document.getElementById('persona-av');
@@ -2015,13 +2041,13 @@
     const overlay = document.getElementById('vlf-sb-overlay');
     if (overlay) overlay.classList.toggle('vlf-open', !!open);
     const btn = document.getElementById('vlf-menu-btn');
-    if (btn) { btn.setAttribute('aria-expanded', open ? 'true' : 'false'); btn.textContent = open ? '✕' : '☰'; }
+    if (btn) { btn.setAttribute('aria-expanded', open ? 'true' : 'false'); btn.innerHTML = ic(open ? 'close' : 'menu', 20); }
   }
 
   function initResponsive() {
     const left = document.querySelector('.tb-l');
     if (left && !document.getElementById('vlf-menu-btn')) {
-      left.insertAdjacentHTML('afterbegin', '<button type="button" class="vlf-menu-btn" id="vlf-menu-btn" aria-label="Menu" aria-expanded="false">☰</button>');
+      left.insertAdjacentHTML('afterbegin', '<button type="button" class="vlf-menu-btn" id="vlf-menu-btn" aria-label="Menu" aria-expanded="false">' + ic('menu', 20) + '</button>');
       document.getElementById('vlf-menu-btn').addEventListener('click', () => setMenu(!(currentSidebar() || {}).classList?.contains('vlf-open')));
     }
     if (!document.getElementById('vlf-sb-overlay')) {
@@ -2053,6 +2079,7 @@
     return result;
   });
 
+  applyIcons();
   initIntake();
   initResponsive();
   initAccount();

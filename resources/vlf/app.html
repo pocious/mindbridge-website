@@ -1329,6 +1329,7 @@ input,select,textarea{font-family:var(--sans);}
 
 </style>
 <link rel="stylesheet" href="css/vlf-theme.css">
+<script src="js/vlf-icons.js"></script>
 </head>
 <body>
 <!-- TOAST -->
@@ -1452,7 +1453,7 @@ input,select,textarea{font-family:var(--sans);}
     </div>
     <div class="tb-r">
       <button class="global-search-btn" onclick="openSearch()" title="Search (/)">
-        <span style="font-size:11px;">🔍</span>
+        <span style="font-size:11px;"></span>
         <span>Search</span>
         <span class="gs-kbd">/</span>
       </button>
@@ -1464,7 +1465,7 @@ input,select,textarea{font-family:var(--sans);}
         </div>
         <div style="font-size:9px;color:var(--slate);opacity:.4;margin-left:4px;">↕</div>
       </div>
-      <button class="tb-bell" onclick="openApproval()">🔔<span class="tb-bell-dot">2</span></button>
+      <button class="tb-bell" onclick="openApproval()"><span class="tb-bell-dot">2</span></button>
     </div>
   </div>
 <!-- CONTEXT BAR — who am I, where am I, breadcrumb -->
@@ -1479,15 +1480,15 @@ input,select,textarea{font-family:var(--sans);}
 
 <!-- SESSION BANNER -->
 <div class="session-banner" id="session-banner">
-  <span class="session-banner-text">&#9888; Your session has expired. Any unsaved work has been preserved.</span>
-  <span class="session-banner-action" onclick="dismissSessionBanner()">Sign in again &#8594;</span>
+  <span class="session-banner-text">Your session has expired. Any unsaved work has been preserved.</span>
+  <span class="session-banner-action" onclick="dismissSessionBanner()">Sign in again</span>
 </div>
 
 <!-- SEARCH OVERLAY -->
 <div class="search-overlay" id="search-overlay" onclick="closeSearch(event)">
   <div class="search-box">
     <div class="search-input-wrap">
-      <span style="font-size:16px;color:var(--slate);">&#128269;</span>
+      <span style="font-size:16px;color:var(--slate);"><svg class="vlf-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
       <input id="search-input" placeholder="Search matters, clients, documents, deadlines&#8230;" oninput="runSearch(this.value)" onkeydown="if(event.key===&apos;Escape&apos;)closeSearch()">
       <span style="font-family:var(--mono);font-size:9px;color:var(--slate);opacity:.4;cursor:pointer;" onclick="closeSearch()">ESC</span>
     </div>
@@ -1516,39 +1517,39 @@ input,select,textarea{font-family:var(--sans);}
     <div class="sb" id="adv-sb">
       <div class="sb-g">
         <div class="sb-gl">Command Centre</div>
-        <button class="sb-i on" id="sbi-adv-command" onclick="showPg('adv-command')"><span class="sb-ic">⚡</span><span class="sb-l">Command Centre</span><span class="sb-b a">3</span></button>
+        <button class="sb-i on" id="sbi-adv-command" onclick="showPg('adv-command')"><span class="sb-ic"></span><span class="sb-l">Command Centre</span><span class="sb-b a">3</span></button>
       </div>
       <div class="sb-div"></div>
       <div class="sb-g">
         <div class="sb-gl">Matters</div>
-        <button class="sb-i" id="sbi-adv-matters" onclick="showPg('adv-matters')"><span class="sb-ic">⚖️</span><span class="sb-l">My Matters</span><span class="sb-b g">6</span></button>
-        <button class="sb-i" id="sbi-adv-matter-open" onclick="showMatter('KSC-2026-0891')"><span class="sb-ic">📂</span><span class="sb-l">Equity Bank v Ssekandi</span><span class="sb-b a">!</span></button>
-        <button class="sb-i" id="sbi-adv-intake" onclick="openIntake()"><span class="sb-ic">➕</span><span class="sb-l">New Matter / Intake</span></button>
+        <button class="sb-i" id="sbi-adv-matters" onclick="showPg('adv-matters')"><span class="sb-ic"></span><span class="sb-l">My Matters</span><span class="sb-b g">6</span></button>
+        <button class="sb-i" id="sbi-adv-matter-open" onclick="showMatter('KSC-2026-0891')"><span class="sb-ic"></span><span class="sb-l">Equity Bank v Ssekandi</span><span class="sb-b a">!</span></button>
+        <button class="sb-i" id="sbi-adv-intake" onclick="openIntake()"><span class="sb-ic"></span><span class="sb-l">New Matter / Intake</span></button>
       </div>
       <div class="sb-div"></div>
       <div class="sb-g">
         <div class="sb-gl">Court & Procedure</div>
-        <button class="sb-i" id="sbi-adv-diary" onclick="showPg('adv-diary')"><span class="sb-ic">📅</span><span class="sb-l">Court Diary</span><span class="sb-b a">3</span></button>
-        <button class="sb-i" id="sbi-adv-deadlines" onclick="showPg('adv-deadlines')"><span class="sb-ic">⏰</span><span class="sb-l">Deadlines</span><span class="sb-b a">2</span></button>
+        <button class="sb-i" id="sbi-adv-diary" onclick="showPg('adv-diary')"><span class="sb-ic"></span><span class="sb-l">Court Diary</span><span class="sb-b a">3</span></button>
+        <button class="sb-i" id="sbi-adv-deadlines" onclick="showPg('adv-deadlines')"><span class="sb-ic"></span><span class="sb-l">Deadlines</span><span class="sb-b a">2</span></button>
       </div>
       <div class="sb-div"></div>
       <div class="sb-g">
         <div class="sb-gl">Work</div>
-        <button class="sb-i" id="sbi-adv-queue" onclick="showPg('adv-queue')"><span class="sb-ic">📋</span><span class="sb-l">My Queue</span><span class="sb-b a">4</span></button>
-        <button class="sb-i" id="sbi-adv-approvals" onclick="openApproval()"><span class="sb-ic">✅</span><span class="sb-l">Approvals</span><span class="sb-b a">1</span></button>
-        <button class="sb-i" id="sbi-adv-time" onclick="showPg('adv-time')"><span class="sb-ic">⏱</span><span class="sb-l">Time Recording</span></button>
+        <button class="sb-i" id="sbi-adv-queue" onclick="showPg('adv-queue')"><span class="sb-ic"></span><span class="sb-l">My Queue</span><span class="sb-b a">4</span></button>
+        <button class="sb-i" id="sbi-adv-approvals" onclick="openApproval()"><span class="sb-ic"></span><span class="sb-l">Approvals</span><span class="sb-b a">1</span></button>
+        <button class="sb-i" id="sbi-adv-time" onclick="showPg('adv-time')"><span class="sb-ic"></span><span class="sb-l">Time Recording</span></button>
       </div>
       <div class="sb-div"></div>
       <div class="sb-g">
         <div class="sb-gl">Knowledge</div>
-        <button class="sb-i" id="sbi-adv-research" onclick="showPg('adv-research')"><span class="sb-ic">📚</span><span class="sb-l">Legal Research</span></button>
-        <button class="sb-i" id="sbi-adv-templates" onclick="showPg('adv-templates')"><span class="sb-ic">📄</span><span class="sb-l">Templates & Precedents</span></button>
+        <button class="sb-i" id="sbi-adv-research" onclick="showPg('adv-research')"><span class="sb-ic"></span><span class="sb-l">Legal Research</span></button>
+        <button class="sb-i" id="sbi-adv-templates" onclick="showPg('adv-templates')"><span class="sb-ic"></span><span class="sb-l">Templates & Precedents</span></button>
       </div>
       <div class="sb-div"></div>
       <div class="sb-g">
         <div class="sb-gl">Communication</div>
-        <button class="sb-i comm-item" id="sbi-adv-comms" onclick="showPg('adv-comms')"><span class="sb-ic">💬</span><span class="sb-l">Messages</span><span class="sb-b a">3</span></button>
-        <button class="sb-i" id="sbi-adv-clients" onclick="showPg('adv-clients')"><span class="sb-ic">👤</span><span class="sb-l">Clients</span></button>
+        <button class="sb-i comm-item" id="sbi-adv-comms" onclick="showPg('adv-comms')"><span class="sb-ic"></span><span class="sb-l">Messages</span><span class="sb-b a">3</span></button>
+        <button class="sb-i" id="sbi-adv-clients" onclick="showPg('adv-clients')"><span class="sb-ic"></span><span class="sb-l">Clients</span></button>
       </div>
       <div class="sb-foot">
         <div class="sb-fv"><div class="iris-dot"></div>IRIS Active</div>
@@ -1579,21 +1580,21 @@ input,select,textarea{font-family:var(--sans);}
 
   <!-- Critical alert -->
   <div style="display:flex;align-items:flex-start;gap:12px;background:rgba(184,92,42,.12);border:1.5px solid rgba(184,92,42,.35);border-radius:var(--r);padding:14px 16px;cursor:pointer;" onclick="showMatter('KSC-2026-0891')">
-    <div style="font-size:20px;margin-top:1px;">⚠️</div>
+    <div style="font-size:20px;margin-top:1px;"></div>
     <div style="flex:1;">
       <div style="font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ember);margin-bottom:4px;">Critical — Deadline Today 5:00 PM</div>
       <div style="font-family:var(--serif);font-size:16px;font-weight:600;color:var(--white);margin-bottom:4px;">Witness Statement — Equity Bank v Ssekandi</div>
       <div style="font-size:11px;color:rgba(242,237,228,.7);line-height:1.55;">KSC-2026-0891 · High Court Commercial Division · Scheduling Conference 18 Aug 9:30 AM. The witness statement is with Margaret for partner approval. Once approved, filing must be completed before 5:00 PM today.</div>
     </div>
     <div style="display:flex;gap:6px;flex-direction:column;flex-shrink:0;">
-            <button class="btn btn-ember btn-sm" onclick="event.stopPropagation();openApproval()">Get approval →</button>
-            <button class="btn btn-sm" style="background:rgba(184,92,42,.2);color:var(--white);font-size:10px;" onclick="event.stopPropagation();showMatter('KSC-2026-0891');setTimeout(()=>openM('m-why-matter'),300)">Why critical? →</button>
+            <button class="btn btn-ember btn-sm" onclick="event.stopPropagation();openApproval()">Get approval</button>
+            <button class="btn btn-sm" style="background:rgba(184,92,42,.2);color:var(--white);font-size:10px;" onclick="event.stopPropagation();showMatter('KSC-2026-0891');setTimeout(()=>openM('m-why-matter'),300)">Why critical?</button>
           </div>
   </div>
 
   <!-- Today's hearings -->
   <div>
-    <div class="sh"><div class="st"><div class="r-rule"><div class="a"></div><div class="b"></div><div class="c"></div></div><div class="stitle">Today in court</div></div><button class="smore" onclick="showPg('adv-diary')">Full diary →</button></div>
+    <div class="sh"><div class="st"><div class="r-rule"><div class="a"></div><div class="b"></div><div class="c"></div></div><div class="stitle">Today in court</div></div><button class="smore" onclick="showPg('adv-diary')">Full diary</button></div>
     <div style="display:flex;flex-direction:column;gap:7px;">
       <div class="diary-event critical" onclick="openDiaryEvent('mubiru')">
         <div class="de-time">09:30</div>
@@ -1620,7 +1621,7 @@ input,select,textarea{font-family:var(--sans);}
 
   <!-- My queue today -->
   <div>
-    <div class="sh"><div class="st"><div class="r-rule"><div class="a"></div><div class="b"></div><div class="c"></div></div><div class="stitle">My queue — urgent</div></div><button class="smore" onclick="showPg('adv-queue')">Full queue →</button></div>
+    <div class="sh"><div class="st"><div class="r-rule"><div class="a"></div><div class="b"></div><div class="c"></div></div><div class="stitle">My queue — urgent</div></div><button class="smore" onclick="showPg('adv-queue')">Full queue</button></div>
     <div>
       <div class="task-item urgent" onclick="openApproval()">
         <div class="task-cb"></div>
@@ -1677,7 +1678,7 @@ input,select,textarea{font-family:var(--sans);}
 
   <!-- Active matters quick view -->
   <div>
-    <div class="sh"><div class="st"><div class="r-rule"><div class="a"></div><div class="b"></div><div class="c"></div></div><div class="stitle">Active matters</div></div><button class="smore" onclick="showPg('adv-matters')">All matters →</button></div>
+    <div class="sh"><div class="st"><div class="r-rule"><div class="a"></div><div class="b"></div><div class="c"></div></div><div class="stitle">Active matters</div></div><button class="smore" onclick="showPg('adv-matters')">All matters</button></div>
     <div class="matter-list">
       <div class="matter-row urgent" onclick="showMatter('KSC-2026-0891')">
         <div style="flex:1;">
@@ -1687,7 +1688,7 @@ input,select,textarea{font-family:var(--sans);}
         </div>
         <div class="mr-right">
           <div class="mr-stage">Case Management</div>
-          <div class="mr-next">⚡ Filing deadline today</div>
+          <div class="mr-next"> Filing deadline today</div>
         </div>
       </div>
       <div class="matter-row warn" onclick="t('Opening matter','KSC-2026-0823 — Mubiru Estate','g')">
@@ -1722,10 +1723,10 @@ input,select,textarea{font-family:var(--sans);}
 <!-- Matters list with empty state fallback -->
 <div id="matters-empty-state" style="display:none;">
   <div class="empty-state">
-    <div class="empty-state-icon">⚖️</div>
+    <div class="empty-state-icon"></div>
     <div class="empty-state-title">No matters yet</div>
     <div class="empty-state-desc">When you open a matter or are assigned to one, it will appear here. You can also create a new matter from intake.</div>
-    <button class="btn btn-v" onclick="openM('m-intake')">Open new matter →</button>
+    <button class="btn btn-v" onclick="openM('m-intake')">Open new matter</button>
   </div>
 </div>
 
@@ -1736,7 +1737,7 @@ input,select,textarea{font-family:var(--sans);}
 <div class="pgbody">
   <div class="matter-list">
     <div class="matter-row urgent" onclick="showMatter('KSC-2026-0891')">
-      <div style="flex:1;"><div class="mr-id">KSC-2026-0891</div><div class="mr-title">Equity Bank Uganda Ltd v. Ssekandi Enterprises Ltd</div><div class="mr-meta"><span class="pill urgent">⚡ Critical — Today</span><span class="mr-court">High Court · Commercial Division</span><span class="pill ink">Recovery</span></div></div>
+      <div style="flex:1;"><div class="mr-id">KSC-2026-0891</div><div class="mr-title">Equity Bank Uganda Ltd v. Ssekandi Enterprises Ltd</div><div class="mr-meta"><span class="pill urgent"> Critical — Today</span><span class="mr-court">High Court · Commercial Division</span><span class="pill ink">Recovery</span></div></div>
       <div class="mr-right"><div class="mr-stage">Case Management</div><div class="mr-next">Witness stmt due 5PM</div></div>
     </div>
     <div class="matter-row warn" onclick="t('Opening','KSC-2026-0823 — Mubiru Estate','g')">
@@ -1785,7 +1786,7 @@ input,select,textarea{font-family:var(--sans);}
       </div>
       <div class="mh-alert">
         <div class="cd urg pulse"></div>
-        <div class="mh-alert-text">⚡ Witness statement due TODAY at 5:00 PM · Partner approval pending · Scheduling Conference tomorrow 18 Aug 9:30 AM</div>
+        <div class="mh-alert-text"> Witness statement due TODAY at 5:00 PM · Partner approval pending · Scheduling Conference tomorrow 18 Aug 9:30 AM</div>
       </div>
       <div class="matter-risk-score" onclick="openM('m-why-matter')" id="matter-risk-bar">
         <div>
@@ -1862,8 +1863,8 @@ input,select,textarea{font-family:var(--sans);}
             </div>
           </div>
           <div style="display:flex;gap:7px;flex-wrap:wrap;">
-            <button class="btn btn-v btn-sm" onclick="closeM('m-why-matter');openApproval()">Get Margaret's approval →</button>
-            <button class="btn btn-ghost btn-sm" onclick="closeM('m-why-matter');mwTab('risk',document.querySelector('.mh-tab:nth-child(9)'))">Full risk tab →</button>
+            <button class="btn btn-v btn-sm" onclick="closeM('m-why-matter');openApproval()">Get Margaret's approval</button>
+            <button class="btn btn-ghost btn-sm" onclick="closeM('m-why-matter');mwTab('risk',document.querySelector('.mh-tab:nth-child(9)'))">Full risk tab</button>
           </div>
         </div>
       </div>
@@ -1880,7 +1881,7 @@ input,select,textarea{font-family:var(--sans);}
           <span class="nap-sep">→</span>
           <span class="nap-state-item done">✓ Reviewed — Peter</span>
           <span class="nap-sep">→</span>
-          <span class="nap-state-item current">⚡ Partner approval — Margaret</span>
+          <span class="nap-state-item current"> Partner approval — Margaret</span>
           <span class="nap-sep">→</span>
           <span class="nap-state-item next">IRIS seal</span>
           <span class="nap-sep">→</span>
@@ -1888,18 +1889,18 @@ input,select,textarea{font-family:var(--sans);}
         </div>
         <div class="nap-why">This is a Class A action — filing work product with the court requires partner counter-signature. The state machine shows the approval chain at step 3 of 5. Margaret's approval unblocks filing. Without it, the deadline passes regardless of how complete the draft is.</div>
         <div style="display:flex;gap:7px;">
-          <button class="btn btn-v btn-sm" onclick="openApproval()">Get approval now →</button>
-          <button class="btn btn-ghost btn-sm" onclick="openM('m-why-matter')">Why is this critical? →</button>
+          <button class="btn btn-v btn-sm" onclick="openApproval()">Get approval now</button>
+          <button class="btn btn-ghost btn-sm" onclick="openM('m-why-matter')">Why is this critical?</button>
         </div>
       </div>
       <!-- QUICK ACTIONS — what can I do right now in this matter? -->
       <div class="quick-actions" id="matter-quick-actions">
-        <button class="qa-chip" onclick="NAV.setMatterTab('documents');setTimeout(()=>openNewDocument(),150)"><span class="qa-chip-icon">📄</span>New document</button>
-        <button class="qa-chip" onclick="openCreateTask('KSC-2026-0891','')"><span class="qa-chip-icon">📋</span>New task</button>
-        <button class="qa-chip" onclick="NAV.setMatterTab('comms')"><span class="qa-chip-icon">💬</span>Internal note</button>
-        <button class="qa-chip" onclick="openClientMessage()"><span class="qa-chip-icon">📧</span>Message client</button>
-        <button class="qa-chip" onclick="openTimeLogger('')"><span class="qa-chip-icon">⏱</span>Log time</button>
-        <button class="qa-chip" onclick="openMatterEdit('KSC-2026-0891')"><span class="qa-chip-icon">✏</span>Edit matter</button>
+        <button class="qa-chip" onclick="NAV.setMatterTab('documents');setTimeout(()=>openNewDocument(),150)"><span class="qa-chip-icon"></span>New document</button>
+        <button class="qa-chip" onclick="openCreateTask('KSC-2026-0891','')"><span class="qa-chip-icon"></span>New task</button>
+        <button class="qa-chip" onclick="NAV.setMatterTab('comms')"><span class="qa-chip-icon"></span>Internal note</button>
+        <button class="qa-chip" onclick="openClientMessage()"><span class="qa-chip-icon"></span>Message client</button>
+        <button class="qa-chip" onclick="openTimeLogger('')"><span class="qa-chip-icon"></span>Log time</button>
+        <button class="qa-chip" onclick="openMatterEdit('KSC-2026-0891')"><span class="qa-chip-icon"></span>Edit matter</button>
       </div>
 
       <div class="ov-grid">
@@ -1937,11 +1938,11 @@ input,select,textarea{font-family:var(--sans);}
           </div>
           <div style="display:flex;gap:12px;padding-bottom:14px;position:relative;">
             <div style="position:absolute;left:14px;top:28px;bottom:0;width:1px;background:rgba(28,43,43,.08);"></div>
-            <div style="width:28px;height:28px;border-radius:50%;background:var(--white);border:2px solid var(--ember);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;z-index:1;animation:urgPulse 2.5s ease-in-out infinite;">⚡</div>
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--white);border:2px solid var(--ember);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;z-index:1;animation:urgPulse 2.5s ease-in-out infinite;"></div>
             <div><div style="font-size:12px;font-weight:500;color:var(--ember);">Witness Statement — filing today</div><div style="font-family:var(--mono);font-size:9px;color:var(--slate);opacity:.5;">17 Aug 2026 · 5:00 PM deadline · Partner approval in progress</div></div>
           </div>
           <div style="display:flex;gap:12px;">
-            <div style="width:28px;height:28px;border-radius:50%;background:var(--white);border:2px solid rgba(37,99,168,.3);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;z-index:1;color:var(--sky);">📅</div>
+            <div style="width:28px;height:28px;border-radius:50%;background:var(--white);border:2px solid rgba(37,99,168,.3);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;z-index:1;color:var(--sky);"></div>
             <div><div style="font-size:12px;font-weight:500;color:var(--slate);">Scheduling Conference</div><div style="font-family:var(--mono);font-size:9px;color:var(--slate);opacity:.5;">18 Aug 2026 · 9:30 AM · Commercial Division · Justice Tibatemwa</div></div>
           </div>
         </div>
@@ -1961,16 +1962,16 @@ input,select,textarea{font-family:var(--sans);}
       </div>
 
       <div class="ai-panel">
-        <div class="ai-panel-head"><div style="font-size:16px;">🤖</div><div><div class="ai-panel-title">Matter Intelligence</div><div class="ai-panel-sub">AI sees only what you are authorised to see · Advocate responsibility remains</div></div></div>
+        <div class="ai-panel-head"><div style="font-size:16px;"></div><div><div class="ai-panel-title">Matter Intelligence</div><div class="ai-panel-sub">AI sees only what you are authorised to see · Advocate responsibility remains</div></div></div>
         <div class="ai-suggestions">
-          <button class="ai-sug" onclick="aiMatterResp('prepare')"><div class="ai-sug-icon">📋</div><div><div class="ai-sug-lbl">What must be done before tomorrow's conference?</div><div class="ai-sug-sub">Checklist for Scheduling Conference 18 Aug</div></div></button>
-          <button class="ai-sug" onclick="aiMatterResp('inconsistency')"><div class="ai-sug-icon">🔍</div><div><div class="ai-sug-lbl">Identify inconsistencies between Defence and correspondence</div><div class="ai-sug-sub">Cross-reference filed documents</div></div></button>
-          <button class="ai-sug" onclick="aiMatterResp('authorities')"><div class="ai-sug-icon">📚</div><div><div class="ai-sug-lbl">Prepare authorities on debt recovery — UGX 847M loan default</div><div class="ai-sug-sub">Ugandan commercial case law</div></div></button>
+          <button class="ai-sug" onclick="aiMatterResp('prepare')"><div class="ai-sug-icon"></div><div><div class="ai-sug-lbl">What must be done before tomorrow's conference?</div><div class="ai-sug-sub">Checklist for Scheduling Conference 18 Aug</div></div></button>
+          <button class="ai-sug" onclick="aiMatterResp('inconsistency')"><div class="ai-sug-icon"></div><div><div class="ai-sug-lbl">Identify inconsistencies between Defence and correspondence</div><div class="ai-sug-sub">Cross-reference filed documents</div></div></button>
+          <button class="ai-sug" onclick="aiMatterResp('authorities')"><div class="ai-sug-icon"></div><div><div class="ai-sug-lbl">Prepare authorities on debt recovery — UGX 847M loan default</div><div class="ai-sug-sub">Ugandan commercial case law</div></div></button>
         </div>
         <div class="ai-response" id="ai-matter-resp"></div>
         <div class="ai-input-row">
           <input class="ai-input" placeholder="Ask about this matter…" onkeydown="if(event.key==='Enter')aiMatterResp('custom',this.value)">
-          <button class="btn btn-v btn-sm" onclick="aiMatterResp('custom',this.previousElementSibling.value)">Ask →</button>
+          <button class="btn btn-v btn-sm" onclick="aiMatterResp('custom',this.previousElementSibling.value)">Ask</button>
         </div>
       </div>
     </div>
@@ -1982,10 +1983,10 @@ input,select,textarea{font-family:var(--sans);}
         <div style="display:flex;flex-direction:column;gap:0;">
           <div class="proc-step"><div class="proc-line"></div><div class="proc-dot done">✓</div><div class="proc-info"><div class="proc-title">Instruction &amp; Conflict Check</div><div class="proc-status done">✓ Completed · 28 Oct 2025 · No conflict found</div></div></div>
           <div class="proc-step"><div class="proc-line"></div><div class="proc-dot done">✓</div><div class="proc-info"><div class="proc-title">Pleadings</div><div class="proc-status done">✓ Closed · Plaint · Defence · Reply all filed</div></div></div>
-          <div class="proc-step"><div class="proc-line"></div><div class="proc-dot current">⚡</div>
+          <div class="proc-step"><div class="proc-line"></div><div class="proc-dot current"></div>
             <div class="proc-info">
               <div class="proc-title">Case Management — Witness Statements</div>
-              <div class="proc-status current">⚡ Active · Witness statement due TODAY 5:00 PM</div>
+              <div class="proc-status current"> Active · Witness statement due TODAY 5:00 PM</div>
               <div class="proc-tasks">
                 <div class="proc-task done-t"><div class="proc-task-cb">✓</div><div class="proc-task-txt">Draft witness statement for Equity Bank representative</div><div class="proc-task-who">Tendo</div></div>
                 <div class="proc-task done-t"><div class="proc-task-cb">✓</div><div class="proc-task-txt">Peter's review and revision</div><div class="proc-task-who">Peter</div></div>
@@ -2009,32 +2010,32 @@ input,select,textarea{font-family:var(--sans);}
         <button class="btn btn-out btn-sm" onclick="t('Upload ready','Select file to upload and seal','g')">Upload & Seal</button>
       </div>
       <div class="doc-folder">
-        <div class="doc-folder-head" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':''"><span style="font-size:14px;">📁</span><div class="doc-folder-name">Pleadings</div><div class="doc-folder-count">4 documents</div><span style="color:var(--slate);opacity:.3;font-size:10px;">▼</span></div>
+        <div class="doc-folder-head" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':''"><span style="font-size:14px;"></span><div class="doc-folder-name">Pleadings</div><div class="doc-folder-count">4 documents</div><span style="color:var(--slate);opacity:.3;font-size:10px;">▼</span></div>
         <div class="doc-folder-body">
-          <div class="doc-item" onclick="openDoc('plaint')"><div class="doc-item-icon">📄</div><div style="flex:1;"><div class="doc-item-name">Plaint — Equity Bank Uganda Ltd</div><div class="doc-item-meta">GVL-KSC-2026-0891-001 · Filed 3 Nov 2025 · Peter Ssali</div></div><span class="doc-status filed">Filed</span></div>
-          <div class="doc-item" onclick="openDoc('defence')"><div class="doc-item-icon">📄</div><div style="flex:1;"><div class="doc-item-name">Written Statement of Defence — Ssekandi Enterprises</div><div class="doc-item-meta">Received 15 Dec 2025 · Opposing counsel</div></div><span class="doc-status filed">Filed</span></div>
-          <div class="doc-item" onclick="openDoc('reply')"><div class="doc-item-icon">📄</div><div style="flex:1;"><div class="doc-item-name">Reply to Defence</div><div class="doc-item-meta">GVL-KSC-2026-0891-003 · Filed 20 Jan 2026 · Peter Ssali</div></div><span class="doc-status filed">Filed</span></div>
-          <div class="doc-item" onclick="openDoc('scheduling')"><div class="doc-item-icon">📋</div><div style="flex:1;"><div class="doc-item-name">Scheduling Order — Justice Tibatemwa</div><div class="doc-item-meta">Issued 14 Feb 2026 · Witness statements due 17 Aug</div></div><span class="doc-status filed">Filed</span></div>
+          <div class="doc-item" onclick="openDoc('plaint')"><div class="doc-item-icon"></div><div style="flex:1;"><div class="doc-item-name">Plaint — Equity Bank Uganda Ltd</div><div class="doc-item-meta">GVL-KSC-2026-0891-001 · Filed 3 Nov 2025 · Peter Ssali</div></div><span class="doc-status filed">Filed</span></div>
+          <div class="doc-item" onclick="openDoc('defence')"><div class="doc-item-icon"></div><div style="flex:1;"><div class="doc-item-name">Written Statement of Defence — Ssekandi Enterprises</div><div class="doc-item-meta">Received 15 Dec 2025 · Opposing counsel</div></div><span class="doc-status filed">Filed</span></div>
+          <div class="doc-item" onclick="openDoc('reply')"><div class="doc-item-icon"></div><div style="flex:1;"><div class="doc-item-name">Reply to Defence</div><div class="doc-item-meta">GVL-KSC-2026-0891-003 · Filed 20 Jan 2026 · Peter Ssali</div></div><span class="doc-status filed">Filed</span></div>
+          <div class="doc-item" onclick="openDoc('scheduling')"><div class="doc-item-icon"></div><div style="flex:1;"><div class="doc-item-name">Scheduling Order — Justice Tibatemwa</div><div class="doc-item-meta">Issued 14 Feb 2026 · Witness statements due 17 Aug</div></div><span class="doc-status filed">Filed</span></div>
         </div>
       </div>
       <div class="doc-folder">
-        <div class="doc-folder-head" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':''"><span style="font-size:14px;">📁</span><div class="doc-folder-name">Witness Statements</div><div class="doc-folder-count">1 document · Awaiting approval</div><span style="color:var(--slate);opacity:.3;font-size:10px;">▼</span></div>
+        <div class="doc-folder-head" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':''"><span style="font-size:14px;"></span><div class="doc-folder-name">Witness Statements</div><div class="doc-folder-count">1 document · Awaiting approval</div><span style="color:var(--slate);opacity:.3;font-size:10px;">▼</span></div>
         <div class="doc-folder-body">
-          <div class="doc-item" onclick="openApproval()" style="background:var(--gold-p);"><div class="doc-item-icon">📝</div><div style="flex:1;"><div class="doc-item-name">Witness Statement — Tendo Kamya, Equity Bank Loans Manager</div><div class="doc-item-meta">GVL-KSC-2026-0891-005 · Drafted by Tendo Mukasa · Revised 17 Aug · 12 pages</div></div><span class="doc-status review">Awaiting approval</span></div>
+          <div class="doc-item" onclick="openApproval()" style="background:var(--gold-p);"><div class="doc-item-icon"></div><div style="flex:1;"><div class="doc-item-name">Witness Statement — Tendo Kamya, Equity Bank Loans Manager</div><div class="doc-item-meta">GVL-KSC-2026-0891-005 · Drafted by Tendo Mukasa · Revised 17 Aug · 12 pages</div></div><span class="doc-status review">Awaiting approval</span></div>
         </div>
       </div>
       <div class="doc-folder">
-        <div class="doc-folder-head" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':''"><span style="font-size:14px;">📁</span><div class="doc-folder-name">Correspondence</div><div class="doc-folder-count">6 documents</div><span style="color:var(--slate);opacity:.3;font-size:10px;">▼</span></div>
+        <div class="doc-folder-head" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':''"><span style="font-size:14px;"></span><div class="doc-folder-name">Correspondence</div><div class="doc-folder-count">6 documents</div><span style="color:var(--slate);opacity:.3;font-size:10px;">▼</span></div>
         <div class="doc-folder-body">
-          <div class="doc-item" onclick="t('Opening','Demand letter — 28 Oct 2025','g')"><div class="doc-item-icon">✉️</div><div style="flex:1;"><div class="doc-item-name">Demand Letter to Ssekandi Enterprises</div><div class="doc-item-meta">28 Oct 2025 · Pre-action · IRIS sealed</div></div><span class="doc-status filed">Sealed</span></div>
-          <div class="doc-item" onclick="t('Opening','Response from Ssekandi','g')"><div class="doc-item-icon">✉️</div><div style="flex:1;"><div class="doc-item-name">Response — Ssekandi Enterprises (denying liability)</div><div class="doc-item-meta">5 Nov 2025 · Received from opposing counsel</div></div><span class="doc-status filed">Sealed</span></div>
+          <div class="doc-item" onclick="t('Opening','Demand letter — 28 Oct 2025','g')"><div class="doc-item-icon"></div><div style="flex:1;"><div class="doc-item-name">Demand Letter to Ssekandi Enterprises</div><div class="doc-item-meta">28 Oct 2025 · Pre-action · IRIS sealed</div></div><span class="doc-status filed">Sealed</span></div>
+          <div class="doc-item" onclick="t('Opening','Response from Ssekandi','g')"><div class="doc-item-icon"></div><div style="flex:1;"><div class="doc-item-name">Response — Ssekandi Enterprises (denying liability)</div><div class="doc-item-meta">5 Nov 2025 · Received from opposing counsel</div></div><span class="doc-status filed">Sealed</span></div>
         </div>
       </div>
       <div class="doc-folder">
-        <div class="doc-folder-head" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':''"><span style="font-size:14px;">📁</span><div class="doc-folder-name">Exhibits &amp; Evidence</div><div class="doc-folder-count">3 documents</div><span style="color:var(--slate);opacity:.3;font-size:10px;">▼</span></div>
+        <div class="doc-folder-head" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':''"><span style="font-size:14px;"></span><div class="doc-folder-name">Exhibits &amp; Evidence</div><div class="doc-folder-count">3 documents</div><span style="color:var(--slate);opacity:.3;font-size:10px;">▼</span></div>
         <div class="doc-folder-body">
-          <div class="doc-item" onclick="t('Opening','Loan Facility Agreement','g')"><div class="doc-item-icon">📋</div><div style="flex:1;"><div class="doc-item-name">Loan Facility Agreement — UGX 847,000,000</div><div class="doc-item-meta">12 March 2022 · Equity Bank · Exhibit A</div></div><span class="doc-status filed">Exhibit A</span></div>
-          <div class="doc-item" onclick="t('Opening','Default notice','g')"><div class="doc-item-icon">📋</div><div style="flex:1;"><div class="doc-item-name">Formal Notice of Default</div><div class="doc-item-meta">15 Sep 2025 · Equity Bank · Exhibit B</div></div><span class="doc-status filed">Exhibit B</span></div>
+          <div class="doc-item" onclick="t('Opening','Loan Facility Agreement','g')"><div class="doc-item-icon"></div><div style="flex:1;"><div class="doc-item-name">Loan Facility Agreement — UGX 847,000,000</div><div class="doc-item-meta">12 March 2022 · Equity Bank · Exhibit A</div></div><span class="doc-status filed">Exhibit A</span></div>
+          <div class="doc-item" onclick="t('Opening','Default notice','g')"><div class="doc-item-icon"></div><div style="flex:1;"><div class="doc-item-name">Formal Notice of Default</div><div class="doc-item-meta">15 Sep 2025 · Equity Bank · Exhibit B</div></div><span class="doc-status filed">Exhibit B</span></div>
         </div>
       </div>
     </div>
@@ -2042,7 +2043,7 @@ input,select,textarea{font-family:var(--sans);}
     <!-- COURT -->
     <div class="mw-panel" id="mw-court">
       <div class="court-event next-hearing">
-        <div class="ce-time" style="font-size:16px;min-width:auto;padding-right:8px;">⚡</div>
+        <div class="ce-time" style="font-size:16px;min-width:auto;padding-right:8px;"></div>
         <div class="ce-info" style="flex:1;">
           <div class="ce-title" style="font-size:14px;margin-bottom:4px;">Scheduling Conference</div>
           <div class="ce-court" style="font-size:11px;margin-bottom:6px;">18 August 2026 · 9:30 AM · Commercial Division · Justice Tibatemwa · Courtroom 7</div>
@@ -2052,12 +2053,12 @@ input,select,textarea{font-family:var(--sans);}
             <div class="prep-item done">✓ Witness statement drafted and under review</div>
             <div class="prep-item done">✓ Client instructions received (Equity Bank in-house)</div>
             <div class="prep-item done">✓ Brief for Margaret Ssempebwa prepared</div>
-            <div class="prep-item pending" onclick="openApproval()">⚠ Witness statement not yet filed — partner approval needed</div>
-            <div class="prep-item pending">⚠ Authorities bundle not yet attached</div>
-            <div class="prep-item pending">⚠ Confirm court filing receipt</div>
+            <div class="prep-item pending" onclick="openApproval()"> Witness statement not yet filed — partner approval needed</div>
+            <div class="prep-item pending"> Authorities bundle not yet attached</div>
+            <div class="prep-item pending"> Confirm court filing receipt</div>
           </div>
           <div style="display:flex;gap:7px;margin-top:11px;flex-wrap:wrap;">
-            <button class="btn btn-ember btn-sm" onclick="openApproval()">Get partner approval →</button>
+            <button class="btn btn-ember btn-sm" onclick="openApproval()">Get partner approval</button>
             <button class="btn btn-ghost btn-sm" onclick="t('Authorities search','AI searching Ugandan commercial case law','b')">Find authorities</button>
           </div>
         </div>
@@ -2164,7 +2165,7 @@ input,select,textarea{font-family:var(--sans);}
       <div style="font-size:12px;color:var(--slate);line-height:1.6;margin-bottom:12px;">Risk is determined from the institutional record — the current state of the matter, the approval chain, the filing status, and the court timeline. Every factor below links to a specific event or absence in the record. Click any factor to go directly to the relevant part of the matter.</div>
 
       <div class="risk-cause-row critical" onclick="openApproval()">
-        <div class="rcr-icon">⛔</div>
+        <div class="rcr-icon"></div>
         <div style="flex:1;">
           <div class="rcr-type proc">Procedural risk — Class A · Critical</div>
           <div class="rcr-title">Witness statement not filed — Scheduling Order breach</div>
@@ -2172,12 +2173,12 @@ input,select,textarea{font-family:var(--sans);}
           <div class="rcr-record">Record: KSC-2026-0891-AUD-031 · Approval chain: Step 3 of 4 · Status: PENDING PARTNER APPROVAL</div>
         </div>
         <div class="rcr-right">
-          <button class="btn btn-ember btn-sm" onclick="event.stopPropagation();openApproval()">Get approval →</button>
+          <button class="btn btn-ember btn-sm" onclick="event.stopPropagation();openApproval()">Get approval</button>
         </div>
       </div>
 
       <div class="risk-cause-row critical" onclick="mwTab('audit',document.querySelector('.mh-tab:nth-child(9)'))">
-        <div class="rcr-icon">🔒</div>
+        <div class="rcr-icon"></div>
         <div style="flex:1;">
           <div class="rcr-type auth">Authority risk — Class A unresolved · Critical</div>
           <div class="rcr-title">Peter attempted to file without partner authority — attempt recorded</div>
@@ -2185,12 +2186,12 @@ input,select,textarea{font-family:var(--sans);}
           <div class="rcr-record">Record: KSC-2026-0891-AUD-032 · Denied action · Sealed · IRIS confirmed</div>
         </div>
         <div class="rcr-right">
-          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();mwTab('audit',document.querySelector('.mh-tab:nth-child(9)'))">See audit →</button>
+          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();mwTab('audit',document.querySelector('.mh-tab:nth-child(9)'))">See audit</button>
         </div>
       </div>
 
       <div class="risk-cause-row high" onclick="mwTab('comms',document.querySelector('.mh-tab:nth-child(6)'))">
-        <div class="rcr-icon">📧</div>
+        <div class="rcr-icon"></div>
         <div style="flex:1;">
           <div class="rcr-type evid">Client obligation risk · High</div>
           <div class="rcr-title">James Opolot not formally notified — institutional exposure</div>
@@ -2198,12 +2199,12 @@ input,select,textarea{font-family:var(--sans);}
           <div class="rcr-record">Communications: Client notification — not yet sent · Tomorrow: 9:30 AM</div>
         </div>
         <div class="rcr-right">
-          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();mwTab('comms',document.querySelector('.mh-tab:nth-child(6)'))">Notify James →</button>
+          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();mwTab('comms',document.querySelector('.mh-tab:nth-child(6)'))">Notify James</button>
         </div>
       </div>
 
       <div class="risk-cause-row high" onclick="mwTab('court',document.querySelector('.mh-tab:nth-child(5)'))">
-        <div class="rcr-icon">⚖️</div>
+        <div class="rcr-icon"></div>
         <div style="flex:1;">
           <div class="rcr-type proc">Procedural risk · High</div>
           <div class="rcr-title">Scheduling Conference tomorrow without authorities bundle</div>
@@ -2211,7 +2212,7 @@ input,select,textarea{font-family:var(--sans);}
           <div class="rcr-record">Next hearing: 18 Aug 2026 · 9:30 AM · Prep checklist: 3 items incomplete</div>
         </div>
         <div class="rcr-right">
-          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();mwTab('court',document.querySelector('.mh-tab:nth-child(5)'))">Prepare →</button>
+          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();mwTab('court',document.querySelector('.mh-tab:nth-child(5)'))">Prepare</button>
         </div>
       </div>
 
@@ -2229,23 +2230,23 @@ input,select,textarea{font-family:var(--sans);}
     <div class="mw-panel" id="mw-ai">
       <div class="ai-panel">
         <div class="ai-panel-head" style="padding:14px 16px;">
-          <div style="font-size:18px;">🤖</div>
+          <div style="font-size:18px;"></div>
           <div>
             <div class="ai-panel-title" style="font-size:16px;">Matter Intelligence — KSC-2026-0891</div>
             <div class="ai-panel-sub">AI operates inside this matter only · Sees pleadings, documents, chronology, correspondence · Advocate responsibility is final</div>
           </div>
         </div>
         <div class="ai-suggestions">
-          <button class="ai-sug" onclick="aiMatterResp('prepare')"><div class="ai-sug-icon">📋</div><div><div class="ai-sug-lbl">What must be done before tomorrow's Scheduling Conference?</div><div class="ai-sug-sub">Generate a comprehensive preparation checklist</div></div></button>
-          <button class="ai-sug" onclick="aiMatterResp('inconsistency')"><div class="ai-sug-icon">🔍</div><div><div class="ai-sug-lbl">Identify inconsistencies between the Defence and the correspondence</div><div class="ai-sug-sub">Cross-reference filed documents · Flag contradictions</div></div></button>
-          <button class="ai-sug" onclick="aiMatterResp('authorities')"><div class="ai-sug-icon">📚</div><div><div class="ai-sug-lbl">Prepare relevant authorities — debt recovery · UGX 847M loan default</div><div class="ai-sug-sub">Ugandan commercial case law · EACJ · Commonwealth precedents</div></div></button>
-          <button class="ai-sug" onclick="aiMatterResp('draft')"><div class="ai-sug-icon">✍️</div><div><div class="ai-sug-lbl">Draft conference brief for Margaret Ssempebwa</div><div class="ai-sug-sub">Chronology · issues · procedural position · proposed directions</div></div></button>
-          <button class="ai-sug" onclick="aiMatterResp('risk')"><div class="ai-sug-icon">⚠️</div><div><div class="ai-sug-lbl">Identify risks and limitation issues in this matter</div><div class="ai-sug-sub">Procedural risks · deadline exposures · substantive weaknesses</div></div></button>
+          <button class="ai-sug" onclick="aiMatterResp('prepare')"><div class="ai-sug-icon"></div><div><div class="ai-sug-lbl">What must be done before tomorrow's Scheduling Conference?</div><div class="ai-sug-sub">Generate a comprehensive preparation checklist</div></div></button>
+          <button class="ai-sug" onclick="aiMatterResp('inconsistency')"><div class="ai-sug-icon"></div><div><div class="ai-sug-lbl">Identify inconsistencies between the Defence and the correspondence</div><div class="ai-sug-sub">Cross-reference filed documents · Flag contradictions</div></div></button>
+          <button class="ai-sug" onclick="aiMatterResp('authorities')"><div class="ai-sug-icon"></div><div><div class="ai-sug-lbl">Prepare relevant authorities — debt recovery · UGX 847M loan default</div><div class="ai-sug-sub">Ugandan commercial case law · EACJ · Commonwealth precedents</div></div></button>
+          <button class="ai-sug" onclick="aiMatterResp('draft')"><div class="ai-sug-icon"></div><div><div class="ai-sug-lbl">Draft conference brief for Margaret Ssempebwa</div><div class="ai-sug-sub">Chronology · issues · procedural position · proposed directions</div></div></button>
+          <button class="ai-sug" onclick="aiMatterResp('risk')"><div class="ai-sug-icon"></div><div><div class="ai-sug-lbl">Identify risks and limitation issues in this matter</div><div class="ai-sug-sub">Procedural risks · deadline exposures · substantive weaknesses</div></div></button>
         </div>
         <div class="ai-response" id="ai-matter-resp2" style="padding:14px 16px;"></div>
         <div class="ai-input-row" style="padding:12px 14px;">
           <input class="ai-input" style="font-size:13px;" placeholder="Ask the matter intelligence anything…" onkeydown="if(event.key==='Enter')aiMatterResp('custom',this.value)">
-          <button class="btn btn-v" onclick="aiMatterResp('custom',this.previousElementSibling.value)">Ask →</button>
+          <button class="btn btn-v" onclick="aiMatterResp('custom',this.previousElementSibling.value)">Ask</button>
         </div>
       </div>
     </div>
@@ -2270,7 +2271,7 @@ input,select,textarea{font-family:var(--sans);}
         <div class="de-court">High Court — Land Division · Courtroom 4 · Justice Mugenyi</div>
         <div class="de-advocate">Peter Ssali · All parties confirmed</div>
       </div>
-      <div class="de-right"><span class="pill urgent">In 2 hrs</span><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDiaryEvent('mubiru')">Prepare →</button></div>
+      <div class="de-right"><span class="pill urgent">In 2 hrs</span><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDiaryEvent('mubiru')">Prepare</button></div>
     </div>
     <div class="diary-event scheduled">
       <div class="de-time">14:30</div>
@@ -2292,9 +2293,9 @@ input,select,textarea{font-family:var(--sans);}
         <div class="de-title">Scheduling Conference — Recovery UGX 847M</div>
         <div class="de-court">High Court — Commercial Division · Justice Tibatemwa</div>
         <div class="de-advocate">Margaret Ssempebwa &amp; Peter Ssali · Witness statement must be filed first</div>
-        <div style="display:flex;align-items:center;gap:6px;margin-top:6px;padding:6px 9px;background:rgba(184,92,42,.12);border-radius:var(--r-sm);font-size:10px;color:var(--ember);">⚠ Witness statement filing deadline: Today 5:00 PM</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:6px;padding:6px 9px;background:rgba(184,92,42,.12);border-radius:var(--r-sm);font-size:10px;color:var(--ember);"> Witness statement filing deadline: Today 5:00 PM</div>
       </div>
-      <div class="de-right"><span class="pill urgent">Tomorrow</span><button class="btn btn-ember btn-sm" onclick="event.stopPropagation();openApproval()">⚡ File now</button></div>
+      <div class="de-right"><span class="pill urgent">Tomorrow</span><button class="btn btn-ember btn-sm" onclick="event.stopPropagation();openApproval()"> File now</button></div>
     </div>
   </div>
   <div class="diary-day">
@@ -2318,7 +2319,7 @@ input,select,textarea{font-family:var(--sans);}
 <div id="pg-adv-queue" class="pg">
 <div id="queue-empty-state" style="display:none;">
   <div class="empty-state">
-    <div class="empty-state-icon">📋</div>
+    <div class="empty-state-icon"></div>
     <div class="empty-state-title">Your queue is clear</div>
     <div class="empty-state-desc">No tasks are currently assigned to you. Tasks appear here when a partner or supervisor assigns work on a matter.</div>
     <button class="btn btn-ghost btn-sm" onclick="showPg('adv-command')">Go to Command Centre</button>
@@ -2333,13 +2334,13 @@ input,select,textarea{font-family:var(--sans);}
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;"><div class="wq-matter" style="margin-bottom:0;">KSC-2026-0891 · Equity Bank v Ssekandi · Case Management</div><span class="act-class a">Class A</span></div>
       <div class="wq-title">File witness statement — awaiting partner approval</div>
       <div class="wq-meta">Margaret is reviewing. Once approved, IRIS seal and file with Commercial Division registry. Deadline: 5:00 PM today. Scheduling Conference: 18 Aug 9:30 AM.</div>
-      <div class="wq-footer"><span class="pill urgent">Today 5PM</span><button class="btn btn-ember btn-sm" onclick="event.stopPropagation();openApproval()">Get approval →</button><div class="wq-dep">Depends on: Margaret approval</div></div>
+      <div class="wq-footer"><span class="pill urgent">Today 5PM</span><button class="btn btn-ember btn-sm" onclick="event.stopPropagation();openApproval()">Get approval</button><div class="wq-dep">Depends on: Margaret approval</div></div>
     </div>
     <div class="wq-card urg" onclick="openDiaryEvent('mubiru')">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;"><div class="wq-matter" style="margin-bottom:0;">KSC-2026-0823 · Mubiru Estate · Hearing</div><span class="act-class b">Class B</span></div>
       <div class="wq-title">Confirm hearing bundle — Mubiru Estate substantive hearing</div>
       <div class="wq-meta">Verify documents: previous orders, authorities, client witness list, hearing bundle. Hearing at 9:30 AM today.</div>
-      <div class="wq-footer"><span class="pill urgent">Today 9:30</span><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDiaryEvent('mubiru')">Prepare →</button></div>
+      <div class="wq-footer"><span class="pill urgent">Today 9:30</span><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openDiaryEvent('mubiru')">Prepare</button></div>
     </div>
   </div>
   <div class="wq-section">
@@ -2378,7 +2379,7 @@ input,select,textarea{font-family:var(--sans);}
     <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;">
       <div class="cd urg pulse" style="margin-top:4px;"></div>
       <div style="flex:1;"><div style="font-size:13px;font-weight:500;color:var(--ink);">Witness Statement — Equity Bank v Ssekandi</div><div style="font-family:var(--mono);font-size:9px;color:var(--slate);margin-top:2px;">KSC-2026-0891 · Commercial Division · File by 5:00 PM · Scheduling Conference tomorrow</div></div>
-      <button class="btn btn-ember btn-sm" onclick="openApproval()">⚡ Act now</button>
+      <button class="btn btn-ember btn-sm" onclick="openApproval()"> Act now</button>
     </div>
   </div>
   <div class="card" style="border-left:3px solid var(--gold-d);">
@@ -2443,15 +2444,15 @@ input,select,textarea{font-family:var(--sans);}
 <div class="hero"><div class="hero-i"><div class="hg">Templates & Precedents</div><div class="hs">Uganda-compliant · IRIS auto-filled · Matter-linked</div></div></div>
 <div class="pgbody">
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
-    <div class="card" style="cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''" onclick="t('Template opened','Plaint — Commercial Division · IRIS auto-fill active','g')"><div style="font-size:20px;margin-bottom:6px;">📄</div><div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;">Plaint</div><div style="font-size:10px;color:var(--slate);">Commercial Division · Civil Procedure Rules</div></div>
-    <div class="card" style="cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''" onclick="t('Template opened','Witness Statement · IRIS auto-fill','g')"><div style="font-size:20px;margin-bottom:6px;">📋</div><div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;">Witness Statement</div><div style="font-size:10px;color:var(--slate);">Evidence Act compliant</div></div>
-    <div class="card" style="cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''" onclick="t('Template opened','Demand Letter · IRIS stamped','g')"><div style="font-size:20px;margin-bottom:6px;">✉️</div><div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;">Demand Letter</div><div style="font-size:10px;color:var(--slate);">Pre-action · IRIS stamped</div></div>
-    <div class="card" style="cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''" onclick="t('Template opened','Affidavit · Commissioner for Oaths ready','g')"><div style="font-size:20px;margin-bottom:6px;">⚖️</div><div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;">Affidavit</div><div style="font-size:10px;color:var(--slate);">Commissioner for Oaths ready</div></div>
-    <div class="card" style="cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''" onclick="t('Template opened','Notice of Motion','g')"><div style="font-size:20px;margin-bottom:6px;">📢</div><div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;">Notice of Motion</div><div style="font-size:10px;color:var(--slate);">High Court procedure</div></div>
-    <div class="card" style="cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''" onclick="t('Template opened','Engagement Letter · Fee arrangement','g')"><div style="font-size:20px;margin-bottom:6px;">🤝</div><div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;">Engagement Letter</div><div style="font-size:10px;color:var(--slate);">Fee arrangement · retainer</div></div>
-    <div class="card" style="cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''" onclick="t('Template opened','Sale Agreement','g')"><div style="font-size:20px;margin-bottom:6px;">🏠</div><div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;">Sale Agreement</div><div style="font-size:10px;color:var(--slate);">Conveyancing · Land Act</div></div>
-    <div class="card" style="cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''" onclick="t('Template opened','Arbitration Notice','g')"><div style="font-size:20px;margin-bottom:6px;">🔨</div><div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;">Arbitration Notice</div><div style="font-size:10px;color:var(--slate);">ACA Uganda 2000</div></div>
-    <div class="card" style="cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''" onclick="t('Template opened','Shareholders Resolution','g')"><div style="font-size:20px;margin-bottom:6px;">🏢</div><div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;">Shareholders Resolution</div><div style="font-size:10px;color:var(--slate);">Companies Act 2012</div></div>
+    <div class="card" style="cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''" onclick="t('Template opened','Plaint — Commercial Division · IRIS auto-fill active','g')"><div style="font-size:20px;margin-bottom:6px;"></div><div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;">Plaint</div><div style="font-size:10px;color:var(--slate);">Commercial Division · Civil Procedure Rules</div></div>
+    <div class="card" style="cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''" onclick="t('Template opened','Witness Statement · IRIS auto-fill','g')"><div style="font-size:20px;margin-bottom:6px;"></div><div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;">Witness Statement</div><div style="font-size:10px;color:var(--slate);">Evidence Act compliant</div></div>
+    <div class="card" style="cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''" onclick="t('Template opened','Demand Letter · IRIS stamped','g')"><div style="font-size:20px;margin-bottom:6px;"></div><div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;">Demand Letter</div><div style="font-size:10px;color:var(--slate);">Pre-action · IRIS stamped</div></div>
+    <div class="card" style="cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''" onclick="t('Template opened','Affidavit · Commissioner for Oaths ready','g')"><div style="font-size:20px;margin-bottom:6px;"></div><div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;">Affidavit</div><div style="font-size:10px;color:var(--slate);">Commissioner for Oaths ready</div></div>
+    <div class="card" style="cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''" onclick="t('Template opened','Notice of Motion','g')"><div style="font-size:20px;margin-bottom:6px;"></div><div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;">Notice of Motion</div><div style="font-size:10px;color:var(--slate);">High Court procedure</div></div>
+    <div class="card" style="cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''" onclick="t('Template opened','Engagement Letter · Fee arrangement','g')"><div style="font-size:20px;margin-bottom:6px;"></div><div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;">Engagement Letter</div><div style="font-size:10px;color:var(--slate);">Fee arrangement · retainer</div></div>
+    <div class="card" style="cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''" onclick="t('Template opened','Sale Agreement','g')"><div style="font-size:20px;margin-bottom:6px;"></div><div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;">Sale Agreement</div><div style="font-size:10px;color:var(--slate);">Conveyancing · Land Act</div></div>
+    <div class="card" style="cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''" onclick="t('Template opened','Arbitration Notice','g')"><div style="font-size:20px;margin-bottom:6px;"></div><div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;">Arbitration Notice</div><div style="font-size:10px;color:var(--slate);">ACA Uganda 2000</div></div>
+    <div class="card" style="cursor:pointer;transition:all .18s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''" onclick="t('Template opened','Shareholders Resolution','g')"><div style="font-size:20px;margin-bottom:6px;"></div><div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px;">Shareholders Resolution</div><div style="font-size:10px;color:var(--slate);">Companies Act 2012</div></div>
   </div>
   <div style="height:20px;"></div>
 </div>
@@ -2478,30 +2479,30 @@ input,select,textarea{font-family:var(--sans);}
         <div style="padding:4px 14px 4px;font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);opacity:.35;">Matter discussions</div>
         <div class="comm-channel active" onclick="switchChannel('ksc-0891-internal','KSC-2026-0891 Internal','Matter discussion · Equity Bank v Ssekandi · Firm only')">
           <div style="display:flex;align-items:center;justify-content:space-between;">
-            <div class="comm-channel-name">⚖️ KSC-2026-0891</div>
+            <div class="comm-channel-name"> KSC-2026-0891</div>
             <div class="comm-channel-badge">2</div>
           </div>
           <div class="comm-channel-sub">Equity Bank v Ssekandi</div>
         </div>
         <div class="comm-channel" onclick="switchChannel('ksc-0823-internal','KSC-2026-0823 Internal','Matter discussion · Mubiru Estate · Firm only')">
-          <div class="comm-channel-name">⚖️ KSC-2026-0823</div>
+          <div class="comm-channel-name"> KSC-2026-0823</div>
           <div class="comm-channel-sub">Mubiru Estate</div>
         </div>
         <div style="padding:8px 14px 4px;font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);opacity:.35;margin-top:4px;">Client channels</div>
         <div class="comm-channel" onclick="switchChannel('equity-client','Equity Bank · James Opolot','Client communication channel · Logged and IRIS-sealed')">
           <div style="display:flex;align-items:center;justify-content:space-between;">
-            <div class="comm-channel-name">👤 James Opolot</div>
+            <div class="comm-channel-name"> James Opolot</div>
             <div class="comm-channel-badge">1</div>
           </div>
           <div class="comm-channel-sub">Equity Bank · Client</div>
         </div>
         <div style="padding:8px 14px 4px;font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);opacity:.35;margin-top:4px;">Direct messages</div>
         <div class="comm-channel" onclick="switchChannel('PS-MS','Margaret Ssempebwa','Direct message · Senior Partner')">
-          <div class="comm-channel-name">👤 Margaret Ssempebwa</div>
+          <div class="comm-channel-name"> Margaret Ssempebwa</div>
           <div class="comm-channel-sub">Senior Partner</div>
         </div>
         <div class="comm-channel" onclick="switchChannel('PS-TM','Tendo Mukasa','Direct message · Junior Associate')">
-          <div class="comm-channel-name">👤 Tendo Mukasa</div>
+          <div class="comm-channel-name"> Tendo Mukasa</div>
           <div class="comm-channel-sub">Junior Associate</div>
         </div>
       </div>
@@ -2513,7 +2514,7 @@ input,select,textarea{font-family:var(--sans);}
           <div class="comm-main-title" id="comm-channel-title">KSC-2026-0891 Internal</div>
           <div style="font-size:10px;color:var(--slate);opacity:.5;" id="comm-channel-sub">Matter discussion · Equity Bank v Ssekandi · Firm only</div>
         </div>
-        <button class="btn btn-ghost btn-sm" style="font-size:10px;" onclick="NAV.openMatter('KSC-2026-0891')">Open matter →</button>
+        <button class="btn btn-ghost btn-sm" style="font-size:10px;" onclick="NAV.openMatter('KSC-2026-0891')">Open matter</button>
       </div>
       <div class="comm-messages" id="comm-messages-area">
         <!-- Rendered by JS -->
@@ -2528,10 +2529,10 @@ input,select,textarea{font-family:var(--sans);}
           </div>
           <textarea class="comm-textarea" id="comm-textarea" placeholder="Write a message… @mention to notify someone" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();postCommMessage();}"></textarea>
           <div class="comm-footer">
-            <button class="comm-footer-btn" onclick="t('File attached','Document linked to this message','g')">📎 Attach</button>
+            <button class="comm-footer-btn" onclick="t('File attached','Document linked to this message','g')"> Attach</button>
             <button class="comm-footer-btn" onclick="insertMention()">@ Mention</button>
             <span style="flex:1;"></span>
-            <button class="btn btn-v btn-sm" onclick="postCommMessage()">Send →</button>
+            <button class="btn btn-v btn-sm" onclick="postCommMessage()">Send</button>
           </div>
         </div>
       </div>
@@ -2543,10 +2544,10 @@ input,select,textarea{font-family:var(--sans);}
 <div id="pg-adv-clients" class="pg">
 <div id="clients-empty-state" style="display:none;">
   <div class="empty-state">
-    <div class="empty-state-icon">👤</div>
+    <div class="empty-state-icon"></div>
     <div class="empty-state-title">No clients on record</div>
     <div class="empty-state-desc">Client profiles are created when a new matter is opened. Run a conflict check first, then create the client record.</div>
-    <button class="btn btn-v" onclick="openM('m-intake')">Open new matter →</button>
+    <button class="btn btn-v" onclick="openM('m-intake')">Open new matter</button>
   </div>
 </div>
 
@@ -2577,12 +2578,12 @@ input,select,textarea{font-family:var(--sans);}
           <div class="ccp-ob-row" onclick="t('Opening Gavel','URA tax position','g')"><div class="ccp-ob-status" style="background:var(--vu);"></div><div class="ccp-ob-name">URA — PAYE, Corporate Tax, VAT</div><div class="ccp-ob-state ok">✓ Current</div></div>
           <div class="ccp-ob-row" onclick="t('Opening Gavel','URSB position','g')"><div class="ccp-ob-status" style="background:var(--vu);"></div><div class="ccp-ob-name">URSB Annual Return</div><div class="ccp-ob-state ok">✓ Filed · 2025</div></div>
           <div class="ccp-ob-row" onclick="t('Opening Gavel','NSSF position','g')"><div class="ccp-ob-status" style="background:var(--vu);"></div><div class="ccp-ob-name">NSSF — 650 employees</div><div class="ccp-ob-state ok">✓ Current</div></div>
-          <div class="ccp-ob-row" onclick="t('Opening Gavel','Outstanding balance','g')"><div class="ccp-ob-status" style="background:var(--gold-d);"></div><div class="ccp-ob-name">Invoice KSC-INV-2026-0078 outstanding</div><div class="ccp-ob-state warn">⚠ UGX 2,205,000 · 17 days</div></div>
+          <div class="ccp-ob-row" onclick="t('Opening Gavel','Outstanding balance','g')"><div class="ccp-ob-status" style="background:var(--gold-d);"></div><div class="ccp-ob-name">Invoice KSC-INV-2026-0078 outstanding</div><div class="ccp-ob-state warn"> UGX 2,205,000 · 17 days</div></div>
         </div>
       </div>
       <div style="font-size:11px;color:var(--slate);line-height:1.65;padding:10px 12px;background:rgba(37,99,168,.06);border-radius:var(--r-sm);border-left:3px solid var(--sky);">This compliance position is read from the Gavel record for this client. The lawyer does not maintain a separate compliance record — Gavel owns the obligation engine. The matter record (KSC-2026-0891) and the compliance record are separate objects sharing the same client identity.</div>
       <div style="margin-top:10px;display:flex;gap:7px;">
-        <button class="btn btn-v btn-sm" onclick="t('Opening Gavel','Equity Bank full compliance record','g');closeM('m-client-compliance')">Open in Gavel →</button>
+        <button class="btn btn-v btn-sm" onclick="t('Opening Gavel','Equity Bank full compliance record','g');closeM('m-client-compliance')">Open in Gavel</button>
         <button class="btn btn-ghost btn-sm" onclick="closeM('m-client-compliance')">Close</button>
       </div>
     </div>
@@ -2599,8 +2600,8 @@ input,select,textarea{font-family:var(--sans);}
     <span class="pill ok">IRIS ✓</span>
   </div>
   <div style="display:flex;gap:7px;flex-wrap:wrap;border-top:1px solid rgba(28,43,43,.06);padding-top:9px;">
-    <button class="btn btn-ghost btn-sm" onclick="showMatter('KSC-2026-0891')">Open matter →</button>
-    <button class="btn btn-ghost btn-sm" onclick="openM('m-client-compliance')">Compliance position →</button>
+    <button class="btn btn-ghost btn-sm" onclick="showMatter('KSC-2026-0891')">Open matter</button>
+    <button class="btn btn-ghost btn-sm" onclick="openM('m-client-compliance')">Compliance position</button>
     <button class="btn btn-ghost btn-sm" onclick="t('Message sent','James Opolot · Equity Bank · Message sent','g')">Message James</button>
   </div>
 </div>
@@ -2622,19 +2623,19 @@ input,select,textarea{font-family:var(--sans);}
     <div class="sb" id="cli-sb">
       <div class="sb-g">
         <div class="sb-gl">My Matters</div>
-        <button class="sb-i on" id="sbi-cli-home" onclick="showPg('cli-home')"><span class="sb-ic">⚖️</span><span class="sb-l">My Legal Matters</span><span class="sb-b g">1</span></button>
-        <button class="sb-i" id="sbi-cli-matter" onclick="showPg('cli-matter')"><span class="sb-ic">📂</span><span class="sb-l">Equity Bank v Ssekandi</span><span class="sb-b a">!</span></button>
+        <button class="sb-i on" id="sbi-cli-home" onclick="showPg('cli-home')"><span class="sb-ic"></span><span class="sb-l">My Legal Matters</span><span class="sb-b g">1</span></button>
+        <button class="sb-i" id="sbi-cli-matter" onclick="showPg('cli-matter')"><span class="sb-ic"></span><span class="sb-l">Equity Bank v Ssekandi</span><span class="sb-b a">!</span></button>
       </div>
       <div class="sb-div"></div>
       <div class="sb-g">
         <div class="sb-gl">Communication</div>
-        <button class="sb-i" id="sbi-cli-docs" onclick="showPg('cli-docs')"><span class="sb-ic">📄</span><span class="sb-l">My Documents</span><span class="sb-b g">4</span></button>
-        <button class="sb-i" id="sbi-cli-messages" onclick="showPg('cli-messages')"><span class="sb-ic">💬</span><span class="sb-l">Messages</span><span class="sb-b a">1</span></button>
+        <button class="sb-i" id="sbi-cli-docs" onclick="showPg('cli-docs')"><span class="sb-ic"></span><span class="sb-l">My Documents</span><span class="sb-b g">4</span></button>
+        <button class="sb-i" id="sbi-cli-messages" onclick="showPg('cli-messages')"><span class="sb-ic"></span><span class="sb-l">Messages</span><span class="sb-b a">1</span></button>
       </div>
       <div class="sb-div"></div>
       <div class="sb-g">
         <div class="sb-gl">Finance</div>
-        <button class="sb-i" id="sbi-cli-billing" onclick="showPg('cli-billing')"><span class="sb-ic">💰</span><span class="sb-l">Billing & Invoices</span></button>
+        <button class="sb-i" id="sbi-cli-billing" onclick="showPg('cli-billing')"><span class="sb-ic"></span><span class="sb-l">Billing & Invoices</span></button>
       </div>
       <div class="sb-foot">
         <div class="sb-fv"><div class="iris-dot"></div>Verified Identity</div>
@@ -2664,7 +2665,7 @@ input,select,textarea{font-family:var(--sans);}
     <div class="cm-body">
       <div class="cm-row">
         <div><div class="cm-label">Your Legal Team</div><div class="cm-val">Peter Ssali (lead) · Margaret Ssempebwa (partner)</div></div>
-        <button class="btn btn-ghost btn-sm" onclick="showPg('cli-messages')">Message →</button>
+        <button class="btn btn-ghost btn-sm" onclick="showPg('cli-messages')">Message</button>
       </div>
       <div class="cm-row">
         <div><div class="cm-label">Next Court Event</div><div class="cm-val" style="color:var(--ember);">Scheduling Conference — 18 August 2026 · 9:30 AM</div></div>
@@ -2674,7 +2675,7 @@ input,select,textarea{font-family:var(--sans);}
       </div>
       <div class="cm-row">
         <div><div class="cm-label">Outstanding Balance</div><div class="cm-val" style="color:var(--ember);">UGX 2,205,000</div></div>
-        <button class="btn btn-ember btn-sm" onclick="showPg('cli-billing')">Pay →</button>
+        <button class="btn btn-ember btn-sm" onclick="showPg('cli-billing')">Pay</button>
       </div>
     </div>
   </div>
@@ -2731,12 +2732,12 @@ input,select,textarea{font-family:var(--sans);}
       </div>
       <div style="display:flex;gap:11px;padding-bottom:14px;position:relative;">
         <div style="position:absolute;left:13px;top:26px;bottom:0;width:1px;background:rgba(28,43,43,.08);"></div>
-        <div style="width:26px;height:26px;border-radius:50%;background:var(--white);border:2px solid var(--ember);display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;z-index:1;animation:urgPulse 2.5s ease-in-out infinite;">⚡</div>
+        <div style="width:26px;height:26px;border-radius:50%;background:var(--white);border:2px solid var(--ember);display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;z-index:1;animation:urgPulse 2.5s ease-in-out infinite;"></div>
         <div><div style="font-size:12px;font-weight:500;color:var(--ember);">Witness statements — filing today</div><div style="font-size:11px;color:var(--slate);margin-top:2px;">Mr. Tendo Kamya's witness statement is being finalised and will be filed before 5:00 PM today.</div></div>
       </div>
       <div style="display:flex;gap:11px;padding-bottom:14px;position:relative;">
         <div style="position:absolute;left:13px;top:26px;bottom:0;width:1px;background:rgba(28,43,43,.08);"></div>
-        <div style="width:26px;height:26px;border-radius:50%;background:var(--white);border:2px solid rgba(37,99,168,.3);display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;z-index:1;color:var(--sky);">📅</div>
+        <div style="width:26px;height:26px;border-radius:50%;background:var(--white);border:2px solid rgba(37,99,168,.3);display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;z-index:1;color:var(--sky);"></div>
         <div><div style="font-size:12px;font-weight:500;color:var(--slate);">Scheduling Conference</div><div style="font-size:11px;color:var(--slate);margin-top:2px;">Tomorrow · 18 August 2026 · 9:30 AM · Commercial Division</div></div>
       </div>
       <div style="display:flex;gap:11px;">
@@ -2755,10 +2756,10 @@ input,select,textarea{font-family:var(--sans);}
 <div class="pgbody">
   <div class="box sky" style="margin-bottom:4px;"><div class="box-lbl b">Approved and shared</div><div class="box-text">These are documents your legal team has approved for your review. Internal working documents, draft strategy, and internal communications are not shown here.</div></div>
   <div style="display:flex;flex-direction:column;gap:6px;">
-    <div class="card" style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="t('Opening','Engagement Letter · GAVEL.CO','g')"><div style="font-size:18px;">📄</div><div style="flex:1;"><div style="font-size:12px;font-weight:500;color:var(--ink);">Engagement Letter &amp; Fee Agreement</div><div style="font-family:var(--mono);font-size:9px;color:var(--slate);margin-top:2px;">Issued 28 Oct 2025 · Signed · IRIS Sealed</div></div><span class="pill ok">Sealed</span></div>
-    <div class="card" style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="t('Opening','Plaint — Equity Bank Uganda Ltd','g')"><div style="font-size:18px;">📄</div><div style="flex:1;"><div style="font-size:12px;font-weight:500;color:var(--ink);">Plaint — Filed with High Court</div><div style="font-family:var(--mono);font-size:9px;color:var(--slate);margin-top:2px;">Filed 3 Nov 2025 · Commercial Division · IRIS Sealed</div></div><span class="pill ok">Filed</span></div>
-    <div class="card" style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="t('Opening','Scheduling Order · Justice Tibatemwa','g')"><div style="font-size:18px;">📋</div><div style="flex:1;"><div style="font-size:12px;font-weight:500;color:var(--ink);">Scheduling Order — Justice Tibatemwa</div><div style="font-family:var(--mono);font-size:9px;color:var(--slate);margin-top:2px;">Issued 14 Feb 2026 · Witness statements due 17 Aug</div></div><span class="pill ok">Sealed</span></div>
-    <div class="card" style="display:flex;align-items:center;gap:10px;background:var(--gold-p);border-color:rgba(139,115,53,.2);cursor:default;"><div style="font-size:18px;">📝</div><div style="flex:1;"><div style="font-size:12px;font-weight:500;color:var(--ink);">Witness Statement — Tendo Kamya</div><div style="font-family:var(--mono);font-size:9px;color:var(--slate);margin-top:2px;">Being finalised today — will be shared once filed with court</div></div><span class="pill warn">Pending filing</span></div>
+    <div class="card" style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="t('Opening','Engagement Letter · GAVEL.CO','g')"><div style="font-size:18px;"></div><div style="flex:1;"><div style="font-size:12px;font-weight:500;color:var(--ink);">Engagement Letter &amp; Fee Agreement</div><div style="font-family:var(--mono);font-size:9px;color:var(--slate);margin-top:2px;">Issued 28 Oct 2025 · Signed · IRIS Sealed</div></div><span class="pill ok">Sealed</span></div>
+    <div class="card" style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="t('Opening','Plaint — Equity Bank Uganda Ltd','g')"><div style="font-size:18px;"></div><div style="flex:1;"><div style="font-size:12px;font-weight:500;color:var(--ink);">Plaint — Filed with High Court</div><div style="font-family:var(--mono);font-size:9px;color:var(--slate);margin-top:2px;">Filed 3 Nov 2025 · Commercial Division · IRIS Sealed</div></div><span class="pill ok">Filed</span></div>
+    <div class="card" style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="t('Opening','Scheduling Order · Justice Tibatemwa','g')"><div style="font-size:18px;"></div><div style="flex:1;"><div style="font-size:12px;font-weight:500;color:var(--ink);">Scheduling Order — Justice Tibatemwa</div><div style="font-family:var(--mono);font-size:9px;color:var(--slate);margin-top:2px;">Issued 14 Feb 2026 · Witness statements due 17 Aug</div></div><span class="pill ok">Sealed</span></div>
+    <div class="card" style="display:flex;align-items:center;gap:10px;background:var(--gold-p);border-color:rgba(139,115,53,.2);cursor:default;"><div style="font-size:18px;"></div><div style="flex:1;"><div style="font-size:12px;font-weight:500;color:var(--ink);">Witness Statement — Tendo Kamya</div><div style="font-family:var(--mono);font-size:9px;color:var(--slate);margin-top:2px;">Being finalised today — will be shared once filed with court</div></div><span class="pill warn">Pending filing</span></div>
   </div>
   <div style="height:20px;"></div>
 </div>
@@ -2795,7 +2796,7 @@ input,select,textarea{font-family:var(--sans);}
     <div class="section-label" style="color:var(--slate);opacity:.38;">Outstanding balance</div>
     <div style="font-family:var(--serif);font-size:36px;font-weight:300;color:var(--ember);margin-bottom:4px;">UGX 2,205,000</div>
     <div style="font-size:11px;color:var(--slate);margin-bottom:12px;">Invoice KSC-INV-2026-0078 · Due upon receipt</div>
-    <button class="btn btn-ember" onclick="t('Payment initiated','Bank transfer details sent to your email','g')">Pay now →</button>
+    <button class="btn btn-ember" onclick="t('Payment initiated','Bank transfer details sent to your email','g')">Pay now</button>
   </div>
   <div class="card">
     <div class="section-label">Invoice history</div>
@@ -2816,29 +2817,29 @@ input,select,textarea{font-family:var(--sans);}
     <div class="sb" id="adm-sb">
       <div class="sb-g">
         <div class="sb-gl">Firm Operations</div>
-        <button class="sb-i on" id="sbi-adm-home" onclick="showPg('adm-home')"><span class="sb-ic">📊</span><span class="sb-l">Firm Dashboard</span></button>
+        <button class="sb-i on" id="sbi-adm-home" onclick="showPg('adm-home')"><span class="sb-ic"></span><span class="sb-l">Firm Dashboard</span></button>
       </div>
       <div class="sb-div"></div>
       <div class="sb-g">
         <div class="sb-gl">Matters</div>
-        <button class="sb-i" id="sbi-adm-matters" onclick="showPg('adm-matters')"><span class="sb-ic">⚖️</span><span class="sb-l">All Matters</span><span class="sb-b g">47</span></button>
-        <button class="sb-i" id="sbi-adm-deadlines" onclick="showPg('adm-deadlines')"><span class="sb-ic">⏰</span><span class="sb-l">Critical Deadlines</span><span class="sb-b a">3</span></button>
+        <button class="sb-i" id="sbi-adm-matters" onclick="showPg('adm-matters')"><span class="sb-ic"></span><span class="sb-l">All Matters</span><span class="sb-b g">47</span></button>
+        <button class="sb-i" id="sbi-adm-deadlines" onclick="showPg('adm-deadlines')"><span class="sb-ic"></span><span class="sb-l">Critical Deadlines</span><span class="sb-b a">3</span></button>
       </div>
       <div class="sb-div"></div>
       <div class="sb-g">
         <div class="sb-gl">Finance</div>
-        <button class="sb-i" id="sbi-adm-billing" onclick="showPg('adm-billing')"><span class="sb-ic">💰</span><span class="sb-l">Billing & Receivables</span><span class="sb-b a">4</span></button>
-        <button class="sb-i" id="sbi-adm-time" onclick="showPg('adm-time')"><span class="sb-ic">⏱</span><span class="sb-l">Time & Hours</span></button>
+        <button class="sb-i" id="sbi-adm-billing" onclick="showPg('adm-billing')"><span class="sb-ic"></span><span class="sb-l">Billing & Receivables</span><span class="sb-b a">4</span></button>
+        <button class="sb-i" id="sbi-adm-time" onclick="showPg('adm-time')"><span class="sb-ic"></span><span class="sb-l">Time & Hours</span></button>
       </div>
       <div class="sb-div"></div>
       <div class="sb-g">
         <div class="sb-gl">People</div>
-        <button class="sb-i" id="sbi-adm-people" onclick="showPg('adm-people')"><span class="sb-ic">👥</span><span class="sb-l">People & Workload</span></button>
+        <button class="sb-i" id="sbi-adm-people" onclick="showPg('adm-people')"><span class="sb-ic"></span><span class="sb-l">People & Workload</span></button>
       </div>
       <div class="sb-div"></div>
       <div class="sb-g">
         <div class="sb-gl">Firm</div>
-        <button class="sb-i" id="sbi-adm-settings" onclick="showPg('adm-settings')"><span class="sb-ic">⚙</span><span class="sb-l">Firm Settings</span></button>
+        <button class="sb-i" id="sbi-adm-settings" onclick="showPg('adm-settings')"><span class="sb-ic"></span><span class="sb-l">Firm Settings</span></button>
       </div>
       <div class="sb-foot">
         <div class="sb-fv"><div class="iris-dot"></div>IRIS Active</div>
@@ -2888,14 +2889,14 @@ input,select,textarea{font-family:var(--sans);}
       <div class="card" style="border-left:3px solid var(--gold-d);display:flex;align-items:center;gap:11px;">
         <div class="cd warn"></div>
         <div style="flex:1;"><div style="font-size:12px;font-weight:500;color:var(--ink);">2 matters without advocate assigned</div><div style="font-size:11px;color:var(--slate);margin-top:2px;">KSC-2026-0987 &amp; KSC-2026-0991 · New instructions received · Needs assignment</div></div>
-        <button class="btn btn-ghost btn-sm" onclick="t('Assignment screen opened','Assign matters to available advocates','g')">Assign →</button>
+        <button class="btn btn-ghost btn-sm" onclick="t('Assignment screen opened','Assign matters to available advocates','g')">Assign</button>
       </div>
     </div>
   </div>
 
   <!-- Workload -->
   <div>
-    <div class="sh"><div class="st"><div class="r-rule"><div class="a"></div><div class="b"></div><div class="c"></div></div><div class="stitle">Advocate workload — August</div></div><button class="smore" onclick="showPg('adm-people')">Full view →</button></div>
+    <div class="sh"><div class="st"><div class="r-rule"><div class="a"></div><div class="b"></div><div class="c"></div></div><div class="stitle">Advocate workload — August</div></div><button class="smore" onclick="showPg('adm-people')">Full view</button></div>
     <div class="card">
       <div class="workload-row"><div class="wl-name">Margaret Ssempebwa</div><div class="wl-bar"><div class="wl-fill" style="width:65%;background:var(--vu);"></div></div><div class="wl-hrs">52.0 hrs</div></div>
       <div class="workload-row"><div class="wl-name">Peter Ssali</div><div class="wl-bar"><div class="wl-fill" style="width:59%;background:var(--vu);"></div></div><div class="wl-hrs">47.5 hrs</div></div>
@@ -2906,7 +2907,7 @@ input,select,textarea{font-family:var(--sans);}
 
   <!-- Receivables snapshot -->
   <div>
-    <div class="sh"><div class="st"><div class="r-rule"><div class="a"></div><div class="b"></div><div class="c"></div></div><div class="stitle">Top outstanding receivables</div></div><button class="smore" onclick="showPg('adm-billing')">All →</button></div>
+    <div class="sh"><div class="st"><div class="r-rule"><div class="a"></div><div class="b"></div><div class="c"></div></div><div class="stitle">Top outstanding receivables</div></div><button class="smore" onclick="showPg('adm-billing')">All</button></div>
     <div class="ct" style="background:var(--white);border-radius:var(--r);border:1px solid rgba(28,43,43,.07);overflow:hidden;">
       <div class="recv-row"><div><div class="recv-matter">KSC-2026-0834 · Nile Trading Co.</div><div class="recv-client">Margaret Ssempebwa</div></div><div style="text-align:right;"><div class="recv-amt" style="color:var(--ember);">UGX 12,100,000</div><div class="recv-age" style="color:var(--ember);">38 days</div></div></div>
       <div class="recv-row"><div><div class="recv-matter">KSC-2026-0891 · Equity Bank Uganda</div><div class="recv-client">Peter Ssali</div></div><div style="text-align:right;"><div class="recv-amt" style="color:var(--ember);">UGX 2,205,000</div><div class="recv-age" style="color:var(--ember);">17 days</div></div></div>
@@ -2932,7 +2933,7 @@ input,select,textarea{font-family:var(--sans);}
   </div>
   <div class="matter-list">
     <div class="matter-row urgent" onclick="setShell('adv');showMatter('KSC-2026-0891')">
-      <div style="flex:1;"><div class="mr-id">KSC-2026-0891 · Peter Ssali</div><div class="mr-title">Equity Bank Uganda Ltd v. Ssekandi Enterprises Ltd</div><div class="mr-meta"><span class="pill urgent">⚡ Deadline today</span><span class="mr-court">Commercial Division</span></div></div>
+      <div style="flex:1;"><div class="mr-id">KSC-2026-0891 · Peter Ssali</div><div class="mr-title">Equity Bank Uganda Ltd v. Ssekandi Enterprises Ltd</div><div class="mr-meta"><span class="pill urgent"> Deadline today</span><span class="mr-court">Commercial Division</span></div></div>
       <div class="mr-right"><div class="mr-stage">Case Management</div></div>
     </div>
     <div class="matter-row warn" onclick="t('Opening matter','KSC-2026-0823 Mubiru Estate','g')">
@@ -2949,7 +2950,7 @@ input,select,textarea{font-family:var(--sans);}
     </div>
     <div class="matter-row" style="border-left:3px dashed rgba(184,92,42,.3);background:var(--ember-p);" onclick="t('Assign matter','Select advocate for KSC-2026-0987','g')">
       <div style="flex:1;"><div class="mr-id">KSC-2026-0987 · Unassigned</div><div class="mr-title">Kyambogo University — Employment Dispute</div><div class="mr-meta"><span class="pill miss">No advocate</span><span class="mr-court">Labour Tribunal</span></div></div>
-      <div class="mr-right"><button class="btn btn-ember btn-sm" onclick="event.stopPropagation();t('Assigned','James Ouma assigned to KSC-2026-0987','g')">Assign →</button></div>
+      <div class="mr-right"><button class="btn btn-ember btn-sm" onclick="event.stopPropagation();t('Assigned','James Ouma assigned to KSC-2026-0987','g')">Assign</button></div>
     </div>
   </div>
   <div style="height:20px;"></div>
@@ -3047,7 +3048,7 @@ input,select,textarea{font-family:var(--sans);}
     <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid rgba(28,43,43,.06);">
       <div class="cd urg pulse" style="margin-top:4px;"></div>
       <div style="flex:1;"><div style="font-size:13px;font-weight:500;color:var(--ink);">Witness Statement Filing — Equity Bank v Ssekandi</div><div style="font-family:var(--mono);font-size:9px;color:var(--slate);margin-top:2px;">KSC-2026-0891 · Peter Ssali · 5:00 PM · Partner approval in progress</div></div>
-      <button class="btn btn-ember btn-sm" onclick="setShell('adv');openApproval()">Monitor →</button>
+      <button class="btn btn-ember btn-sm" onclick="setShell('adv');openApproval()">Monitor</button>
     </div>
     <div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;">
       <div class="cd warn" style="margin-top:4px;"></div>
@@ -3216,7 +3217,7 @@ function openDiaryEvent(id){
         <div class="prep-item done" style="padding:6px 0;border-bottom:1px solid rgba(28,43,43,.05);">✓ Hearing bundle prepared — 47 pages</div>
         <div class="prep-item done" style="padding:6px 0;border-bottom:1px solid rgba(28,43,43,.05);">✓ Authorities filed — Mukasa v Mubiru [2018] UGCA</div>
         <div class="prep-item done" style="padding:6px 0;border-bottom:1px solid rgba(28,43,43,.05);">✓ Client instructions received and confirmed</div>
-        <div class="prep-item pending" style="padding:6px 0;">⚠ Confirm client witness transport to court</div>
+        <div class="prep-item pending" style="padding:6px 0;"> Confirm client witness transport to court</div>
       </div>
       <div style="display:flex;gap:7px;flex-wrap:wrap;">
         <button class="btn btn-v btn-sm" onclick="t('Witness transport confirmed','Client notified — witnesses en route','g')">✓ Confirm witness transport</button>
@@ -3313,7 +3314,7 @@ const INTAKE_STEPS=[
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;"><div class="iris-dot"></div><div style="font-size:11px;font-weight:500;color:var(--vd);">IRIS Verified — Client identified</div></div>
       <div style="font-size:11px;color:var(--slate);line-height:1.55;">Equity Bank Uganda Ltd · TIN: 1007-441-002 · Incorporated: 2008 · Director: Sam Kirubi. No prior conflict. Client file exists — 2 prior matters (both closed).</div>
     </div>
-    <button class="btn btn-v btn-full" onclick="document.getElementById('intake-iris-result').style.display='block';t('IRIS search complete','Client identified — no conflict','g')">Search IRIS →</button>`},
+    <button class="btn btn-v btn-full" onclick="document.getElementById('intake-iris-result').style.display='block';t('IRIS search complete','Client identified — no conflict','g')">Search IRIS</button>`},
   {title:'Conflict Check',sub:'System checks opposing parties against all firm clients',content:`
     <div class="fi"><label>Opposing party</label><input type="text" placeholder="e.g. Ssekandi Enterprises Ltd" id="intake-opp" value="Ssekandi Enterprises Ltd"></div>
     <div class="conflict-result conflict-clear" id="intake-conflict">
@@ -3335,7 +3336,7 @@ const INTAKE_STEPS=[
     <div class="matter-id-badge"><div class="matter-id-val">KSC-2026-0891</div><div class="matter-id-label">Matter Reference · GAVEL.CO</div></div>
     <div class="m-info">✓ Matter workspace created · ✓ Conflict check sealed on IRIS · ✓ Responsible advocate notified · ✓ Deadline tracking active · ✓ Billing arrangement recorded</div>
     <div class="iris-trust" style="margin-bottom:12px;"><div class="iris-dot"></div><div><div class="iris-trust-title">IRIS — Matter Opened</div><div class="iris-trust-meta">Matter ID: KSC-2026-0891 · SHA-256: 1a2b3c4d… · Bridge Chain Block #1,101,003<br>Client: Equity Bank Uganda Ltd · Verified · Conflict check: Clear</div></div></div>
-    <button class="btn btn-v btn-full" onclick="closeM('m-intake');showMatter('KSC-2026-0891');t('Matter opened','KSC-2026-0891 · Equity Bank v Ssekandi · Workspace ready','g')">Open matter workspace →</button>`}
+    <button class="btn btn-v btn-full" onclick="closeM('m-intake');showMatter('KSC-2026-0891');t('Matter opened','KSC-2026-0891 · Equity Bank v Ssekandi · Workspace ready','g')">Open matter workspace</button>`}
 ];
 
 function openIntake(){
@@ -3352,7 +3353,7 @@ function renderIntake(){
     ${s.content}
     <div class="m-acts" style="margin-top:16px;">
       ${intakeStep>1?`<button class="btn btn-out" onclick="intakeStep--;renderIntake()">← Back</button>`:'<button class="btn btn-out" onclick="closeM(\'m-intake\')">Cancel</button>'}
-      ${intakeStep<5?`<button class="btn btn-v btn-full" onclick="intakeStep++;renderIntake()">Continue →</button>`:''}
+      ${intakeStep<5?`<button class="btn btn-v btn-full" onclick="intakeStep++;renderIntake()">Continue</button>`:''}
     </div>`;
 }
 
@@ -3537,7 +3538,7 @@ function injectScenarioATrigger() {
   trigger.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
     <div style="font-family:var(--serif);font-size:16px;font-weight:600;color:var(--ink);">Audit / IRIS Trail</div>
     <button class="sa-trigger" onclick="launchScenarioA()">
-      <span>⚠</span> Run Scenario A — Missed Deadline
+      <span></span> Run Scenario A — Missed Deadline
     </button>
   </div>
   <div style="font-size:11px;color:var(--slate);margin-top:4px;margin-bottom:10px;">Stress test: Tendo fails to deliver. Margaret reconstructs the institutional record without asking anyone.</div>`;
@@ -3561,7 +3562,7 @@ function injectCommandCentreTrigger() {
       <div style="font-size:13px;font-weight:500;color:var(--ink);">Scenario A — Missed Deadline Reconstruction</div>
       <div style="font-size:11px;color:var(--slate);margin-top:2px;">What if Tendo fails to deliver? Can Margaret reconstruct everything without asking anyone?</div>
     </div>
-    <button class="sa-trigger" onclick="event.stopPropagation();launchScenarioA()" style="flex-shrink:0;">Run scenario →</button>`;
+    <button class="sa-trigger" onclick="event.stopPropagation();launchScenarioA()" style="flex-shrink:0;">Run scenario</button>`;
   div.onclick = () => launchScenarioA();
   pgbody.insertBefore(div, pgbody.firstChild);
 }
@@ -3675,7 +3676,7 @@ function injectBCTriggers(){
   div.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:2px;';
   div.innerHTML=`
     <div style="display:flex;align-items:flex-start;gap:9px;background:rgba(37,99,168,.07);border:1px solid rgba(37,99,168,.18);border-radius:var(--r);padding:12px 14px;cursor:pointer;" onclick="launchScenarioB()">
-      <div style="font-size:18px;flex-shrink:0;">🔒</div>
+      <div style="font-size:18px;flex-shrink:0;"></div>
       <div>
         <div style="font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--sky);margin-bottom:3px;">Scenario B</div>
         <div style="font-size:12px;font-weight:500;color:var(--ink);">Authority Failure</div>
@@ -3683,7 +3684,7 @@ function injectBCTriggers(){
       </div>
     </div>
     <div style="display:flex;align-items:flex-start;gap:9px;background:rgba(63,94,70,.07);border:1px solid rgba(63,94,70,.18);border-radius:var(--r);padding:12px 14px;cursor:pointer;" onclick="launchScenarioC()">
-      <div style="font-size:18px;flex-shrink:0;">🔗</div>
+      <div style="font-size:18px;flex-shrink:0;"></div>
       <div>
         <div style="font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--vd);margin-bottom:3px;">Scenario C</div>
         <div style="font-size:12px;font-weight:500;color:var(--ink);">Document Dispute</div>
@@ -3703,7 +3704,7 @@ function injectApprovalBTrigger(){
   const div=document.createElement('div');
   div.className='b-trigger-injected';
   div.style.cssText='margin-top:10px;';
-  div.innerHTML=`<button class="sb-trigger" onclick="closeSb&&closeSb();closeM&&closeM('m-approval');launchScenarioB()">🔒 Run Scenario B — what happens if Peter tries to approve this himself?</button>`;
+  div.innerHTML=`<button class="sb-trigger" onclick="closeSb&&closeSb();closeM&&closeM('m-approval');launchScenarioB()"> Run Scenario B — what happens if Peter tries to approve this himself?</button>`;
   chain.parentNode.insertBefore(div,chain.nextSibling);
 }
 
@@ -3714,7 +3715,7 @@ function injectAuditCTrigger(){
   const div=document.createElement('div');
   div.className='c-trigger-injected';
   div.style.cssText='margin-top:8px;margin-bottom:2px;';
-  div.innerHTML=`<button class="sc-trigger" onclick="launchScenarioC()">🔗 Run Scenario C — what if opposing counsel disputes this document?</button>`;
+  div.innerHTML=`<button class="sc-trigger" onclick="launchScenarioC()"> Run Scenario C — what if opposing counsel disputes this document?</button>`;
   auditPanel.querySelector('.iris-trust').after(div);
 }
 
@@ -3776,19 +3777,19 @@ function injectDEFTriggers(){
   const pgbody=cc.querySelector('.pgbody');if(!pgbody)return;
   const div=document.createElement('div');div.className='def-triggers-injected';
   div.style.cssText='display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:2px;';
-  div.innerHTML=`<div style="display:flex;align-items:flex-start;gap:9px;background:rgba(139,115,53,.07);border:1px solid rgba(139,115,53,.18);border-radius:var(--r);padding:12px 14px;cursor:pointer;" onclick="launchScenarioD()"><div style="font-size:16px;flex-shrink:0;">👤</div><div><div style="font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:3px;">Scenario D</div><div style="font-size:12px;font-weight:500;color:var(--ink);">Staff Departure</div><div style="font-size:10px;color:var(--slate);margin-top:2px;">Peter leaves. Record intact.</div></div></div><div style="display:flex;align-items:flex-start;gap:9px;background:rgba(63,94,70,.07);border:1px solid rgba(63,94,70,.18);border-radius:var(--r);padding:12px 14px;cursor:pointer;" onclick="launchScenarioE()"><div style="font-size:16px;flex-shrink:0;">💰</div><div><div style="font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--vd);margin-bottom:3px;">Scenario E</div><div style="font-size:12px;font-weight:500;color:var(--ink);">Billing Dispute</div><div style="font-size:10px;color:var(--slate);margin-top:2px;">James challenges the invoice.</div></div></div><div style="display:flex;align-items:flex-start;gap:9px;background:rgba(92,58,107,.07);border:1px solid rgba(92,58,107,.18);border-radius:var(--r);padding:12px 14px;cursor:pointer;" onclick="launchScenarioF()"><div style="font-size:16px;flex-shrink:0;">🛡</div><div><div style="font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--plum);margin-bottom:3px;">Scenario F</div><div style="font-size:12px;font-weight:500;color:var(--ink);">Confidentiality</div><div style="font-size:10px;color:var(--slate);margin-top:2px;">Spine enforces. Shells present.</div></div></div>`;
+  div.innerHTML=`<div style="display:flex;align-items:flex-start;gap:9px;background:rgba(139,115,53,.07);border:1px solid rgba(139,115,53,.18);border-radius:var(--r);padding:12px 14px;cursor:pointer;" onclick="launchScenarioD()"><div style="font-size:16px;flex-shrink:0;"></div><div><div style="font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:3px;">Scenario D</div><div style="font-size:12px;font-weight:500;color:var(--ink);">Staff Departure</div><div style="font-size:10px;color:var(--slate);margin-top:2px;">Peter leaves. Record intact.</div></div></div><div style="display:flex;align-items:flex-start;gap:9px;background:rgba(63,94,70,.07);border:1px solid rgba(63,94,70,.18);border-radius:var(--r);padding:12px 14px;cursor:pointer;" onclick="launchScenarioE()"><div style="font-size:16px;flex-shrink:0;"></div><div><div style="font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--vd);margin-bottom:3px;">Scenario E</div><div style="font-size:12px;font-weight:500;color:var(--ink);">Billing Dispute</div><div style="font-size:10px;color:var(--slate);margin-top:2px;">James challenges the invoice.</div></div></div><div style="display:flex;align-items:flex-start;gap:9px;background:rgba(92,58,107,.07);border:1px solid rgba(92,58,107,.18);border-radius:var(--r);padding:12px 14px;cursor:pointer;" onclick="launchScenarioF()"><div style="font-size:16px;flex-shrink:0;"></div><div><div style="font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--plum);margin-bottom:3px;">Scenario F</div><div style="font-size:12px;font-weight:500;color:var(--ink);">Confidentiality</div><div style="font-size:10px;color:var(--slate);margin-top:2px;">Spine enforces. Shells present.</div></div></div>`;
   const bcT=pgbody.querySelector('.bc-triggers-injected');
   if(bcT&&bcT.nextSibling)pgbody.insertBefore(div,bcT.nextSibling);
   else{const saT=pgbody.querySelector('.sa-trigger-cc');if(saT&&saT.nextSibling)pgbody.insertBefore(div,saT.nextSibling);else pgbody.insertBefore(div,pgbody.firstChild);}
   // Summary button
   if(!cc.querySelector('.summary-btn-injected')){
     const sb=document.createElement('div');sb.className='summary-btn-injected';sb.style.cssText='margin-bottom:4px;';
-    sb.innerHTML=`<button style="width:100%;padding:11px 16px;background:linear-gradient(135deg,#1C2B2B,#0E1A1A);border:1px solid rgba(63,94,70,.3);border-radius:var(--r);font-family:var(--sans);font-size:12px;font-weight:500;color:rgba(242,237,228,.8);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;" onclick="showAllScenariosSummary()"><span style="color:var(--vu);">⬡</span> All 6 scenarios — architectural summary</button>`;
+    sb.innerHTML=`<button style="width:100%;padding:11px 16px;background:linear-gradient(135deg,#1C2B2B,#0E1A1A);border:1px solid rgba(63,94,70,.3);border-radius:var(--r);font-family:var(--sans);font-size:12px;font-weight:500;color:rgba(242,237,228,.8);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;" onclick="showAllScenariosSummary()"><span style="color:var(--vu);"></span> All 6 scenarios — architectural summary</button>`;
     div.after(sb);
   }
 }
-function injectBillingETrigger(){const bp=document.getElementById('pg-cli-billing');if(!bp||bp.querySelector('.e-trigger-injected'))return;const pg=bp.querySelector('.pgbody');if(!pg)return;const d=document.createElement('div');d.className='e-trigger-injected';d.style.cssText='margin-bottom:4px;';d.innerHTML=`<button class="se-trigger" style="width:100%;justify-content:center;" onclick="launchScenarioE()">💰 Run Scenario E — James challenges the invoice</button>`;pg.insertBefore(d,pg.firstChild);}
-function injectDocsFTrigger(){const dp=document.getElementById('mw-documents');if(!dp||dp.querySelector('.f-trigger-injected'))return;const d=document.createElement('div');d.className='f-trigger-injected';d.style.cssText='margin-bottom:6px;';d.innerHTML=`<button class="sf-trigger" onclick="launchScenarioF()">🛡 Run Scenario F — who can see which documents?</button>`;dp.insertBefore(d,dp.firstChild);}
+function injectBillingETrigger(){const bp=document.getElementById('pg-cli-billing');if(!bp||bp.querySelector('.e-trigger-injected'))return;const pg=bp.querySelector('.pgbody');if(!pg)return;const d=document.createElement('div');d.className='e-trigger-injected';d.style.cssText='margin-bottom:4px;';d.innerHTML=`<button class="se-trigger" style="width:100%;justify-content:center;" onclick="launchScenarioE()"> Run Scenario E — James challenges the invoice</button>`;pg.insertBefore(d,pg.firstChild);}
+function injectDocsFTrigger(){const dp=document.getElementById('mw-documents');if(!dp||dp.querySelector('.f-trigger-injected'))return;const d=document.createElement('div');d.className='f-trigger-injected';d.style.cssText='margin-bottom:6px;';d.innerHTML=`<button class="sf-trigger" onclick="launchScenarioF()"> Run Scenario F — who can see which documents?</button>`;dp.insertBefore(d,dp.firstChild);}
 const _spgDEF=window.showPg;window.showPg=function(id){_spgDEF(id);if(id==='adv-command')setTimeout(()=>{injectDEFTriggers();injectBCTriggers&&injectBCTriggers();injectCommandCentreTrigger&&injectCommandCentreTrigger();},120);if(id==='cli-billing')setTimeout(injectBillingETrigger,100);if(id==='matter-KSC-2026-0891')setTimeout(()=>{injectDocsFTrigger();injectScenarioATrigger&&injectScenarioATrigger();injectAuditCTrigger&&injectAuditCTrigger();},100);};
 const _mwtDEF=window.mwTab;window.mwTab=function(tab,el){_mwtDEF(tab,el);if(tab==='documents')setTimeout(injectDocsFTrigger,100);if(tab==='audit')setTimeout(()=>{injectScenarioATrigger&&injectScenarioATrigger();injectAuditCTrigger&&injectAuditCTrigger();},100);};
 setTimeout(()=>{injectDEFTriggers();injectBillingETrigger();},500);
@@ -3818,7 +3819,7 @@ const MATTER_RISK = {
     nextAction: {
       title: 'Margaret Ssempebwa must approve the witness statement',
       class: 'A',
-      stateChain: ['✓ Drafted','✓ Reviewed','⚡ Partner approval','IRIS seal','Filing'],
+      stateChain: ['✓ Drafted','✓ Reviewed',' Partner approval','IRIS seal','Filing'],
       currentStep: 2
     }
   }
@@ -3890,7 +3891,7 @@ function injectCommandWhyLayer() {
   div.style.cssText = 'display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(28,43,43,.04),rgba(63,94,70,.04));border:1px solid rgba(28,43,43,.08);border-radius:var(--r);padding:11px 14px;cursor:pointer;margin-bottom:4px;';
   div.onclick = () => { showMatter('KSC-2026-0891'); setTimeout(() => openM('m-why-matter'), 300); };
   div.innerHTML = `
-    <div style="font-size:20px;">⚡</div>
+    <div style="font-size:20px;"></div>
     <div style="flex:1;">
       <div style="font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--ember);margin-bottom:3px;">KSC-2026-0891 · Critical risk · 3 unresolved factors</div>
       <div style="font-size:13px;font-weight:500;color:var(--ink);">Why is the Equity Bank matter at critical risk?</div>
@@ -4328,29 +4329,29 @@ function renderIntelligenceTab() {
         <div class="kb-active">Knowledge base active · ${spec.id}</div>
         <div class="kb-matter-type">${spec.matterType.replace(/_/g,' ')}</div>
         ${verifyCount > 0 ? `<div class="kb-verify-count" onclick="openKBPanel(1)" title="Rules requiring Gazette verification">${verifyCount} VERIFY tag${verifyCount>1?'s':''}</div>` : ''}
-        <button style="font-family:var(--mono);font-size:9px;color:var(--slate);opacity:.5;border:1px solid rgba(255,255,255,.1);border-radius:var(--r-sm);padding:2px 8px;cursor:pointer;background:none;" onclick="toggleKBPanel()">Rules & state →</button>
+        <button style="font-family:var(--mono);font-size:9px;color:var(--slate);opacity:.5;border:1px solid rgba(255,255,255,.1);border-radius:var(--r-sm);padding:2px 8px;cursor:pointer;background:none;" onclick="toggleKBPanel()">Rules & state</button>
       </div>
 
       <!-- AI suggestions — grounded in KB -->
       <div class="ai-suggestions" id="ai-sug-list">
         <button class="ai-sug" onclick="renderGroundedAI('next_action')">
-          <div class="ai-sug-icon">⚡</div>
+          <div class="ai-sug-icon"></div>
           <div><div class="ai-sug-lbl">What must happen now — and why?</div><div class="ai-sug-sub">State-machine answer · ${currentState ? currentState.label : 'Current stage'}</div></div>
         </button>
         <button class="ai-sug" onclick="renderGroundedAI('summary_judgment')">
-          <div class="ai-sug-icon">⚖️</div>
+          <div class="ai-sug-icon"></div>
           <div><div class="ai-sug-lbl">Is summary judgment available on these facts?</div><div class="ai-sug-sub">Order 33 analysis · Liquidated demand · Written agreement</div></div>
         </button>
         <button class="ai-sug" onclick="renderGroundedAI('enforcement')">
-          <div class="ai-sug-icon">🔗</div>
+          <div class="ai-sug-icon"></div>
           <div><div class="ai-sug-lbl">If judgment is obtained — what enforcement options exist?</div><div class="ai-sug-sub">Garnishee · Attachment · Receivership · DEBT-R-006</div></div>
         </button>
         <button class="ai-sug" onclick="renderGroundedAI('guarantee')">
-          <div class="ai-sug-icon">📋</div>
+          <div class="ai-sug-icon"></div>
           <div><div class="ai-sug-lbl">Is the personal guarantee enforceable — and should we plead it?</div><div class="ai-sug-sub">DEBT-R-007 · Facility agreement Schedule 3</div></div>
         </button>
         <button class="ai-sug" onclick="renderGroundedAI('state_events')">
-          <div class="ai-sug-icon">⚠️</div>
+          <div class="ai-sug-icon"></div>
           <div><div class="ai-sug-lbl">What events could change the legal state of this matter?</div><div class="ai-sug-sub">Receivership · Counterclaim · Arbitration clause · Settlement</div></div>
         </button>
       </div>
@@ -4361,7 +4362,7 @@ function renderIntelligenceTab() {
       <!-- Free input -->
       <div class="ai-input-row" style="padding:12px 14px;">
         <input class="ai-input" id="ai-matter-input" style="font-size:13px;" placeholder="Ask about this matter — answers grounded in ${spec.id}…" onkeydown="if(event.key==='Enter')renderGroundedAI('custom',this.value)">
-        <button class="btn btn-v" onclick="renderGroundedAI('custom',document.getElementById('ai-matter-input').value)">Ask →</button>
+        <button class="btn btn-v" onclick="renderGroundedAI('custom',document.getElementById('ai-matter-input').value)">Ask</button>
       </div>
 
       <!-- Knowledge panel — rules, state machine, evidence -->
@@ -4378,7 +4379,7 @@ function renderIntelligenceTab() {
           <div class="sm-states">
             ${spec.states.map(s => `
               <div class="sm-state">
-                <div class="sm-dot ${s.status}">${s.status==='done'?'✓':s.status==='current'?'⚡':'○'}</div>
+                <div class="sm-dot ${s.status}">${s.status==='done'?'✓':s.status==='current'?'':'○'}</div>
                 <div class="sm-info">
                   <div class="sm-name">${s.label}</div>
                   <div class="sm-desc">${s.desc}</div>
@@ -4429,7 +4430,7 @@ function renderIntelligenceTab() {
           <div style="font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);opacity:.4;margin-bottom:10px;">Events that change the legal state of this matter</div>
           ${spec.stateChangingEvents.map((ev,i) => `
             <div style="padding:10px 12px;background:rgba(255,255,255,.04);border-radius:var(--r-sm);margin-bottom:6px;">
-              <div style="font-size:11px;font-weight:500;color:rgba(242,237,228,.85);margin-bottom:4px;">↯ ${ev.event}</div>
+              <div style="font-size:11px;font-weight:500;color:rgba(242,237,228,.85);margin-bottom:4px;"> ${ev.event}</div>
               <div style="font-size:11px;color:var(--slate);opacity:.7;line-height:1.5;">${ev.consequence}</div>
             </div>`).join('')}
         </div>
@@ -4502,12 +4503,12 @@ const GROUNDED_RESPONSES = {
     kbNote: 'MB-DEBT-001 · State-changing events',
     text: `The following events would change the legal state of this matter. The system tracks these — the advocate must assess their likelihood:<br><br>
 <strong style="color:var(--ember);">High probability:</strong><br>
-<span class="agr-rule-cite" style="background:rgba(184,92,42,.2);color:rgba(255,140,80,.9);">↯</span> <strong>Mediation referral</strong> — the Commercial Division frequently refers matters to court-annexed mediation. <span class="agr-rule-cite" class="verify">DEBT-R-005 [VERIFY]</span> Check current mediation regime. If referred, the matter moves to mediation workstream. Prepare a settlement position now.<br><br>
+<span class="agr-rule-cite" style="background:rgba(184,92,42,.2);color:rgba(255,140,80,.9);"></span> <strong>Mediation referral</strong> — the Commercial Division frequently refers matters to court-annexed mediation. <span class="agr-rule-cite" class="verify">DEBT-R-005 [VERIFY]</span> Check current mediation regime. If referred, the matter moves to mediation workstream. Prepare a settlement position now.<br><br>
 <strong style="color:rgba(255,200,80,.8);">Medium probability:</strong><br>
-<span class="agr-rule-cite" style="background:rgba(184,92,42,.2);color:rgba(255,140,80,.9);">↯</span> <strong>Amount dispute surfaces at trial</strong> — the UGX 227M discrepancy between the parties is unresolved. Obtain account statements before the conference.<br>
-<span class="agr-rule-cite" style="background:rgba(184,92,42,.2);color:rgba(255,140,80,.9);">↯</span> <strong>Arbitration clause found</strong> — if the facility agreement contains an arbitration clause not yet identified, the defendant may apply to stay court proceedings. Review the full agreement urgently.<br><br>
+<span class="agr-rule-cite" style="background:rgba(184,92,42,.2);color:rgba(255,140,80,.9);"></span> <strong>Amount dispute surfaces at trial</strong> — the UGX 227M discrepancy between the parties is unresolved. Obtain account statements before the conference.<br>
+<span class="agr-rule-cite" style="background:rgba(184,92,42,.2);color:rgba(255,140,80,.9);"></span> <strong>Arbitration clause found</strong> — if the facility agreement contains an arbitration clause not yet identified, the defendant may apply to stay court proceedings. Review the full agreement urgently.<br><br>
 <strong style="color:var(--slate);">Lower probability:</strong><br>
-<span class="agr-rule-cite" style="background:rgba(184,92,42,.2);color:rgba(255,140,80,.9);">↯</span> <strong>Defendant enters receivership/liquidation</strong> — would convert this to a creditor claim. Different procedure entirely.`,
+<span class="agr-rule-cite" style="background:rgba(184,92,42,.2);color:rgba(255,140,80,.9);"></span> <strong>Defendant enters receivership/liquidation</strong> — would convert this to a creditor claim. Different procedure entirely.`,
     disclaimer: 'Events derived from MB-DEBT-001 state-changing events catalogue. Probability assessments are not legal advice — advocate judgment on litigation risk is final.'
   },
   custom: {
@@ -4526,7 +4527,7 @@ function renderGroundedAI(type, customText) {
   respEl.innerHTML = `
     <div class="agr-kb-note">Grounded in ${resp.kbNote}</div>
     <div class="agr-text">${resp.text}</div>
-    <div class="agr-disclaimer">⚠ ${resp.disclaimer}</div>`;
+    <div class="agr-disclaimer"> ${resp.disclaimer}</div>`;
 
   // Scroll into view
   respEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -4742,7 +4743,7 @@ function handleKeyNav(e) {
 /* ── NOTIFICATIONS ── */
 const NOTIFICATIONS = [
   {
-    id: 'n1', type: 'critical', icon: '⛔', unread: true,
+    id: 'n1', type: 'critical', icon: '', unread: true,
     typeLabel: 'Critical — Action required',
     text: 'Witness statement filing deadline in 3 hours. Margaret\'s approval still pending.',
     ts: 'Today · 2:00 PM',
@@ -4750,7 +4751,7 @@ const NOTIFICATIONS = [
     action: () => { closeNotifPanel(); openApproval(); }
   },
   {
-    id: 'n2', type: 'action', icon: '⚡', unread: true,
+    id: 'n2', type: 'action', icon: '', unread: true,
     typeLabel: 'Action required',
     text: 'Scheduling Conference tomorrow at 9:30 AM — conference brief not yet prepared.',
     ts: 'Today · 9:00 AM',
@@ -4758,7 +4759,7 @@ const NOTIFICATIONS = [
     action: () => { closeNotifPanel(); showMatter('KSC-2026-0891'); }
   },
   {
-    id: 'n3', type: 'action', icon: '📋', unread: true,
+    id: 'n3', type: 'action', icon: '', unread: true,
     typeLabel: 'Task assigned',
     text: 'Margaret has assigned you to prepare the authorities bundle for KSC-2026-0891.',
     ts: 'Today · 8:44 AM',
@@ -4774,7 +4775,7 @@ const NOTIFICATIONS = [
     action: () => { closeNotifPanel(); showMatter('KSC-2026-0891'); setTimeout(() => mwTab('documents', null), 200); }
   },
   {
-    id: 'n5', type: 'warn', icon: '⚠', unread: false,
+    id: 'n5', type: 'warn', icon: '', unread: false,
     typeLabel: 'Legal rule — verify required',
     text: 'DEBT-R-005 (Mediation regime) is flagged [VERIFY]. Check current instrument before the Scheduling Conference.',
     ts: 'Yesterday · 4:15 PM',
@@ -4838,16 +4839,16 @@ document.addEventListener('click', (e) => {
 
 /* ── GLOBAL SEARCH ── */
 const SEARCH_INDEX = [
-  { type: 'Matter', icon: '⚖️', title: 'Equity Bank Uganda Ltd v Ssekandi Enterprises Ltd', sub: 'KSC-2026-0891 · Commercial Division · Recovery', action: () => showMatter('KSC-2026-0891') },
-  { type: 'Matter', icon: '⚖️', title: 'Mubiru Estate — Succession & Land Dispute', sub: 'KSC-2026-0823 · Land Division · Ongoing', action: () => t('Opening','KSC-2026-0823 — Mubiru Estate','g') },
-  { type: 'Client', icon: '👤', title: 'Equity Bank Uganda Ltd', sub: 'Contact: James Opolot · 1 active matter', action: () => { showPg('adv-clients'); } },
-  { type: 'Document', icon: '📄', title: 'Witness Statement — Tendo Kamya', sub: 'KSC-2026-0891 · Draft v2 · Awaiting approval', action: () => { showMatter('KSC-2026-0891'); setTimeout(() => mwTab('documents', null), 200); } },
-  { type: 'Document', icon: '📄', title: 'Facility Agreement — Equity Bank · Ssekandi', sub: 'KSC-2026-0891 · Exhibit A · IRIS sealed', action: () => { showMatter('KSC-2026-0891'); setTimeout(() => mwTab('documents', null), 200); } },
-  { type: 'Task', icon: '📋', title: 'File witness statement with court', sub: 'KSC-2026-0891 · Class A · Critical · Today', action: () => { showMatter('KSC-2026-0891'); setTimeout(() => mwTab('work', null), 200); } },
-  { type: 'Hearing', icon: '⚖️', title: 'Scheduling Conference — Justice Tibatemwa', sub: 'KSC-2026-0891 · 18 Aug 2026 · 9:30 AM', action: () => { showMatter('KSC-2026-0891'); setTimeout(() => mwTab('court', null), 200); } },
-  { type: 'Deadline', icon: '⏰', title: 'Witness statement filing deadline', sub: 'KSC-2026-0891 · Today · 5:00 PM · CRITICAL', action: () => showMatter('KSC-2026-0891') },
-  { type: 'Advocate', icon: '👤', title: 'Peter Ssali', sub: 'Associate · 2 active matters · 3 tasks today', action: () => showPg('adm-people') },
-  { type: 'Advocate', icon: '👤', title: 'Margaret Ssempebwa', sub: 'Senior Partner · Approval pending · KSC-2026-0891', action: () => showPg('adm-people') },
+  { type: 'Matter', icon: '', title: 'Equity Bank Uganda Ltd v Ssekandi Enterprises Ltd', sub: 'KSC-2026-0891 · Commercial Division · Recovery', action: () => showMatter('KSC-2026-0891') },
+  { type: 'Matter', icon: '', title: 'Mubiru Estate — Succession & Land Dispute', sub: 'KSC-2026-0823 · Land Division · Ongoing', action: () => t('Opening','KSC-2026-0823 — Mubiru Estate','g') },
+  { type: 'Client', icon: '', title: 'Equity Bank Uganda Ltd', sub: 'Contact: James Opolot · 1 active matter', action: () => { showPg('adv-clients'); } },
+  { type: 'Document', icon: '', title: 'Witness Statement — Tendo Kamya', sub: 'KSC-2026-0891 · Draft v2 · Awaiting approval', action: () => { showMatter('KSC-2026-0891'); setTimeout(() => mwTab('documents', null), 200); } },
+  { type: 'Document', icon: '', title: 'Facility Agreement — Equity Bank · Ssekandi', sub: 'KSC-2026-0891 · Exhibit A · IRIS sealed', action: () => { showMatter('KSC-2026-0891'); setTimeout(() => mwTab('documents', null), 200); } },
+  { type: 'Task', icon: '', title: 'File witness statement with court', sub: 'KSC-2026-0891 · Class A · Critical · Today', action: () => { showMatter('KSC-2026-0891'); setTimeout(() => mwTab('work', null), 200); } },
+  { type: 'Hearing', icon: '', title: 'Scheduling Conference — Justice Tibatemwa', sub: 'KSC-2026-0891 · 18 Aug 2026 · 9:30 AM', action: () => { showMatter('KSC-2026-0891'); setTimeout(() => mwTab('court', null), 200); } },
+  { type: 'Deadline', icon: '', title: 'Witness statement filing deadline', sub: 'KSC-2026-0891 · Today · 5:00 PM · CRITICAL', action: () => showMatter('KSC-2026-0891') },
+  { type: 'Advocate', icon: '', title: 'Peter Ssali', sub: 'Associate · 2 active matters · 3 tasks today', action: () => showPg('adm-people') },
+  { type: 'Advocate', icon: '', title: 'Margaret Ssempebwa', sub: 'Senior Partner · Approval pending · KSC-2026-0891', action: () => showPg('adm-people') },
 ];
 
 let searchOpen = false;
@@ -4915,7 +4916,7 @@ function upgradeTopbar() {
   bell.style.cssText = 'position:relative;';
   bell.innerHTML = `
     <button class="notif-bell-btn" id="notif-bell-btn" onclick="toggleNotifPanel()" title="Notifications">
-      🔔
+      ${window.vlfIcon ? window.vlfIcon('bell', 18) : ''}
       <div class="notif-badge" id="notif-badge">3</div>
     </button>`;
   personaBar.before(bell);
@@ -5091,7 +5092,7 @@ function openDocWorkspace(docId) {
     const isDone = i < doc.currentLifecycleStep;
     const isCurrent = i === doc.currentLifecycleStep;
     const cls = isDone ? 'done' : isCurrent ? 'current' : 'next';
-    const icon = isDone ? '✓' : isCurrent ? '⚡' : (i + 1);
+    const icon = isDone ? '✓' : isCurrent ? '' : (i + 1);
     return `<div class="dl-step">
       <div class="dl-node">
         <div class="dl-dot ${cls}">${icon}</div>
@@ -5104,7 +5105,7 @@ function openDocWorkspace(docId) {
   // Approval chain
   const approvalHTML = doc.approvalChain.map(step => {
     const dotCls = step.status === 'complete' ? 'complete' : step.status === 'pending' ? 'pending' : 'waiting';
-    const icon = step.status === 'complete' ? '✓' : step.status === 'pending' ? '⚡' : step.step;
+    const icon = step.status === 'complete' ? '✓' : step.status === 'pending' ? '' : step.step;
     return `<div class="ac2-step">
       <div class="ac2-dot ${dotCls}">${icon}</div>
       <div class="ac2-info">
@@ -5113,7 +5114,7 @@ function openDocWorkspace(docId) {
         <div class="ac2-action">${step.action}</div>
         ${step.date ? `<div class="ac2-iris">${step.iris || ''} · ${step.date}</div>` : ''}
       </div>
-      ${step.status === 'pending' ? `<div class="ac2-right"><button class="btn btn-ember btn-sm" onclick="openApproval()">Get approval →</button></div>` : ''}
+      ${step.status === 'pending' ? `<div class="ac2-right"><button class="btn btn-ember btn-sm" onclick="openApproval()">Get approval</button></div>` : ''}
     </div>`;
   }).join('');
 
@@ -5138,7 +5139,7 @@ function openDocWorkspace(docId) {
   // History
   const historyHTML = doc.history.map(h => `
     <div class="doc-history-event">
-      <div class="dhe-dot ${h.type}">${h.type === 'draft' ? '✏' : h.type === 'review' ? '👁' : h.type === 'approved' ? '✓' : h.type === 'sealed' ? '🔒' : '⚠'}</div>
+      <div class="dhe-dot ${h.type}">${h.type === 'draft' ? '' : h.type === 'review' ? '' : h.type === 'approved' ? '✓' : h.type === 'sealed' ? '' : ''}</div>
       <div class="dhe-info">
         <div class="dhe-ts">${h.ts}</div>
         <div class="dhe-title">${h.title}</div>
@@ -5156,7 +5157,7 @@ function openDocWorkspace(docId) {
       <div class="dna-class">Class A — Partner approval required before filing</div>
       <div class="dna-why">This is a Class A institutional act. The witness statement is complete (v2, 12 paragraphs). Peter has reviewed and approved. The approval chain is at step 3 of 5 — Margaret's partner sign-off. Without it, filing cannot proceed. The court deadline is today at 5:00 PM.</div>
       <div style="display:flex;gap:7px;flex-wrap:wrap;">
-        <button class="btn btn-ember btn-sm" onclick="openApproval()">Get Margaret's approval →</button>
+        <button class="btn btn-ember btn-sm" onclick="openApproval()">Get Margaret's approval</button>
         <button class="btn btn-ghost btn-sm" onclick="t('Notification sent','Margaret notified — urgent approval request','b')">Send urgent notification</button>
       </div>
     </div>` : doc.currentStatus === 'FILED' ? `
@@ -5298,7 +5299,7 @@ function openDocUpload(context) {
     <div style="font-family:var(--serif);font-size:18px;font-weight:600;color:var(--ink);margin-bottom:4px;">Upload document</div>
     <div style="font-size:11px;color:var(--slate);margin-bottom:12px;">KSC-2026-0891 · Equity Bank v Ssekandi · Every upload is IRIS-sealed on receipt</div>
     <div class="upload-zone" onclick="simulateUpload()">
-      <div class="upload-zone-icon">📤</div>
+      <div class="upload-zone-icon"></div>
       <div class="upload-zone-title">Tap to select file</div>
       <div class="upload-zone-sub">PDF, DOCX, JPG · Max 50MB · IRIS seals immediately on upload</div>
     </div>
@@ -5311,9 +5312,9 @@ function openDocUpload(context) {
       </div>
     </div>
     <div style="display:flex;gap:7px;margin-top:14px;">
-      <button class="btn btn-v btn-full" onclick="simulateUpload()">Upload & seal with IRIS →</button>
+      <button class="btn btn-v btn-full" onclick="simulateUpload()">Upload & seal with IRIS</button>
     </div>
-    <div style="margin-top:8px;font-size:10px;color:var(--slate);line-height:1.55;">⚡ Documents are SHA-256 fingerprinted and IRIS-sealed immediately on upload. The seal is permanent — earlier versions are preserved, never deleted.</div>`;
+    <div style="margin-top:8px;font-size:10px;color:var(--slate);line-height:1.55;"> Documents are SHA-256 fingerprinted and IRIS-sealed immediately on upload. The seal is permanent — earlier versions are preserved, never deleted.</div>`;
 }
 
 function simulateUpload() {
@@ -5596,7 +5597,7 @@ function upgradeDocWorkspaceP21(docId, initialTab) {
   const userMode = isSealed ? 'sealed' : isPendingApproval && av === 'MS' ? 'review' : isPendingApproval && av === 'PS' ? 'review' : 'readonly';
 
   /* Build document content area */
-  const contentHTML = isWS ? buildWitnessStatementContent(userMode) : `<div class="dc-body" style="font-size:13px;color:var(--slate);padding:40px;text-align:center;"><div style="font-size:32px;margin-bottom:12px;">📄</div><div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:6px;">${doc.title}</div><div style="font-size:11px;">Document content renders here — ${doc.pages} pages · ${doc.id}</div></div>`;
+  const contentHTML = isWS ? buildWitnessStatementContent(userMode) : `<div class="dc-body" style="font-size:13px;color:var(--slate);padding:40px;text-align:center;"><div style="font-size:32px;margin-bottom:12px;"></div><div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:6px;">${doc.title}</div><div style="font-size:11px;">Document content renders here — ${doc.pages} pages · ${doc.id}</div></div>`;
 
   /* Responsibility bar */
   const myAction = av === 'MS' && isPendingApproval ? { cls: 'mine', text: 'Your action required — Approve or return (Class A)' }
@@ -5626,7 +5627,7 @@ function upgradeDocWorkspaceP21(docId, initialTab) {
           <div style="font-size:12px;color:var(--ember);">Filing cannot proceed. Court deadline passes at 5:00 PM today. Scheduling Conference tomorrow without a filed statement.</div>
           <div style="font-family:var(--mono);font-size:9px;color:var(--slate);opacity:.5;text-transform:uppercase;letter-spacing:.06em;padding-top:1px;">I can</div>
           <div style="font-size:12px;color:var(--ink);display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
-            <button class="btn btn-ember btn-sm" onclick="openApproval()">Get approval now →</button>
+            <button class="btn btn-ember btn-sm" onclick="openApproval()">Get approval now</button>
             <button class="btn btn-ghost btn-sm" onclick="t('Urgent notification sent','Margaret notified — action required within 30 minutes','b')">Notify Margaret urgently</button>
           </div>
         </div>
@@ -5667,10 +5668,10 @@ function upgradeDocWorkspaceP21(docId, initialTab) {
     contentPanel.innerHTML = `
       <div class="doc-content-frame">
         <div class="dc-toolbar">
-          <div class="dc-mode-badge ${userMode}">${userMode === 'edit' ? '✏ Edit mode' : userMode === 'review' ? '👁 Review mode' : userMode === 'sealed' ? '🔒 Sealed — read only' : '👁 Read only'}</div>
+          <div class="dc-mode-badge ${userMode}">${userMode === 'edit' ? ' Edit mode' : userMode === 'review' ? ' Review mode' : userMode === 'sealed' ? ' Sealed — read only' : ' Read only'}</div>
           <div class="dc-toolbar-sep"></div>
-          ${userMode === 'edit' ? '<button class="dc-toolbar-btn">Save draft</button><button class="dc-toolbar-btn primary" onclick="t(\'Submitted for review\',\'Witness statement submitted to Peter Ssali\',\'g\')">Submit for review →</button>' : ''}
-          ${userMode === 'review' && av === 'MS' ? '<button class="dc-toolbar-btn primary" onclick="openApproval()">Approve →</button><button class="dc-toolbar-btn danger" onclick="openReturnModal()">Return for revision</button>' : ''}
+          ${userMode === 'edit' ? '<button class="dc-toolbar-btn">Save draft</button><button class="dc-toolbar-btn primary" onclick="t(\'Submitted for review\',\'Witness statement submitted to Peter Ssali\',\'g\')">Submit for review</button>' : ''}
+          ${userMode === 'review' && av === 'MS' ? '<button class="dc-toolbar-btn primary" onclick="openApproval()">Approve</button><button class="dc-toolbar-btn danger" onclick="openReturnModal()">Return for revision</button>' : ''}
           ${userMode === 'review' && av === 'PS' ? '<button class="dc-toolbar-btn" onclick="t(\'Waiting\',\'Only Margaret can approve — Class A action\',\'b\')">Awaiting Margaret</button>' : ''}
           ${userMode === 'readonly' || userMode === 'sealed' ? '<button class="dc-toolbar-btn" onclick="t(\'Downloading\',\'v' + doc.currentVersion + ' · SHA: ' + (doc.versions[doc.currentVersion-1]?.sha||'') + '\',\'g\')">↓ Download</button>' : ''}
           <div style="margin-left:auto;font-family:var(--mono);font-size:9px;color:var(--slate);opacity:.35;">${doc.id} · v${doc.currentVersion}</div>
@@ -5805,10 +5806,10 @@ function openTaskWorkspace(taskId) {
       <button style="color:var(--slate);opacity:.5;font-size:16px;cursor:pointer;border:none;background:none;" onclick="closeM('m-ob-workspace')">✕</button>
     </div>
     <div style="padding:14px 16px;">
-      ${raw.blockedBy ? `<div style="background:var(--ember-p);border-radius:var(--r-sm);padding:10px 12px;border-left:3px solid var(--ember);margin-bottom:10px;font-size:12px;color:var(--ink);">⛔ <strong>Blocked:</strong> ${raw.blockedBy}</div>` : ''}
+      ${raw.blockedBy ? `<div style="background:var(--ember-p);border-radius:var(--r-sm);padding:10px 12px;border-left:3px solid var(--ember);margin-bottom:10px;font-size:12px;color:var(--ink);"> <strong>Blocked:</strong> ${raw.blockedBy}</div>` : ''}
       <div style="display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap;">
-        ${raw.status !== 'BLOCKED' ? `<button class="btn btn-v btn-sm" onclick="completeTask('${raw.id}')">Mark complete & log time →</button>` : ''}
-        <button class="btn btn-ghost btn-sm" onclick="NAV.openMatter('${raw.matter}')">Open matter →</button>
+        ${raw.status !== 'BLOCKED' ? `<button class="btn btn-v btn-sm" onclick="completeTask('${raw.id}')">Mark complete & log time</button>` : ''}
+        <button class="btn btn-ghost btn-sm" onclick="NAV.openMatter('${raw.matter}')">Open matter</button>
       </div>
       <div style="font-size:11px;font-weight:500;color:var(--ink);margin-bottom:6px;">Time entries for this task</div>
       ${TIME_ENTRIES.filter(te => te.task === taskId || te.matter === raw.matter).slice(0,2).map(te => `
@@ -5845,8 +5846,8 @@ function openTimeLogger(taskId) {
       <div class="time-logger">
         <div class="tl-timer" id="tl-timer-display">0:00:00</div>
         <div class="tl-controls">
-          <button class="btn btn-v btn-sm" id="tl-start-btn" onclick="startTimer()">▶ Start timer</button>
-          <button class="btn btn-ghost btn-sm" onclick="stopTimer()">◼ Stop</button>
+          <button class="btn btn-v btn-sm" id="tl-start-btn" onclick="startTimer()"> Start timer</button>
+          <button class="btn btn-ghost btn-sm" onclick="stopTimer()"> Stop</button>
         </div>
       </div>
       <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px;">
@@ -5867,7 +5868,7 @@ function startTimer() {
   if (timerRunning) return;
   timerRunning = true;
   const btn = document.getElementById('tl-start-btn');
-  if (btn) btn.textContent = '⏱ Running…';
+  if (btn) btn.textContent = ' Running…';
   timerInterval = setInterval(() => {
     timerSeconds++;
     const h = Math.floor(timerSeconds/3600), m = Math.floor((timerSeconds%3600)/60), s = timerSeconds%60;
@@ -5991,7 +5992,7 @@ function openInvoiceWorkspace(invId) {
       <button style="color:var(--slate);opacity:.5;font-size:16px;cursor:pointer;border:none;background:none;" onclick="closeM('m-ob-workspace')">✕</button>
     </div>
     <div style="padding:14px 16px;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><div class="inv-status ${inv.status.toLowerCase()}">${inv.status}</div>${inv.status === 'ISSUED' ? '<button class="btn btn-v btn-sm" onclick="t(\'Payment recorded\',\'UGX 4,382,500 · KSC-INV-2026-0078 · Marked paid\',\'g\');closeM(\'m-ob-workspace\')">Record payment →</button>' : ''}</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><div class="inv-status ${inv.status.toLowerCase()}">${inv.status}</div>${inv.status === 'ISSUED' ? '<button class="btn btn-v btn-sm" onclick="t(\'Payment recorded\',\'UGX 4,382,500 · KSC-INV-2026-0078 · Marked paid\',\'g\');closeM(\'m-ob-workspace\')">Record payment</button>' : ''}</div>
       <div class="invoice-card">
         <div style="padding:12px 14px;">
           ${inv.lines.map(l=>`<div class="inv-line"><div><div style="font-size:12px;font-weight:500;color:var(--ink);">${l.desc}</div>${l.hours ? `<div style="font-family:var(--mono);font-size:9px;color:var(--slate);opacity:.45;">${l.hours}</div>` : ''}</div><div class="inv-amount">${formatter(l.amount)}</div></div>`).join('')}
@@ -6021,7 +6022,7 @@ function openNewInvoice() {
       ${billable.map(te => `<div class="time-entry-row"><div style="flex:1;"><div class="ter-desc">${te.desc}</div><div class="ter-meta">${te.advocate} · ${te.date} · ${te.duration}</div></div><div style="font-family:var(--mono);font-size:11px;font-weight:500;color:var(--ink);">${formatter(te.amount)}</div></div>`).join('')}
       <div style="display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid rgba(28,43,43,.08);margin-top:4px;font-size:13px;font-weight:600;"><span>Subtotal</span><span style="font-family:var(--mono);color:var(--vd);">${formatter(subtotal)}</span></div>
       <div style="display:flex;gap:7px;margin-top:10px;">
-        <button class="btn btn-v btn-full" onclick="t('Invoice created','KSC-INV-2026-0079 · Draft · Awaiting partner approval before issue','g');closeM('m-ob-workspace')">Create draft invoice →</button>
+        <button class="btn btn-v btn-full" onclick="t('Invoice created','KSC-INV-2026-0079 · Draft · Awaiting partner approval before issue','g');closeM('m-ob-workspace')">Create draft invoice</button>
       </div>
       <div style="margin-top:6px;font-size:10px;color:var(--slate);">Draft invoices require partner approval before issue to the client. The invoice lifecycle: Draft → Approved → Issued → Paid.</div>
     </div>`;
@@ -6095,17 +6096,17 @@ function renderMondayBrief() {
     <div class="mb-attention">3 things require your attention today:</div>
     <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
       <div style="display:flex;align-items:flex-start;gap:9px;padding:10px 12px;background:var(--ember-p);border-radius:var(--r-sm);border-left:3px solid var(--ember);cursor:pointer;" onclick="NAV.openDocument('witness-statement','approval')">
-        <span style="font-size:16px;flex-shrink:0;">⛔</span>
+        <span style="font-size:16px;flex-shrink:0;"></span>
         <div style="flex:1;"><div style="font-size:12px;font-weight:500;color:var(--ink);">Witness statement — partner approval required</div><div style="font-size:11px;color:var(--slate);">KSC-2026-0891 · Filing deadline today at 5:00 PM · Class A</div></div>
         <span style="font-family:var(--mono);font-size:9px;color:var(--ember);">Urgent →</span>
       </div>
       <div style="display:flex;align-items:flex-start;gap:9px;padding:10px 12px;background:rgba(139,115,53,.07);border-radius:var(--r-sm);border-left:3px solid var(--gold-d);cursor:pointer;" onclick="NAV.openMatter('KSC-2026-0891','court')">
-        <span style="font-size:16px;flex-shrink:0;">⚖️</span>
+        <span style="font-size:16px;flex-shrink:0;"></span>
         <div style="flex:1;"><div style="font-size:12px;font-weight:500;color:var(--ink);">Scheduling Conference — tomorrow 9:30 AM</div><div style="font-size:11px;color:var(--slate);">KSC-2026-0891 · High Court Commercial Division · Conference brief needed</div></div>
         <span style="font-family:var(--mono);font-size:9px;color:var(--gold-d);">Prepare →</span>
       </div>
       <div style="display:flex;align-items:flex-start;gap:9px;padding:10px 12px;background:rgba(37,99,168,.06);border-radius:var(--r-sm);border-left:3px solid var(--sky);cursor:pointer;" onclick="openCreateTask('KSC-2026-0891','Obtain certified account statement from Equity Bank')">
-        <span style="font-size:16px;flex-shrink:0;">📋</span>
+        <span style="font-size:16px;flex-shrink:0;"></span>
         <div style="flex:1;"><div style="font-size:12px;font-weight:500;color:var(--ink);">Client account statement — missing from matter record</div><div style="font-size:11px;color:var(--slate);">KSC-2026-0891 · Required for trial · Amount disputed by defendant</div></div>
         <span style="font-family:var(--mono);font-size:9px;color:var(--sky);">Create task →</span>
       </div>
@@ -6195,7 +6196,7 @@ function openCreateTask(matterId, prefillTitle) {
           </select>
         </div>
         <div style="display:flex;gap:7px;margin-top:4px;">
-          <button class="btn btn-v btn-full" onclick="submitCreateTask()">Create task &amp; assign →</button>
+          <button class="btn btn-v btn-full" onclick="submitCreateTask()">Create task &amp; assign</button>
           <button class="btn btn-ghost btn-sm" onclick="closeM('m-ob-workspace')">Cancel</button>
         </div>
       </div>
@@ -6290,8 +6291,8 @@ function renderComposeBox(matterId, context, placeholder) {
       <div class="compose-footer">
         <span style="font-family:var(--mono);font-size:9px;color:var(--slate);opacity:.35;">${context || matterId}</span>
         <span style="flex:1;"></span>
-        <button class="compose-footer-btn" onclick="t('File attached','Document linked to comment','g')">📎 Attach</button>
-        <button class="btn btn-v btn-sm" style="font-size:10px;" onclick="submitComment('${matterId}','${context || ''}')">Post →</button>
+        <button class="compose-footer-btn" onclick="t('File attached','Document linked to comment','g')"> Attach</button>
+        <button class="btn btn-v btn-sm" style="font-size:10px;" onclick="submitComment('${matterId}','${context || ''}')">Post</button>
       </div>
     </div>`;
 }
@@ -6365,7 +6366,7 @@ function openMessageThread(threadId, otherName) {
     </div>
     <div class="msg-compose" style="border-top:1px solid rgba(28,43,43,.08);padding:10px 14px;display:flex;gap:8px;align-items:flex-end;">
       <textarea id="msg-input-${threadId}" style="flex:1;font-size:13px;color:var(--ink);background:var(--parch);border:1.5px solid rgba(28,43,43,.1);border-radius:var(--r-sm);padding:8px 12px;outline:none;font-family:var(--sans);resize:none;min-height:40px;transition:border-color .15s;" placeholder="Message Margaret…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage('${threadId}');}"></textarea>
-      <button class="btn btn-v btn-sm" onclick="sendMessage('${threadId}')">Send →</button>
+      <button class="btn btn-v btn-sm" onclick="sendMessage('${threadId}')">Send</button>
     </div>`;
   openM('m-ob-workspace');
   setTimeout(() => document.getElementById('msg-input-' + threadId)?.focus(), 100);
@@ -6426,7 +6427,7 @@ function openEditableInvoice(invId) {
       <div style="display:flex;gap:7px;margin-top:8px;flex-wrap:wrap;">
         <button class="btn btn-v btn-sm" onclick="saveInvoiceEdits('${invId}')">Save changes</button>
         <button class="btn btn-ghost btn-sm" onclick="t('Expense added','New expense line added to invoice','g')">+ Add expense</button>
-        ${inv.status === 'ISSUED' ? '' : '<button class="btn btn-v btn-sm" onclick="t(\'Invoice issued\',\''+inv.id+' issued to '+inv.client+'\',\'g\');closeM(\'m-ob-workspace\')">Issue to client →</button>'}
+        ${inv.status === 'ISSUED' ? '' : '<button class="btn btn-v btn-sm" onclick="t(\'Invoice issued\',\''+inv.id+' issued to '+inv.client+'\',\'g\');closeM(\'m-ob-workspace\')">Issue to client</button>'}
         <button class="btn btn-ghost btn-sm" onclick="closeM('m-ob-workspace')">Cancel</button>
       </div>
     </div>`;
@@ -6554,12 +6555,12 @@ function openDocActions(docId, anchorEl) {
   const menu = document.createElement('div');
   menu.className = 'doc-action-menu';
   menu.innerHTML = `
-    <div class="doc-action-item" onclick="t('New version','Create v${(doc?.currentVersion||1)+1} — previous version archived','g');document.querySelectorAll(\'.doc-action-menu\').forEach(m=>m.remove())">✏ Create new version</div>
+    <div class="doc-action-item" onclick="t('New version','Create v${(doc?.currentVersion||1)+1} — previous version archived','g');document.querySelectorAll(\'.doc-action-menu\').forEach(m=>m.remove())"> Create new version</div>
     <div class="doc-action-item" onclick="t('Shared','Document link copied — access controlled by Spine','g');document.querySelectorAll(\'.doc-action-menu\').forEach(m=>m.remove())">↗ Share (access controlled)</div>
     <div class="doc-action-item" onclick="t('Downloading','${docId} · SHA-256 verified','g');document.querySelectorAll(\'.doc-action-menu\').forEach(m=>m.remove())">↓ Download</div>
-    <div class="doc-action-item" onclick="t('Moved to archive','Document archived · Audit event recorded · Record preserved','g');document.querySelectorAll(\'.doc-action-menu\').forEach(m=>m.remove())">📁 Archive</div>
+    <div class="doc-action-item" onclick="t('Moved to archive','Document archived · Audit event recorded · Record preserved','g');document.querySelectorAll(\'.doc-action-menu\').forEach(m=>m.remove())"> Archive</div>
     ${!isSealed ? '<div class="doc-action-item" onclick="t(\'Withdrawn\',\'Document withdrawn from review — returned to draft · Audit recorded\',\'b\');document.querySelectorAll(\'.doc-action-menu\').forEach(m=>m.remove())">↩ Withdraw from review</div>' : ''}
-    <div class="doc-action-item" style="border-top:1px solid rgba(28,43,43,.08);margin-top:3px;padding-top:6px;color:var(--slate);opacity:.5;font-size:10px;cursor:default;">⚠ Permanent deletion requires retention policy authorisation</div>`;
+    <div class="doc-action-item" style="border-top:1px solid rgba(28,43,43,.08);margin-top:3px;padding-top:6px;color:var(--slate);opacity:.5;font-size:10px;cursor:default;"> Permanent deletion requires retention policy authorisation</div>`;
   if (anchorEl) {
     anchorEl.style.position = 'relative';
     anchorEl.appendChild(menu);
@@ -6615,14 +6616,14 @@ function openClientMessage() {
       <div style="flex:1;"><div style="font-size:14px;font-weight:500;color:var(--white);">James Opolot</div><div style="font-size:10px;color:var(--slate);">In-house Counsel · Equity Bank · Client-facing channel</div></div>
       <button style="color:var(--slate);opacity:.5;font-size:16px;cursor:pointer;border:none;background:none;" onclick="closeM('m-ob-workspace')">✕</button>
     </div>
-    <div style="padding:12px 16px;background:rgba(37,99,168,.06);font-size:11px;color:var(--sky);border-bottom:1px solid rgba(28,43,43,.06);">⚠ Client-facing channel · This message will be visible to James Opolot and recorded in the matter communications log</div>
+    <div style="padding:12px 16px;background:rgba(37,99,168,.06);font-size:11px;color:var(--sky);border-bottom:1px solid rgba(28,43,43,.06);"> Client-facing channel · This message will be visible to James Opolot and recorded in the matter communications log</div>
     <div style="padding:14px 16px;">
       <div class="compose-box">
         <textarea class="compose-input" id="client-msg-input" placeholder="Message to James Opolot…&#10;&#10;e.g. Dear Counsel Opolot, the Scheduling Conference has been confirmed for 18 August 2026 at 9:30 AM…" style="min-height:120px;"></textarea>
         <div class="compose-footer">
-          <button class="compose-footer-btn">📎 Attach document</button>
+          <button class="compose-footer-btn"> Attach document</button>
           <span style="flex:1;"></span>
-          <button class="btn btn-v btn-sm" onclick="sendClientMessage()">Send to client →</button>
+          <button class="btn btn-v btn-sm" onclick="sendClientMessage()">Send to client</button>
         </div>
       </div>
       <div style="margin-top:8px;font-size:10px;color:var(--slate);line-height:1.55;">Client messages are logged and IRIS-sealed. They are visible in the client portal. Internal notes use the internal channel.</div>
@@ -6826,15 +6827,15 @@ function openNewDocument(matterId) {
     <div style="padding:14px 16px;">
       <div class="doc-chooser">
         <div class="dc-opt" onclick="closeM('m-ob-workspace');openDocEditor('','',false)">
-          <div class="dc-opt-icon">✏️</div>
+          <div class="dc-opt-icon"></div>
           <div><div class="dc-opt-title">Draft from scratch</div><div class="dc-opt-sub">Open a blank document and start typing</div></div>
         </div>
         <div class="dc-opt" onclick="closeM('m-ob-workspace');openDocEditorFromTemplate()">
-          <div class="dc-opt-icon">📋</div>
+          <div class="dc-opt-icon"></div>
           <div><div class="dc-opt-title">Use firm template</div><div class="dc-opt-sub">Witness statement, demand letter, plaint, affidavit…</div></div>
         </div>
         <div class="dc-opt" onclick="closeM('m-ob-workspace');openDocUpload('')">
-          <div class="dc-opt-icon">📤</div>
+          <div class="dc-opt-icon"></div>
           <div><div class="dc-opt-title">Upload existing document</div><div class="dc-opt-sub">PDF or Word — uploaded as a draft, not yet sealed</div></div>
         </div>
       </div>
@@ -6859,7 +6860,7 @@ function openDocEditorFromTemplate() {
         ['Notice of Appeal','Notice and grounds of appeal'],
         ['Consent Order','Settlement and consent order template']
       ].map(([name, desc]) => `<div class="dc-opt" onclick="closeM('m-ob-workspace');openDocEditor('${name}','',true)">
-        <div class="dc-opt-icon">📄</div>
+        <div class="dc-opt-icon"></div>
         <div><div class="dc-opt-title">${name}</div><div class="dc-opt-sub">${desc}</div></div>
       </div>`).join('')}
     </div>`;
@@ -6899,7 +6900,7 @@ function buildDocEditor(title, content) {
         <input class="de-title-input" id="de-title-input" value="${title}" placeholder="Document title…">
         <span class="de-status" id="de-save-status">Unsaved</span>
         <button class="btn btn-ghost btn-sm" onclick="saveDocDraft()" style="flex-shrink:0;">Save draft</button>
-        <button class="btn btn-v btn-sm" onclick="submitDocForReview()" style="flex-shrink:0;">Submit for review →</button>
+        <button class="btn btn-v btn-sm" onclick="submitDocForReview()" style="flex-shrink:0;">Submit for review</button>
       </div>
       <div class="de-toolbar">
         <button class="de-tb-btn" onclick="execFmt('bold')"><strong>B</strong></button>
@@ -6909,7 +6910,7 @@ function buildDocEditor(title, content) {
         <button class="de-tb-btn" onclick="addParagraph()">¶ New paragraph</button>
         <button class="de-tb-btn" onclick="execFmt('insertOrderedList')">1. List</button>
         <div class="de-tb-sep"></div>
-        <button class="de-tb-btn" onclick="askAIAssist()">✨ AI assist</button>
+        <button class="de-tb-btn" onclick="askAIAssist()"> AI assist</button>
         <div class="de-tb-sep"></div>
         <select class="de-tb-btn" id="de-matter-select" style="cursor:pointer;" onchange="editorMatter=this.value">
           <option value="KSC-2026-0891">KSC-2026-0891</option>
@@ -7012,7 +7013,7 @@ NAV._setMatterTab = function(tab) {
       if (!panel.querySelector('.de-new-doc-btn')) {
         const btn = document.createElement('div');
         btn.style.cssText = 'padding:0 0 10px;';
-        btn.innerHTML = `<div class="quick-actions"><button class="qa-chip" onclick="openNewDocument()"><span class="qa-chip-icon">📄</span>New document</button><button class="qa-chip" onclick="openDocUpload('')"><span class="qa-chip-icon">📤</span>Upload</button></div>`;
+        btn.innerHTML = `<div class="quick-actions"><button class="qa-chip" onclick="openNewDocument()"><span class="qa-chip-icon"></span>New document</button><button class="qa-chip" onclick="openDocUpload('')"><span class="qa-chip-icon"></span>Upload</button></div>`;
         btn.className = 'de-new-doc-btn';
         panel.insertBefore(btn, panel.firstChild);
       }
@@ -7039,11 +7040,11 @@ setTimeout(() => {
 <!-- Scenario A Banner — shown when scenario is active -->
 <div class="scenario-banner" id="sa-banner">
   <div>
-    <div class="scenario-banner-text">⚠ Scenario A — Institutional Stress Test: Missed Deadline</div>
+    <div class="scenario-banner-text"> Scenario A — Institutional Stress Test: Missed Deadline</div>
     <div class="scenario-banner-sub">Tento Mukasa failed to deliver. Margaret is reconstructing the institutional record.</div>
   </div>
   <div class="scenario-banner-acts">
-    <button class="btn btn-sm" style="background:rgba(255,255,255,.15);color:var(--white);" onclick="openScenarioA()">Open reconstruction →</button>
+    <button class="btn btn-sm" style="background:rgba(255,255,255,.15);color:var(--white);" onclick="openScenarioA()">Open reconstruction</button>
     <button class="btn btn-sm" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);" onclick="exitScenario()">Exit scenario</button>
   </div>
 </div>
@@ -7143,7 +7144,7 @@ setTimeout(() => {
               <div class="recon-timestamp">14 Aug · 10:31 AM → 15 Aug · 9:00 AM</div>
               <div class="recon-actor">Tendo Mukasa · No activity recorded</div>
               <div class="recon-action">22.5 hours. No document opened. No draft created. No internal note. No communication.</div>
-              <div class="recon-iris miss">⚠ No IRIS events from Tendo Mukasa during this period</div>
+              <div class="recon-iris miss"> No IRIS events from Tendo Mukasa during this period</div>
               <div class="recon-expand">The system shows a 22.5-hour gap in Tendo's activity on this matter. He accessed neither the matter workspace, the document vault, nor the drafting environment. No draft was started. The silence itself is evidence — the system records not only what happened, but what did not happen and when.</div>
             </div>
           </div>
@@ -7163,7 +7164,7 @@ setTimeout(() => {
               <div class="recon-timestamp">15 Aug · 9:00 AM → 16 Aug · 9:00 AM</div>
               <div class="recon-actor">Peter Ssali · No escalation action recorded</div>
               <div class="recon-action">Peter received the reminder. He did not follow up with Tendo, did not escalate to Margaret, did not reassign the task.</div>
-              <div class="recon-iris miss">⚠ No escalation event. No internal communication. Silence on record.</div>
+              <div class="recon-iris miss"> No escalation event. No internal communication. Silence on record.</div>
               <div class="recon-expand">Peter received the 48-hour reminder at 9:00 AM on 15 August. For the next 24 hours, the system records no action from Peter on this task: no message to Tendo, no escalation to Margaret, no reassignment. This is institutional silence — and it is sealed in the record just as firmly as action would be.</div>
             </div>
           </div>
@@ -7179,11 +7180,11 @@ setTimeout(() => {
           </div>
         </div>
         <div class="recon-gap">
-          <div class="recon-gap-icon">⛔</div>
+          <div class="recon-gap-icon"></div>
           <div>
             <div class="recon-gap-title">The institutional gap — clearly visible</div>
             <div class="recon-gap-text">Tendo was assigned and acknowledged. The system reminded him at 48 hours. No draft appeared. Peter received the same reminder and did not act. Margaret received the final escalation at 24 hours. The gap runs from 14 Aug 10:31 AM to 17 Aug 5:00 PM — 78.5 hours of institutional exposure, reconstructed from the record without asking anyone.</div>
-            <div class="recon-gap-iris">⚠ No IRIS seal on any draft. No filing receipt. Deadline passed.</div>
+            <div class="recon-gap-iris"> No IRIS seal on any draft. No filing receipt. Deadline passed.</div>
           </div>
         </div>
       </div>
@@ -7217,7 +7218,7 @@ setTimeout(() => {
               <div class="recon-timestamp">16 Aug 2026 · 4:00 PM — Internal deadline passed</div>
               <div class="recon-actor">Tendo Mukasa · Draft still incomplete</div>
               <div class="recon-action">Internal deadline set by Peter (16 Aug 4:00 PM) passed. Draft exists but is not submitted. 7 of 12 required paragraphs completed. No submission to Peter.</div>
-              <div class="recon-iris miss">⚠ Internal deadline missed. No submission event. Draft at 58% completion.</div>
+              <div class="recon-iris miss"> Internal deadline missed. No submission event. Draft at 58% completion.</div>
               <div class="recon-expand">The system shows that at the internal deadline of 4:00 PM on 16 August, Tendo's draft was at 58% completion — 7 of 12 paragraphs. He did not submit it, did not message Peter, and did not raise a flag. The record shows the draft's completion status at that exact time.</div>
             </div>
           </div>
@@ -7227,7 +7228,7 @@ setTimeout(() => {
               <div class="recon-timestamp">16 Aug 2026 · 4:00 PM → 17 Aug 5:00 PM</div>
               <div class="recon-actor">Tendo Mukasa · Intermittent activity</div>
               <div class="recon-action">Draft continued in sessions: 16 Aug 6:14 PM (30 min), 17 Aug 7:45 AM (45 min), 17 Aug 11:22 AM (22 min). Draft never submitted to Peter. Final status at 5:00 PM: complete but unsent.</div>
-              <div class="recon-iris miss">⚠ Draft completed at 17 Aug · 4:58 PM. No submission event before deadline.</div>
+              <div class="recon-iris miss"> Draft completed at 17 Aug · 4:58 PM. No submission event before deadline.</div>
               <div class="recon-expand">The draft was completed at 4:58 PM — two minutes before the deadline. But it was never submitted to Peter for review. It sat in Tendo's draft folder. The court deadline passed at 5:00 PM with a completed witness statement that was never filed because it was never submitted for approval. Two minutes and one missing step.</div>
             </div>
           </div>
@@ -7237,7 +7238,7 @@ setTimeout(() => {
               <div class="recon-timestamp">17 Aug 2026 · 5:00 PM</div>
               <div class="recon-actor">Court deadline — passed</div>
               <div class="recon-action">Witness statement not filed. No IRIS seal. No filing receipt. Scheduling Order para 1 breached.</div>
-              <div class="recon-iris miss">⚠ No filing event. Court deadline passed. KSC-2026-0891 — institutional exposure confirmed.</div>
+              <div class="recon-iris miss"> No filing event. Court deadline passed. KSC-2026-0891 — institutional exposure confirmed.</div>
             </div>
           </div>
         </div>
@@ -7257,7 +7258,7 @@ setTimeout(() => {
           <div class="verdict-point"><div class="verdict-dot urg"></div><span>Peter's failure: He received the 48-hour and 24-hour reminders. He did not follow up. He did not escalate. The record shows his inaction.</span></div>
           <div class="verdict-consequence">The witness statement was not missed because nobody wrote it. It was missed because the submission step — Tendo → Peter → approval chain — was never triggered. The institutional process broke at the handover, not at the drafting. This distinction matters for the response, the remediation, and the firm's future process design.</div>
           <div class="verdict-action">
-            <button class="btn btn-ruby btn-sm" onclick="saNext()">See the consequence →</button>
+            <button class="btn btn-ruby btn-sm" onclick="saNext()">See the consequence</button>
           </div>
         </div>
       </div>
@@ -7273,10 +7274,10 @@ setTimeout(() => {
           <div class="card" style="border-left:3px solid var(--sky);">
             <div style="font-size:12px;font-weight:500;color:var(--sky);margin-bottom:6px;">What the architecture enables — right now</div>
             <div style="display:flex;flex-direction:column;gap:7px;">
-              <div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;"><div style="font-size:14px;">📋</div><div><strong>Application for leave to file late</strong> — system can generate a draft affidavit in support, attaching the IRIS reconstruction as evidence of the institutional process. The reconstruction itself becomes the affidavit's exhibit.</div></div>
-              <div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;"><div style="font-size:14px;">🔗</div><div><strong>Immediate filing</strong> — the completed draft exists at IRIS: KSC-2026-0891-DOC-005. Margaret can approve it now, seal it, and have it ready for the application tomorrow.</div></div>
-              <div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;"><div style="font-size:14px;">📧</div><div><strong>Client notification</strong> — James Opolot must be informed tonight. The system generates a factual client notification — no spin, no deflection — with proposed remediation steps.</div></div>
-              <div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;"><div style="font-size:14px;">⚠️</div><div><strong>Internal consequence</strong> — the record shows both Tendo's process failure and Peter's failure to escalate. This is now a firm management matter, distinct from the legal matter. The audit trail supports a formal internal review.</div></div>
+              <div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;"><div style="font-size:14px;"></div><div><strong>Application for leave to file late</strong> — system can generate a draft affidavit in support, attaching the IRIS reconstruction as evidence of the institutional process. The reconstruction itself becomes the affidavit's exhibit.</div></div>
+              <div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;"><div style="font-size:14px;"></div><div><strong>Immediate filing</strong> — the completed draft exists at IRIS: KSC-2026-0891-DOC-005. Margaret can approve it now, seal it, and have it ready for the application tomorrow.</div></div>
+              <div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;"><div style="font-size:14px;"></div><div><strong>Client notification</strong> — James Opolot must be informed tonight. The system generates a factual client notification — no spin, no deflection — with proposed remediation steps.</div></div>
+              <div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;"><div style="font-size:14px;"></div><div><strong>Internal consequence</strong> — the record shows both Tendo's process failure and Peter's failure to escalate. This is now a firm management matter, distinct from the legal matter. The audit trail supports a formal internal review.</div></div>
             </div>
           </div>
           <div class="card" style="background:var(--ink);">
@@ -7284,7 +7285,7 @@ setTimeout(() => {
             <div style="font-family:var(--serif);font-size:16px;font-weight:400;color:var(--white);line-height:1.4;margin-bottom:10px;">The system did not prevent the missed deadline.<br>But it made the reconstruction complete, instant, and uncontestable.</div>
             <div style="font-size:12px;color:rgba(242,237,228,.7);line-height:1.65;">Margaret does not ask Tendo what happened. She does not ask Peter why he did not follow up. She does not ask the system to generate an explanation. She reads the record. The record answers every question with a timestamp, a sealed hash, and a Bridge Chain anchor. Identity ≠ Authority is the next test — but the foundation for it is this: <strong style="color:var(--vu);">what happened, when, and by whom is never in dispute.</strong></div>
             <div style="display:flex;gap:7px;margin-top:12px;flex-wrap:wrap;">
-              <button class="btn btn-v btn-sm" onclick="t('Approval started','Witness statement sent to Margaret for immediate approval','g');closeScenario()">Approve draft now →</button>
+              <button class="btn btn-v btn-sm" onclick="t('Approval started','Witness statement sent to Margaret for immediate approval','g');closeScenario()">Approve draft now</button>
               <button class="btn btn-sm" style="background:rgba(255,255,255,.08);color:rgba(242,237,228,.7);" onclick="t('Client notified','James Opolot · Equity Bank · Notification sent','b');closeScenario()">Notify client</button>
               <button class="btn btn-sm" style="background:rgba(255,255,255,.08);color:rgba(242,237,228,.7);" onclick="closeScenario()">Close scenario</button>
             </div>
@@ -7296,7 +7297,7 @@ setTimeout(() => {
       <div class="sa-nav">
         <button class="btn btn-out btn-sm" id="sa-back-btn" onclick="saPrev()" style="visibility:hidden;">← Back</button>
         <div style="font-family:var(--mono);font-size:9px;color:var(--slate);opacity:.4;" id="sa-step-label-nav">The situation</div>
-        <button class="btn btn-ruby btn-sm" id="sa-next-btn" onclick="saNext()">Continue →</button>
+        <button class="btn btn-ruby btn-sm" id="sa-next-btn" onclick="saNext()">Continue</button>
       </div>
 
     </div>
@@ -7375,7 +7376,7 @@ setTimeout(() => {
         <div class="sa-step-label">The system's response — the denial</div>
         <div class="deny-screen">
           <div class="deny-top" style="animation:authDeny .6s ease;">
-            <div class="deny-icon">🔒</div>
+            <div class="deny-icon"></div>
             <div class="deny-title">Action not authorised</div>
             <div class="deny-body">You do not have authority to approve and file work product on this matter without partner counter-signature. This is not a system error. It is the matter's defined authority model.</div>
             <div class="deny-detail">
@@ -7401,7 +7402,7 @@ setTimeout(() => {
           <div class="card" style="border-left:3px solid var(--sky);">
             <div style="font-size:12px;font-weight:500;color:var(--sky);margin-bottom:6px;">Option 1 — Emergency partner notification</div>
             <div style="font-size:12px;color:var(--ink);line-height:1.6;margin-bottom:9px;">The system sends an urgent notification to Margaret's phone with the approval action pre-loaded. She reviews and approves in one tap. The system records her approval with her identity, timestamp, and IRIS seal.</div>
-            <button class="btn btn-sky btn-sm" onclick="t('Urgent notification sent','Margaret Ssempebwa · Emergency approval request · 4:44 PM','b')">Send urgent notification to Margaret →</button>
+            <button class="btn btn-sky btn-sm" onclick="t('Urgent notification sent','Margaret Ssempebwa · Emergency approval request · 4:44 PM','b')">Send urgent notification to Margaret</button>
           </div>
           <div class="card" style="border-left:3px solid var(--vd);">
             <div style="font-size:12px;font-weight:500;color:var(--vd);margin-bottom:6px;">Option 2 — Delegated emergency authority</div>
@@ -7429,7 +7430,7 @@ setTimeout(() => {
           <div class="verdict-point"><div class="verdict-dot warn"></div><span>The attempt itself is institutional information: Peter was under pressure and tried to act outside his authority. That is relevant to the firm's understanding of what happened and why.</span></div>
           <div class="verdict-consequence">Authority in a professional institution is not a technical restriction. It is a structural commitment: that certain actions require certain authorisation, always, including under pressure — especially under pressure. A system that enforces this is not bureaucratic. It is the only version that is institutionally trustworthy.</div>
           <div class="verdict-action">
-            <button class="btn btn-sky btn-sm" onclick="closeSb();launchScenarioC()">Continue to Scenario C →</button>
+            <button class="btn btn-sky btn-sm" onclick="closeSb();launchScenarioC()">Continue to Scenario C</button>
             <button class="btn btn-sm" style="background:rgba(255,255,255,.08);color:rgba(242,237,228,.7);" onclick="closeSb()">Close</button>
           </div>
         </div>
@@ -7439,7 +7440,7 @@ setTimeout(() => {
       <div class="sa-nav">
         <button class="btn btn-out btn-sm" id="sb-back-btn" onclick="sbPrev()" style="visibility:hidden;">← Back</button>
         <div style="font-family:var(--mono);font-size:9px;color:var(--slate);opacity:.45;" id="sb-step-label-nav">The authority model</div>
-        <button class="btn btn-sky btn-sm" id="sb-next-btn" onclick="sbNext()">Continue →</button>
+        <button class="btn btn-sky btn-sm" id="sb-next-btn" onclick="sbNext()">Continue</button>
       </div>
     </div>
   </div>
@@ -7526,7 +7527,7 @@ setTimeout(() => {
             </div>
           </div>
           <div class="hash-event anchor" onclick="this.classList.toggle('open')">
-            <div class="hash-dot anchor">⛓</div>
+            <div class="hash-dot anchor"></div>
             <div class="hash-info">
               <div class="hash-timestamp">17 Aug 2026 · 2:16 PM</div>
               <div class="hash-actor">IRIS — Seal generated and Bridge Chain anchored</div>
@@ -7536,7 +7537,7 @@ setTimeout(() => {
             </div>
           </div>
           <div class="hash-event filed" onclick="this.classList.toggle('open')">
-            <div class="hash-dot filed">📋</div>
+            <div class="hash-dot filed"></div>
             <div class="hash-info">
               <div class="hash-timestamp">17 Aug 2026 · 3:44 PM</div>
               <div class="hash-actor">Peter Ssali — Filed with High Court</div>
@@ -7643,7 +7644,7 @@ setTimeout(() => {
       <div class="sa-nav" style="border-color:rgba(255,255,255,.06);">
         <button class="btn btn-out btn-sm" id="sc-back-btn" onclick="scPrev()" style="visibility:hidden;border-color:rgba(255,255,255,.1);color:var(--slate);">← Back</button>
         <div style="font-family:var(--mono);font-size:9px;color:var(--slate);opacity:.4;" id="sc-step-label-nav">The allegation</div>
-        <button class="btn btn-v btn-sm" id="sc-next-btn" onclick="scNext()">Continue →</button>
+        <button class="btn btn-v btn-sm" id="sc-next-btn" onclick="scNext()">Continue</button>
       </div>
     </div>
   </div>
@@ -7690,7 +7691,7 @@ setTimeout(() => {
       <div class="transfer-info"><div class="transfer-ts">3 Nov 2025 → 17 Aug 2026 · All matter events</div><div class="transfer-actor">Peter Ssali — 31 audit events, permanently attributed</div><div class="transfer-action">Plaint filed. Client conferences. Task assignments. Reviews. Approvals. Court appearances. All sealed.</div><div class="transfer-iris">IRIS: AUD-001 through AUD-031 · Peter Ssali · Immutable</div><div class="transfer-expand">31 audit events spanning 10 months. Each permanently attributed to Peter Ssali. Each sealed with his IRIS identity and a Bridge Chain anchor. None can be reassigned to James Ouma.</div></div>
      </div>
      <div class="transfer-event" onclick="this.classList.toggle('open')">
-      <div class="transfer-dot lock">🔒</div>
+      <div class="transfer-dot lock"></div>
       <div class="transfer-info"><div class="transfer-ts">31 Aug 2026 · 5:00 PM — Departure sealed</div><div class="transfer-actor">Margaret Ssempebwa — departure event recorded</div><div class="transfer-action">Peter Ssali's access suspended. Departure sealed on IRIS. His historical record remains intact and permanently accessible.</div><div class="transfer-iris">IRIS: KSC-FIRM-2026-DEPART-PS · SHA: d4f2a1c8… · Block #1,308,441</div><div class="transfer-expand">Peter's departure is itself a sealed event. His access is suspended but his record is never deleted. If a client disputes Peter's advice five years from now, the record is still there. Immutable. Attributed. Resolvable.</div></div>
      </div>
     </div>
@@ -7704,7 +7705,7 @@ setTimeout(() => {
       <div class="transfer-info"><div class="transfer-ts">29 Aug 2026 · 9:00 AM — Transfer initiated</div><div class="transfer-actor">Margaret Ssempebwa — authorising transfer</div><div class="transfer-action">KSC-2026-0891 transferred from Peter Ssali to James Ouma. Transfer sealed. Handover session scheduled.</div><div class="transfer-iris">IRIS: KSC-2026-0891-TRANSFER-001 · Margaret Ssempebwa · Block #1,306,221</div><div class="transfer-expand">The transfer is a sealed institutional event: who authorised it, who is leaving, who takes over, when, and why. Cannot be backdated or done silently.</div></div>
      </div>
      <div class="transfer-event" onclick="this.classList.toggle('open')">
-      <div class="transfer-dot handover">📋</div>
+      <div class="transfer-dot handover"></div>
       <div class="transfer-info"><div class="transfer-ts">29 Aug 2026 · 10:00 AM — Handover session sealed</div><div class="transfer-actor">Peter Ssali → James Ouma — recorded briefing</div><div class="transfer-action">Case status, next hearing, outstanding tasks, client relationship, strategy. Peter's briefing sealed as a matter document.</div><div class="transfer-iris">IRIS: KSC-2026-0891-DOC-HANDOVER-001 · Sealed · Block #1,306,448</div><div class="transfer-expand">Peter's handover briefing is a permanent document. James cannot claim he was not briefed. Peter cannot claim he did not hand over. Both are protected.</div></div>
      </div>
      <div class="transfer-event" onclick="this.classList.toggle('open')">
@@ -7750,7 +7751,7 @@ setTimeout(() => {
      <div class="verdict-point"><div class="verdict-dot warn"></div><span>Peter's departure record is permanent. If he later disputes what he did or did not do, the record resolves it. Not memory. Not testimony. The record.</span></div>
      <div class="verdict-consequence">The firm does not lose institutional knowledge when Peter leaves. It loses access to his future judgment — but the record of his past judgment is permanent, complete, and available. This is the difference between an institution that relies on people remembering things and one that has a memory of its own.</div>
      <div class="verdict-action">
-      <button class="btn btn-v btn-sm" onclick="closeSd();launchScenarioE()">Continue to Scenario E →</button>
+      <button class="btn btn-v btn-sm" onclick="closeSd();launchScenarioE()">Continue to Scenario E</button>
       <button class="btn btn-sm" style="background:rgba(255,255,255,.08);color:rgba(242,237,228,.7);" onclick="closeSd()">Close</button>
      </div>
     </div>
@@ -7758,7 +7759,7 @@ setTimeout(() => {
    <div class="sa-nav">
     <button class="btn btn-out btn-sm" id="sd-back-btn" onclick="sdPrev()" style="visibility:hidden;">← Back</button>
     <div style="font-family:var(--mono);font-size:9px;color:var(--slate);opacity:.45;" id="sd-step-label-nav">The situation</div>
-    <button class="btn btn-gold btn-sm" id="sd-next-btn" onclick="sdNext()">Continue →</button>
+    <button class="btn btn-gold btn-sm" id="sd-next-btn" onclick="sdNext()">Continue</button>
    </div>
   </div>
  </div>
@@ -7833,7 +7834,7 @@ setTimeout(() => {
      <div class="verdict-point"><div class="verdict-dot warn"></div><span>The process failure created professional risk for the firm — visible in the audit trail but not charged to the client. The firm knows this. It is on record.</span></div>
      <div class="verdict-consequence">Matter-native billing means the invoice is always justifiable, always traceable, and always honest — because it is generated from the same institutional record that governs everything else. There is no separate billing narrative. There is only the record, read in financial order.</div>
      <div class="verdict-action">
-      <button class="btn btn-v btn-sm" onclick="closeSe();launchScenarioF()">Continue to Scenario F →</button>
+      <button class="btn btn-v btn-sm" onclick="closeSe();launchScenarioF()">Continue to Scenario F</button>
       <button class="btn btn-sm" style="background:rgba(255,255,255,.08);color:rgba(242,237,228,.7);" onclick="closeSe()">Close</button>
      </div>
     </div>
@@ -7841,7 +7842,7 @@ setTimeout(() => {
    <div class="sa-nav">
     <button class="btn btn-out btn-sm" id="se-back-btn" onclick="sePrev()" style="visibility:hidden;">← Back</button>
     <div style="font-family:var(--mono);font-size:9px;color:var(--slate);opacity:.45;" id="se-step-label-nav">The challenge</div>
-    <button class="btn btn-v btn-sm" id="se-next-btn" onclick="seNext()">Continue →</button>
+    <button class="btn btn-v btn-sm" id="se-next-btn" onclick="seNext()">Continue</button>
    </div>
   </div>
  </div>
@@ -7874,9 +7875,9 @@ setTimeout(() => {
    <!-- F2 -->
    <div class="sa-step" id="sf-s2">
     <div class="sa-step-label" style="color:rgba(255,255,255,.3);">Specific documents — who sees what</div>
-    <div class="doc-visibility"><div class="dv-head"><div class="dv-icon">📝</div><div class="dv-name">Margaret's partner assessment note</div><div class="dv-tag privileged">Privileged</div></div><div class="dv-body"><div class="dv-access-row"><div class="dv-access-name">Margaret</div><div class="dv-access-val">Full access — partner</div><div class="dv-access-icon">✅</div></div><div class="dv-access-row"><div class="dv-access-name">Peter</div><div class="dv-access-val">No access — below partner threshold</div><div class="dv-access-icon">🔒</div></div><div class="dv-access-row"><div class="dv-access-name">Tendo</div><div class="dv-access-val">No access</div><div class="dv-access-icon">🔒</div></div><div class="dv-access-row"><div class="dv-access-name">James</div><div class="dv-access-val">No access — client cannot see privileged</div><div class="dv-access-icon">🔒</div></div><div class="dv-access-row"><div class="dv-access-name">Grace</div><div class="dv-access-val">No access — admin sees financial, not privilege</div><div class="dv-access-icon">🔒</div></div></div></div>
-    <div class="doc-visibility"><div class="dv-head"><div class="dv-icon">📋</div><div class="dv-name">Filed witness statement</div><div class="dv-tag client">Client-approved</div></div><div class="dv-body"><div class="dv-access-row"><div class="dv-access-name">Margaret / Peter / Tendo</div><div class="dv-access-val">Full access</div><div class="dv-access-icon">✅</div></div><div class="dv-access-row"><div class="dv-access-name">James</div><div class="dv-access-val">Access — approved for client portal after filing</div><div class="dv-access-icon">✅</div></div><div class="dv-access-row"><div class="dv-access-name">Grace</div><div class="dv-access-val">Metadata only — existence and status, not content</div><div class="dv-access-icon">⚠️</div></div></div></div>
-    <div class="doc-visibility"><div class="dv-head"><div class="dv-icon">💰</div><div class="dv-name">Time entries and billing record</div><div class="dv-tag open">Administrative</div></div><div class="dv-body"><div class="dv-access-row"><div class="dv-access-name">Margaret</div><div class="dv-access-val">Full access</div><div class="dv-access-icon">✅</div></div><div class="dv-access-row"><div class="dv-access-name">Peter / Tendo</div><div class="dv-access-val">Own entries only</div><div class="dv-access-icon">⚠️</div></div><div class="dv-access-row"><div class="dv-access-name">James</div><div class="dv-access-val">Invoice total and breakdown — not individual rates</div><div class="dv-access-icon">⚠️</div></div><div class="dv-access-row"><div class="dv-access-name">Grace</div><div class="dv-access-val">Full access — firm financial operations</div><div class="dv-access-icon">✅</div></div></div></div>
+    <div class="doc-visibility"><div class="dv-head"><div class="dv-icon"></div><div class="dv-name">Margaret's partner assessment note</div><div class="dv-tag privileged">Privileged</div></div><div class="dv-body"><div class="dv-access-row"><div class="dv-access-name">Margaret</div><div class="dv-access-val">Full access — partner</div><div class="dv-access-icon"></div></div><div class="dv-access-row"><div class="dv-access-name">Peter</div><div class="dv-access-val">No access — below partner threshold</div><div class="dv-access-icon"></div></div><div class="dv-access-row"><div class="dv-access-name">Tendo</div><div class="dv-access-val">No access</div><div class="dv-access-icon"></div></div><div class="dv-access-row"><div class="dv-access-name">James</div><div class="dv-access-val">No access — client cannot see privileged</div><div class="dv-access-icon"></div></div><div class="dv-access-row"><div class="dv-access-name">Grace</div><div class="dv-access-val">No access — admin sees financial, not privilege</div><div class="dv-access-icon"></div></div></div></div>
+    <div class="doc-visibility"><div class="dv-head"><div class="dv-icon"></div><div class="dv-name">Filed witness statement</div><div class="dv-tag client">Client-approved</div></div><div class="dv-body"><div class="dv-access-row"><div class="dv-access-name">Margaret / Peter / Tendo</div><div class="dv-access-val">Full access</div><div class="dv-access-icon"></div></div><div class="dv-access-row"><div class="dv-access-name">James</div><div class="dv-access-val">Access — approved for client portal after filing</div><div class="dv-access-icon"></div></div><div class="dv-access-row"><div class="dv-access-name">Grace</div><div class="dv-access-val">Metadata only — existence and status, not content</div><div class="dv-access-icon"></div></div></div></div>
+    <div class="doc-visibility"><div class="dv-head"><div class="dv-icon"></div><div class="dv-name">Time entries and billing record</div><div class="dv-tag open">Administrative</div></div><div class="dv-body"><div class="dv-access-row"><div class="dv-access-name">Margaret</div><div class="dv-access-val">Full access</div><div class="dv-access-icon"></div></div><div class="dv-access-row"><div class="dv-access-name">Peter / Tendo</div><div class="dv-access-val">Own entries only</div><div class="dv-access-icon"></div></div><div class="dv-access-row"><div class="dv-access-name">James</div><div class="dv-access-val">Invoice total and breakdown — not individual rates</div><div class="dv-access-icon"></div></div><div class="dv-access-row"><div class="dv-access-name">Grace</div><div class="dv-access-val">Full access — firm financial operations</div><div class="dv-access-icon"></div></div></div></div>
    </div>
    <!-- F3 -->
    <div class="sa-step" id="sf-s3">
@@ -7894,7 +7895,7 @@ setTimeout(() => {
    <!-- F4: Matrix -->
    <div class="sa-step" id="sf-s4">
     <div class="sa-step-label" style="color:rgba(255,255,255,.3);">The complete visibility matrix</div>
-    <div style="font-size:11px;color:var(--slate);margin-bottom:8px;">✅ full · ⚠ partial · 🔒 none</div>
+    <div style="font-size:11px;color:var(--slate);margin-bottom:8px;"> full ·  partial ·  none</div>
     <div class="conf-model">
      <div class="conf-row conf-header">
       <div class="conf-who"></div>
@@ -7906,11 +7907,11 @@ setTimeout(() => {
        <div class="conf-cell"><div class="conf-cell-label">Audit trail</div></div>
       </div>
      </div>
-     <div class="conf-row"><div class="conf-who"><div class="conf-who-name">Margaret</div><div class="conf-who-role">Partner</div></div><div class="conf-cells"><div class="conf-cell yes"><div class="conf-cell-icon">✅</div></div><div class="conf-cell yes"><div class="conf-cell-icon">✅</div></div><div class="conf-cell yes"><div class="conf-cell-icon">✅</div></div><div class="conf-cell yes"><div class="conf-cell-icon">✅</div></div><div class="conf-cell yes"><div class="conf-cell-icon">✅</div></div></div></div>
-     <div class="conf-row"><div class="conf-who"><div class="conf-who-name">Peter</div><div class="conf-who-role">Associate</div></div><div class="conf-cells"><div class="conf-cell no"><div class="conf-cell-icon">🔒</div></div><div class="conf-cell yes"><div class="conf-cell-icon">✅</div></div><div class="conf-cell yes"><div class="conf-cell-icon">✅</div></div><div class="conf-cell partial"><div class="conf-cell-icon">⚠</div></div><div class="conf-cell yes"><div class="conf-cell-icon">✅</div></div></div></div>
-     <div class="conf-row"><div class="conf-who"><div class="conf-who-name">Tendo</div><div class="conf-who-role">Junior</div></div><div class="conf-cells"><div class="conf-cell no"><div class="conf-cell-icon">🔒</div></div><div class="conf-cell yes"><div class="conf-cell-icon">✅</div></div><div class="conf-cell yes"><div class="conf-cell-icon">✅</div></div><div class="conf-cell partial"><div class="conf-cell-icon">⚠</div></div><div class="conf-cell partial"><div class="conf-cell-icon">⚠</div></div></div></div>
-     <div class="conf-row"><div class="conf-who"><div class="conf-who-name">James</div><div class="conf-who-role">Client</div></div><div class="conf-cells"><div class="conf-cell no"><div class="conf-cell-icon">🔒</div></div><div class="conf-cell no"><div class="conf-cell-icon">🔒</div></div><div class="conf-cell yes"><div class="conf-cell-icon">✅</div></div><div class="conf-cell partial"><div class="conf-cell-icon">⚠</div></div><div class="conf-cell no"><div class="conf-cell-icon">🔒</div></div></div></div>
-     <div class="conf-row"><div class="conf-who"><div class="conf-who-name">Grace</div><div class="conf-who-role">Admin</div></div><div class="conf-cells"><div class="conf-cell no"><div class="conf-cell-icon">🔒</div></div><div class="conf-cell no"><div class="conf-cell-icon">🔒</div></div><div class="conf-cell partial"><div class="conf-cell-icon">⚠</div></div><div class="conf-cell yes"><div class="conf-cell-icon">✅</div></div><div class="conf-cell partial"><div class="conf-cell-icon">⚠</div></div></div></div>
+     <div class="conf-row"><div class="conf-who"><div class="conf-who-name">Margaret</div><div class="conf-who-role">Partner</div></div><div class="conf-cells"><div class="conf-cell yes"><div class="conf-cell-icon"></div></div><div class="conf-cell yes"><div class="conf-cell-icon"></div></div><div class="conf-cell yes"><div class="conf-cell-icon"></div></div><div class="conf-cell yes"><div class="conf-cell-icon"></div></div><div class="conf-cell yes"><div class="conf-cell-icon"></div></div></div></div>
+     <div class="conf-row"><div class="conf-who"><div class="conf-who-name">Peter</div><div class="conf-who-role">Associate</div></div><div class="conf-cells"><div class="conf-cell no"><div class="conf-cell-icon"></div></div><div class="conf-cell yes"><div class="conf-cell-icon"></div></div><div class="conf-cell yes"><div class="conf-cell-icon"></div></div><div class="conf-cell partial"><div class="conf-cell-icon"></div></div><div class="conf-cell yes"><div class="conf-cell-icon"></div></div></div></div>
+     <div class="conf-row"><div class="conf-who"><div class="conf-who-name">Tendo</div><div class="conf-who-role">Junior</div></div><div class="conf-cells"><div class="conf-cell no"><div class="conf-cell-icon"></div></div><div class="conf-cell yes"><div class="conf-cell-icon"></div></div><div class="conf-cell yes"><div class="conf-cell-icon"></div></div><div class="conf-cell partial"><div class="conf-cell-icon"></div></div><div class="conf-cell partial"><div class="conf-cell-icon"></div></div></div></div>
+     <div class="conf-row"><div class="conf-who"><div class="conf-who-name">James</div><div class="conf-who-role">Client</div></div><div class="conf-cells"><div class="conf-cell no"><div class="conf-cell-icon"></div></div><div class="conf-cell no"><div class="conf-cell-icon"></div></div><div class="conf-cell yes"><div class="conf-cell-icon"></div></div><div class="conf-cell partial"><div class="conf-cell-icon"></div></div><div class="conf-cell no"><div class="conf-cell-icon"></div></div></div></div>
+     <div class="conf-row"><div class="conf-who"><div class="conf-who-name">Grace</div><div class="conf-who-role">Admin</div></div><div class="conf-cells"><div class="conf-cell no"><div class="conf-cell-icon"></div></div><div class="conf-cell no"><div class="conf-cell-icon"></div></div><div class="conf-cell partial"><div class="conf-cell-icon"></div></div><div class="conf-cell yes"><div class="conf-cell-icon"></div></div><div class="conf-cell partial"><div class="conf-cell-icon"></div></div></div></div>
     </div>
    </div>
    <!-- F5 Verdict -->
@@ -7925,7 +7926,7 @@ setTimeout(() => {
      <div class="verdict-point"><div class="verdict-dot warn"></div><span>The shells are UX — they present the right information. The Spine is architecture — it enforces it. Both are necessary. They are not the same thing.</span></div>
      <div class="verdict-consequence" style="border-color:rgba(92,58,107,.5);background:rgba(92,58,107,.15);">Confidentiality is not a filter applied to a display. It is a property of the record itself. A document is privileged because of what it is and when it was created — not because of which screen you are looking at.</div>
      <div class="verdict-action">
-      <button class="btn btn-v btn-sm" onclick="closeSf();showAllScenariosSummary()">View full summary — all 6 scenarios →</button>
+      <button class="btn btn-v btn-sm" onclick="closeSf();showAllScenariosSummary()">View full summary — all 6 scenarios</button>
       <button class="btn btn-sm" style="background:rgba(255,255,255,.08);color:rgba(242,237,228,.7);" onclick="closeSf()">Close</button>
      </div>
     </div>
@@ -7933,7 +7934,7 @@ setTimeout(() => {
    <div class="sa-nav" style="border-color:rgba(255,255,255,.06);">
     <button class="btn btn-out btn-sm" id="sf-back-btn" onclick="sfPrev()" style="visibility:hidden;border-color:rgba(255,255,255,.1);color:var(--slate);">← Back</button>
     <div style="font-family:var(--mono);font-size:9px;color:var(--slate);opacity:.4;" id="sf-step-label-nav">The visibility model</div>
-    <button class="btn btn-sm" id="sf-next-btn" onclick="sfNext()" style="background:rgba(92,58,107,.4);color:var(--white);">Continue →</button>
+    <button class="btn btn-sm" id="sf-next-btn" onclick="sfNext()" style="background:rgba(92,58,107,.4);color:var(--white);">Continue</button>
    </div>
   </div>
  </div>
@@ -7948,12 +7949,12 @@ setTimeout(() => {
    <div style="font-size:11px;color:rgba(255,255,255,.5);line-height:1.5;">One Matter. One institutional record. Multiple authorised perspectives. Tested under institutional pressure.</div>
   </div>
   <div class="m-body" style="display:flex;flex-direction:column;gap:7px;">
-   <div style="display:flex;align-items:flex-start;gap:11px;padding:11px 13px;background:var(--ember-p);border-radius:var(--r);border-left:3px solid var(--ember);cursor:pointer;" onclick="closeSummary();launchScenarioA()"><div style="font-size:16px;">⚠</div><div><div style="font-family:var(--mono);font-size:9px;color:var(--ember);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">A — Missed Deadline</div><div style="font-size:12px;font-weight:500;color:var(--ink);">The record is complete, instant, uncontestable. You do not ask anyone. You read the record.</div></div></div>
-   <div style="display:flex;align-items:flex-start;gap:11px;padding:11px 13px;background:var(--sky-p);border-radius:var(--r);border-left:3px solid var(--sky);cursor:pointer;" onclick="closeSummary();launchScenarioB()"><div style="font-size:16px;">🔒</div><div><div style="font-family:var(--mono);font-size:9px;color:var(--sky);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">B — Authority Failure</div><div style="font-size:12px;font-weight:500;color:var(--ink);">Identity ≠ Authority. Contextual, matter-specific, holds under pressure — especially under pressure.</div></div></div>
-   <div style="display:flex;align-items:flex-start;gap:11px;padding:11px 13px;background:var(--vp);border-radius:var(--r);border-left:3px solid var(--vd);cursor:pointer;" onclick="closeSummary();launchScenarioC()"><div style="font-size:16px;">🔗</div><div><div style="font-family:var(--mono);font-size:9px;color:var(--vd);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">C — Document Dispute</div><div style="font-size:12px;font-weight:500;color:var(--ink);">Approval is a cryptographic commitment. Hash chain resolves by arithmetic, not assertion.</div></div></div>
-   <div style="display:flex;align-items:flex-start;gap:11px;padding:11px 13px;background:var(--gold-p);border-radius:var(--r);border-left:3px solid var(--gold-d);cursor:pointer;" onclick="closeSummary();launchScenarioD()"><div style="font-size:16px;">👤</div><div><div style="font-family:var(--mono);font-size:9px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">D — Staff Departure</div><div style="font-size:12px;font-weight:500;color:var(--ink);">Historical attribution is immutable. Departure creates a clean transition — not a gap.</div></div></div>
-   <div style="display:flex;align-items:flex-start;gap:11px;padding:11px 13px;background:var(--vp);border-radius:var(--r);border-left:3px solid var(--vu);cursor:pointer;" onclick="closeSummary();launchScenarioE()"><div style="font-size:16px;">💰</div><div><div style="font-family:var(--mono);font-size:9px;color:var(--vd);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">E — Billing Dispute</div><div style="font-size:12px;font-weight:500;color:var(--ink);">The bill is a chronological record. Invoice → time entry → activity → document.</div></div></div>
-   <div style="display:flex;align-items:flex-start;gap:11px;padding:11px 13px;background:var(--plum-p);border-radius:var(--r);border-left:3px solid var(--plum);cursor:pointer;" onclick="closeSummary();launchScenarioF()"><div style="font-size:16px;">🛡</div><div><div style="font-family:var(--mono);font-size:9px;color:var(--plum);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">F — Internal Confidentiality</div><div style="font-size:12px;font-weight:500;color:var(--ink);">Visibility is set at creation. The Spine enforces. The shells present. These are different things.</div></div></div>
+   <div style="display:flex;align-items:flex-start;gap:11px;padding:11px 13px;background:var(--ember-p);border-radius:var(--r);border-left:3px solid var(--ember);cursor:pointer;" onclick="closeSummary();launchScenarioA()"><div style="font-size:16px;"></div><div><div style="font-family:var(--mono);font-size:9px;color:var(--ember);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">A — Missed Deadline</div><div style="font-size:12px;font-weight:500;color:var(--ink);">The record is complete, instant, uncontestable. You do not ask anyone. You read the record.</div></div></div>
+   <div style="display:flex;align-items:flex-start;gap:11px;padding:11px 13px;background:var(--sky-p);border-radius:var(--r);border-left:3px solid var(--sky);cursor:pointer;" onclick="closeSummary();launchScenarioB()"><div style="font-size:16px;"></div><div><div style="font-family:var(--mono);font-size:9px;color:var(--sky);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">B — Authority Failure</div><div style="font-size:12px;font-weight:500;color:var(--ink);">Identity ≠ Authority. Contextual, matter-specific, holds under pressure — especially under pressure.</div></div></div>
+   <div style="display:flex;align-items:flex-start;gap:11px;padding:11px 13px;background:var(--vp);border-radius:var(--r);border-left:3px solid var(--vd);cursor:pointer;" onclick="closeSummary();launchScenarioC()"><div style="font-size:16px;"></div><div><div style="font-family:var(--mono);font-size:9px;color:var(--vd);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">C — Document Dispute</div><div style="font-size:12px;font-weight:500;color:var(--ink);">Approval is a cryptographic commitment. Hash chain resolves by arithmetic, not assertion.</div></div></div>
+   <div style="display:flex;align-items:flex-start;gap:11px;padding:11px 13px;background:var(--gold-p);border-radius:var(--r);border-left:3px solid var(--gold-d);cursor:pointer;" onclick="closeSummary();launchScenarioD()"><div style="font-size:16px;"></div><div><div style="font-family:var(--mono);font-size:9px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">D — Staff Departure</div><div style="font-size:12px;font-weight:500;color:var(--ink);">Historical attribution is immutable. Departure creates a clean transition — not a gap.</div></div></div>
+   <div style="display:flex;align-items:flex-start;gap:11px;padding:11px 13px;background:var(--vp);border-radius:var(--r);border-left:3px solid var(--vu);cursor:pointer;" onclick="closeSummary();launchScenarioE()"><div style="font-size:16px;"></div><div><div style="font-family:var(--mono);font-size:9px;color:var(--vd);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">E — Billing Dispute</div><div style="font-size:12px;font-weight:500;color:var(--ink);">The bill is a chronological record. Invoice → time entry → activity → document.</div></div></div>
+   <div style="display:flex;align-items:flex-start;gap:11px;padding:11px 13px;background:var(--plum-p);border-radius:var(--r);border-left:3px solid var(--plum);cursor:pointer;" onclick="closeSummary();launchScenarioF()"><div style="font-size:16px;"></div><div><div style="font-family:var(--mono);font-size:9px;color:var(--plum);letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;">F — Internal Confidentiality</div><div style="font-size:12px;font-weight:500;color:var(--ink);">Visibility is set at creation. The Spine enforces. The shells present. These are different things.</div></div></div>
    <div style="background:var(--ink);border-radius:var(--r);padding:14px 16px;">
     <div style="font-family:var(--serif);font-size:15px;font-weight:300;color:var(--white);line-height:1.4;margin-bottom:6px;">The invariant behind all six:</div>
     <div style="font-size:12px;color:rgba(242,237,228,.7);font-style:italic;line-height:1.7;">Entity → Authority → Context → Action → Document → Integrity → Audit<br><span style="color:var(--vu);font-style:normal;font-weight:500;">One Matter. One institutional record. Multiple authorised perspectives.</span></div>
@@ -7968,23 +7969,23 @@ setTimeout(() => {
   <div class="fab-menu" id="fab-menu">
     <button class="fab-item" onclick="closeFab();openNewDocument()">
       <span class="fab-item-label">New Document</span>
-      <div class="fab-item-icon">📄</div>
+      <div class="fab-item-icon"></div>
     </button>
     <button class="fab-item" onclick="closeFab();openCreateTask(NAV.ctx.matterId||'KSC-2026-0891','')">
       <span class="fab-item-label">New Task</span>
-      <div class="fab-item-icon">📋</div>
+      <div class="fab-item-icon"></div>
     </button>
     <button class="fab-item" onclick="closeFab();showPg('adv-comms')">
       <span class="fab-item-label">New Message</span>
-      <div class="fab-item-icon">💬</div>
+      <div class="fab-item-icon"></div>
     </button>
     <button class="fab-item" onclick="closeFab();openTimeLogger('')">
       <span class="fab-item-label">Log Time</span>
-      <div class="fab-item-icon">⏱</div>
+      <div class="fab-item-icon"></div>
     </button>
     <button class="fab-item" onclick="closeFab();openIntake()">
       <span class="fab-item-label">New Matter</span>
-      <div class="fab-item-icon">⚖️</div>
+      <div class="fab-item-icon"></div>
     </button>
   </div>
   <button class="fab-main" id="fab-main-btn" onclick="toggleFab()" title="Create something new">+</button>

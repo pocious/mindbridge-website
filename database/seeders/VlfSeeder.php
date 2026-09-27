@@ -285,14 +285,14 @@ class VlfSeeder extends Seeder
         $witness = ['matter' => 'KSC-2026-0891', 'doc' => 'witness-statement'];
         // Listed newest first; inserted oldest first so the newest gets the highest id.
         foreach (array_reverse([
-            ['Peter Ssali', 'critical', '⛔', 'Critical — Action required', 'Witness statement filing deadline in 3 hours. Margaret\'s approval still pending.', $witness, 'Today · 2:00 PM', false],
-            ['Peter Ssali', 'action', '⚡', 'Action required', 'Scheduling Conference tomorrow at 9:30 AM — conference brief not yet prepared.', ['matter' => 'KSC-2026-0891', 'tab' => 'overview'], 'Today · 9:00 AM', false],
-            ['Peter Ssali', 'action', '📋', 'Task assigned', 'Margaret has assigned you to prepare the authorities bundle for KSC-2026-0891.', ['matter' => 'KSC-2026-0891', 'tab' => 'work'], 'Today · 8:44 AM', false],
-            ['Peter Ssali', 'info', '✓', 'Document sealed', 'Witness Statement (Draft v2) has been IRIS-sealed and is ready for partner approval.', $witness, 'Today · 8:30 AM', true],
-            ['Peter Ssali', 'warn', '⚠', 'Legal rule — verify required', 'DEBT-R-005 (Mediation regime) is flagged [VERIFY]. Check current instrument before the Scheduling Conference.', ['matter' => 'KSC-2026-0891', 'tab' => 'ai'], 'Yesterday · 4:15 PM', true],
-            ['Margaret Ssempebwa', 'critical', '⛔', 'Approval required', 'Witness statement (KSC-2026-0891) is waiting for your Class A partner approval — filing deadline 5:00 PM today.', $witness, 'Today · 9:30 AM', false],
-            ['Tendo Mukasa', 'action', '📋', 'Task assigned', 'Peter Ssali assigned you: Prepare authorities bundle for Scheduling Conference — due 4:00 PM.', ['matter' => 'KSC-2026-0891', 'tab' => 'work'], 'Today · 10:25 AM', false],
-            ['Grace Akello', 'warn', '⚠', 'Unassigned matters', 'KSC-2026-0987 and KSC-2026-0991 have no advocate assigned.', ['page' => 'adm-matters'], 'Today · 8:00 AM', false],
+            ['Peter Ssali', 'critical', 'stop', 'Critical — Action required', 'Witness statement filing deadline in 3 hours. Margaret\'s approval still pending.', $witness, 'Today · 2:00 PM', false],
+            ['Peter Ssali', 'action', 'bell', 'Action required', 'Scheduling Conference tomorrow at 9:30 AM — conference brief not yet prepared.', ['matter' => 'KSC-2026-0891', 'tab' => 'overview'], 'Today · 9:00 AM', false],
+            ['Peter Ssali', 'action', 'list', 'Task assigned', 'Margaret has assigned you to prepare the authorities bundle for KSC-2026-0891.', ['matter' => 'KSC-2026-0891', 'tab' => 'work'], 'Today · 8:44 AM', false],
+            ['Peter Ssali', 'info', 'info', 'Document sealed', 'Witness Statement (Draft v2) has been IRIS-sealed and is ready for partner approval.', $witness, 'Today · 8:30 AM', true],
+            ['Peter Ssali', 'warn', 'alert', 'Legal rule — verify required', 'DEBT-R-005 (Mediation regime) is flagged [VERIFY]. Check current instrument before the Scheduling Conference.', ['matter' => 'KSC-2026-0891', 'tab' => 'ai'], 'Yesterday · 4:15 PM', true],
+            ['Margaret Ssempebwa', 'critical', 'stop', 'Approval required', 'Witness statement (KSC-2026-0891) is waiting for your Class A partner approval — filing deadline 5:00 PM today.', $witness, 'Today · 9:30 AM', false],
+            ['Tendo Mukasa', 'action', 'list', 'Task assigned', 'Peter Ssali assigned you: Prepare authorities bundle for Scheduling Conference — due 4:00 PM.', ['matter' => 'KSC-2026-0891', 'tab' => 'work'], 'Today · 10:25 AM', false],
+            ['Grace Akello', 'warn', 'alert', 'Unassigned matters', 'KSC-2026-0987 and KSC-2026-0991 have no advocate assigned.', ['page' => 'adm-matters'], 'Today · 8:00 AM', false],
         ]) as [$recipient, $type, $icon, $label, $text, $link, $ts, $read]) {
             Notification::create([
                 'recipient' => $recipient, 'type' => $type, 'icon' => $icon, 'type_label' => $label, 'text' => $text,

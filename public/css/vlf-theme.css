@@ -309,3 +309,50 @@ body { overflow-x: hidden; }
   .fab-container { right: 12px; bottom: 16px; }
   .toast { left: 12px; right: 12px; max-width: none; }
 }
+
+/* ══════════════════════════════════════════════════════════
+ * ICONS & TYPE — line icons instead of emoji, and calmer type:
+ * normal-case buttons and labels instead of tiny spaced-out capitals.
+ * ══════════════════════════════════════════════════════════ */
+.vlf-icon { flex-shrink: 0; vertical-align: -3px; }
+.sb-ic { display: flex; align-items: center; justify-content: center; width: 20px; opacity: 1; color: #93A69C; }
+.sb-i:hover .sb-ic { color: #DCE6E0; }
+.sb-i.on .sb-ic { color: #FFFFFF; }
+.global-search-btn span:first-child { display: inline-flex; }
+.notif-bell-btn { color: #DCE6E0; opacity: .85; }
+.notif-icon { display: flex; color: var(--vd); padding-top: 1px; }
+.fab-item-icon { color: var(--ink); }
+.fab-main .vlf-icon { vertical-align: middle; }
+.vlf-menu-btn .vlf-icon { vertical-align: middle; }
+.empty-state-icon { color: var(--vd); }
+.doc-item-icon { display: flex; color: var(--slate); }
+
+/* Icon boxes that only held an emoji are hidden when empty */
+.empty-state-icon:empty, .qa-chip-icon:empty, .doc-item-icon:empty, .dc-opt-icon:empty, .rcr-icon:empty,
+.ai-sug-icon:empty, .sr-icon:empty, .deny-icon:empty, .upload-zone-icon:empty, .recon-gap-icon:empty,
+.notif-icon:empty, .dv-icon:empty, .de-icon:empty { display: none; }
+
+/* Buttons: sentence case */
+.btn { text-transform: none; letter-spacing: 0; font-size: 13px; font-weight: 600; }
+.btn-sm { font-size: 12.5px; }
+.btn-xs { font-size: 11.5px; }
+.sb-btn { letter-spacing: 0; }
+.smore { text-transform: none; letter-spacing: 0; font-family: var(--sans); font-size: 12.5px; font-weight: 500; }
+
+/* Labels: readable text, not tiny spaced capitals */
+.ctf-label, .fi label, .section-label, .ov-stat-label, .cm-label, .bs-label, .inv-id, .dna-label, .nap-label,
+.admin-l, .stat-l, .diary-date, .wq-section-label, .ce-prep-title, .rd-resolution-label, .box-lbl {
+  font-family: var(--sans); text-transform: none; letter-spacing: 0; font-size: 12.5px; font-weight: 600; opacity: .8;
+}
+.admin-l, .stat-l { font-weight: 500; font-size: 12px; }
+.pill { font-family: var(--sans); text-transform: none; letter-spacing: 0; font-size: 11.5px; font-weight: 600; padding: 3px 10px; }
+.sb-gl { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: .06em; opacity: .5; }
+.ctx-crumb, .ctx-role { font-family: var(--sans); letter-spacing: 0; font-size: 12px; text-transform: none; }
+.mb-date { font-family: var(--sans); font-size: 13px; letter-spacing: 0; }
+.vlf-kicker { font-family: var(--sans); font-size: 13px; color: #A9B8B0; margin-bottom: 6px; }
+.firm-sub { font-family: var(--sans); letter-spacing: .04em; text-transform: none; font-size: 11px; }
+.sb-fl { font-family: var(--sans); letter-spacing: 0; text-transform: none; font-size: 11.5px; }
+.sb-fv { font-family: var(--sans); font-size: 13px; font-weight: 600; }
+.notif-type { font-family: var(--sans); text-transform: none; letter-spacing: 0; font-size: 12px; font-weight: 600; }
+.persona-role { font-family: var(--sans); letter-spacing: 0; text-transform: none; font-size: 11px; }
+.vlf-figure-label { font-family: var(--sans); font-size: 12.5px; color: #A9B8B0; margin-top: 4px; }
