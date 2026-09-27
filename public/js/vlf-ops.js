@@ -1920,6 +1920,12 @@
     if (ctx) { ctx.textContent = (ME.roleLabel || '') + ' · ' + (ME.name || ''); ctx.className = 'ctx-role ' + (ME.role === 'client' ? 'client' : ME.role === 'admin' ? 'admin' : ME.role === 'partner' ? 'partner' : 'associate'); }
     const firm = firmName();
     document.querySelectorAll('.firm-name').forEach(el => { el.textContent = firm.replace(/\s+Advocates$/, ''); });
+    // Brand mark: the firm's first letter.
+    document.querySelectorAll('.firm-logo').forEach(el => { el.dataset.initial = (firm.trim()[0] || 'G').toUpperCase(); });
+    // Sidebar footer: who is signed in (replaces the prototype's "IRIS Active · v1.0").
+    document.querySelectorAll('.sb-foot').forEach(foot => {
+      foot.innerHTML = `<div class="sb-fv"><div class="iris-dot"></div>${esc(ME.name || '')}</div><div class="sb-fl">${esc(ME.roleLabel || '')} · ${esc(firm)}</div>`;
+    });
     const crumb = document.getElementById('ctx-firm');
     if (crumb) crumb.textContent = firm.replace(/\s+Advocates$/, '');
   }

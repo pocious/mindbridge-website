@@ -1,0 +1,207 @@
+/*
+ * GAVEL.CO — visual theme for the VLF app (resources/vlf/app.html).
+ * Loaded after the page's own styles and only refines them: colour depth, spacing,
+ * radius, shadows and type size. No screen's structure depends on this file.
+ */
+
+:root {
+  --ink: #16241F;
+  --ink-s: #122019;
+  --ink-m: #1E3029;
+  --vd: #2F6B4F;
+  --vu: #4E9A73;
+  --vp: #E7F1EB;
+  --gold: #A8822E;
+  --gold-d: #C9A24A;
+  --parch: #F5F2EC;
+  --parch-d: #EAE5DC;
+  --parch-m: #EFEBE4;
+  --r: 12px;
+  --r-sm: 8px;
+  --r-lg: 16px;
+  --shadow-sm: 0 1px 2px rgba(22, 36, 31, .05), 0 1px 3px rgba(22, 36, 31, .04);
+  --shadow-md: 0 4px 14px rgba(22, 36, 31, .08), 0 1px 3px rgba(22, 36, 31, .05);
+  --shadow-lg: 0 18px 50px rgba(22, 36, 31, .18);
+  --line: rgba(22, 36, 31, .08);
+}
+
+html { font-size: 15px; }
+/* Lining figures: the serif's old-style numerals made "1" read as "I" in the figures. */
+body { background: var(--parch); text-rendering: optimizeLegibility; font-variant-numeric: lining-nums; }
+* { font-variant-numeric: lining-nums; }
+::selection { background: rgba(78, 154, 115, .25); }
+
+/* Keyboard focus that is actually visible */
+:where(button, a, input, select, textarea, [onclick]):focus-visible {
+  outline: 2px solid var(--vu);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Thin, quiet scrollbars */
+* { scrollbar-width: thin; scrollbar-color: rgba(22, 36, 31, .22) transparent; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: rgba(22, 36, 31, .2); border-radius: 8px; }
+*::-webkit-scrollbar-track { background: transparent; }
+
+/* ── Top bar ── */
+.topbar {
+  height: 60px;
+  padding: 0 22px;
+  background: linear-gradient(90deg, #122019 0%, #16241F 55%, #1B2E26 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, .06);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, .18);
+}
+.firm-logo { display: flex; flex-direction: column; justify-content: center; position: relative; padding-left: 44px; min-height: 36px; }
+.firm-logo::before {
+  content: attr(data-initial);
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 34px; height: 34px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif); font-size: 19px; font-weight: 600; color: #16241F;
+  background: linear-gradient(135deg, #E5C877 0%, #C9A24A 55%, #A8822E 100%);
+  box-shadow: 0 2px 8px rgba(201, 162, 74, .35), inset 0 1px 0 rgba(255, 255, 255, .4);
+}
+.firm-name { font-size: 18px; letter-spacing: .04em; }
+.firm-rule { display: none; }
+.firm-sub { opacity: .55; letter-spacing: .16em; margin-top: 3px; }
+.shell-bar { border-radius: 10px; border-color: rgba(255, 255, 255, .12); padding: 3px; gap: 2px; background: rgba(255, 255, 255, .04); }
+.sb-btn { border-radius: 7px; padding: 6px 14px; font-size: 12px; }
+.sb-btn.on { background: var(--vd); box-shadow: 0 1px 4px rgba(0, 0, 0, .25); }
+.persona-bar { border-radius: 10px; padding: 5px 12px 5px 6px; background: rgba(255, 255, 255, .06); }
+.global-search-btn { border-radius: 9px; padding: 7px 12px; }
+.notif-bell-btn { border-radius: 10px; }
+
+/* ── Breadcrumb bar ── */
+.ctx-bar { height: 34px; padding: 0 22px; background: #FBFAF7; border-bottom: 1px solid var(--line); }
+.ctx-crumb { font-size: 10px; opacity: .65; }
+/* The page's own separators are hidden; add one after the firm name. */
+#ctx-firm::after { content: '›'; margin: 0 8px; opacity: .5; }
+.ctx-crumb.current { opacity: .9; }
+
+/* ── Sidebar ── */
+.shell { grid-template-columns: 236px 1fr; }
+.sb {
+  top: 60px; height: calc(100vh - 60px);
+  background: linear-gradient(180deg, #122019 0%, #14241D 100%);
+  border-right: 1px solid rgba(255, 255, 255, .05);
+  padding: 6px 10px 0;
+}
+.sb-g { padding: 12px 0 4px; }
+.sb-gl { font-size: 9px; opacity: .45; padding: 0 12px; margin-bottom: 6px; letter-spacing: .18em; }
+.sb-div { background: transparent; margin: 0; }
+.sb-i { border-radius: 9px; padding: 9px 12px; margin: 1px 0; gap: 11px; transition: background .15s, transform .15s; }
+.sb-i:hover { background: rgba(255, 255, 255, .06); }
+.sb-i.on { background: linear-gradient(90deg, rgba(78, 154, 115, .28) 0%, rgba(78, 154, 115, .10) 100%); box-shadow: inset 0 0 0 1px rgba(78, 154, 115, .25); }
+.sb-i.on::before { left: -10px; top: 8px; bottom: 8px; width: 3px; border-radius: 0 3px 3px 0; background: var(--gold-d); }
+.sb-ic { font-size: 14px; opacity: .6; width: 18px; }
+.sb-l { font-size: 13px; opacity: .78; color: #C9D4CE; }
+.sb-i.on .sb-l { color: #FFFFFF; font-weight: 600; }
+.sb-b { font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 600; }
+.sb-b.a { background: #C4622F; box-shadow: 0 1px 4px rgba(196, 98, 47, .4); }
+.sb-foot { margin: auto -10px 0; padding: 14px 20px 16px; border-top: 1px solid rgba(255, 255, 255, .06); background: rgba(0, 0, 0, .12); }
+.sb-fv { font-size: 11px; opacity: .9; margin-bottom: 4px; }
+.sb-fl { font-size: 9px; opacity: .45; }
+
+/* ── Page header ── */
+.main { background: var(--parch); }
+.hero {
+  position: relative; overflow: hidden;
+  padding: 30px 32px 28px;
+  background: linear-gradient(120deg, #16241F 0%, #1D3129 60%, #23392F 100%) !important;
+}
+.hero::after {
+  content: ''; position: absolute; right: -80px; top: -120px; width: 380px; height: 380px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(201, 162, 74, .16) 0%, rgba(201, 162, 74, 0) 65%);
+  pointer-events: none;
+}
+.hero-i { position: relative; z-index: 1; max-width: 1200px; }
+.hg { font-size: 30px !important; font-weight: 500; letter-spacing: -.005em; margin-bottom: 6px; }
+.hg .hi { color: var(--gold-d); }
+.hs { font-size: 13px; opacity: .75; }
+.pgbody { max-width: 1200px; padding: 26px 32px 32px; gap: 20px; }
+
+/* ── Surfaces ── */
+.card, .matter-row, .diary-event, .task-item, .wq-card, .task-card-v3, .client-matter, .invoice-card, .settings-block, .doc-folder, .court-event, .ov-stat {
+  border-radius: var(--r);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+}
+.card { padding: 18px 20px; }
+.matter-row, .diary-event { padding: 16px 18px; }
+.matter-row:hover, .diary-event:hover, .task-item:hover, .wq-card:hover, .task-card-v3:hover, .doc-item:hover {
+  box-shadow: var(--shadow-md); transform: translateY(-1px);
+}
+.task-item { padding: 13px 16px; margin-bottom: 8px; }
+.mr-title, .de-title { font-size: 15px; }
+.task-title { font-size: 14px; }
+.stitle { font-size: 20px; }
+.sh { margin-bottom: 12px; }
+.section-label { font-size: 10px; opacity: .6; }
+.smore { font-size: 10px; padding: 5px 10px; border-radius: 8px; background: rgba(47, 107, 79, .08); }
+.smore:hover { background: rgba(47, 107, 79, .14); }
+
+/* ── Buttons ── */
+.btn { border-radius: 9px; padding: 9px 18px; font-size: 11.5px; font-weight: 600; letter-spacing: .05em; }
+.btn-sm { padding: 7px 13px; font-size: 10.5px; }
+.btn-v { background: linear-gradient(180deg, #357A59 0%, #2F6B4F 100%); box-shadow: 0 1px 2px rgba(22, 36, 31, .2), inset 0 1px 0 rgba(255, 255, 255, .12); }
+.btn-v:hover { box-shadow: 0 6px 16px rgba(47, 107, 79, .35); }
+.btn-ghost { background: #FFFFFF; border: 1px solid var(--line); color: var(--ink); }
+.btn-ghost:hover { background: #FBFAF7; }
+.btn-ember { background: linear-gradient(180deg, #C96A36 0%, #B85C2A 100%); }
+.qa-chip { border-radius: 999px; padding: 8px 14px; box-shadow: var(--shadow-sm); }
+.pill { border-radius: 999px; padding: 3px 9px; font-size: 9.5px; }
+
+/* ── Forms ── */
+.ctf-input, .ctf-select, .fi input, .fi select, .fi textarea {
+  border-radius: 9px !important; background: #FBFAF7 !important; border: 1.5px solid rgba(22, 36, 31, .12) !important;
+  padding: 10px 12px !important; font-size: 14px !important; transition: border-color .15s, box-shadow .15s;
+}
+.ctf-input:focus, .ctf-select:focus, .fi input:focus, .fi select:focus, .fi textarea:focus {
+  border-color: var(--vu) !important; box-shadow: 0 0 0 4px rgba(78, 154, 115, .15);
+}
+.ctf-label, .fi label { font-size: 10px; opacity: .75; }
+
+/* ── Empty states ── */
+.empty-state { padding: 56px 24px; }
+.empty-state-icon {
+  width: 84px; height: 84px; border-radius: 26px; font-size: 38px; opacity: 1;
+  display: flex; align-items: center; justify-content: center; margin-bottom: 18px;
+  background: linear-gradient(145deg, #FFFFFF 0%, #EEF4F0 100%);
+  box-shadow: var(--shadow-md), inset 0 0 0 1px var(--line);
+}
+.empty-state-title { font-size: 24px; margin-bottom: 8px; }
+.empty-state-desc { font-size: 13.5px; max-width: 380px; line-height: 1.65; margin-bottom: 20px; }
+
+/* ── Dashboards ── */
+.mb-greeting { font-size: 28px; font-weight: 500; }
+.mb-date { font-size: 11px; }
+.admin-stat { border-radius: 10px !important; padding: 16px !important; background: rgba(255, 255, 255, .06) !important; transition: background .15s; }
+.admin-stat:hover { background: rgba(255, 255, 255, .1) !important; }
+.admin-n { font-size: 30px; }
+.admin-l { font-size: 9px; opacity: .6; }
+.workload-row { padding: 12px 0; }
+.wl-bar, .wl-fill { height: 7px; border-radius: 7px; }
+
+/* ── Modals, drawer, notifications ── */
+.m-ov, .d-ov { backdrop-filter: blur(4px); background: rgba(18, 32, 25, .45); }
+.modal, .why-modal-wrap, .sb-wrap, .sa-wrap { border-radius: 18px; box-shadow: var(--shadow-lg); }
+.why-modal-wrap > div:first-child { border-radius: 18px 18px 0 0 !important; }
+.drawer { box-shadow: var(--shadow-lg); }
+.notif-panel { border-radius: 14px; box-shadow: var(--shadow-lg); top: 64px; }
+.toast { border-radius: 12px; padding: 13px 16px; }
+
+/* ── Floating action button ── */
+.fab-main { background: linear-gradient(145deg, #3A8561 0%, #2F6B4F 100%); box-shadow: 0 10px 26px rgba(47, 107, 79, .45); }
+
+/* ── Messages ── */
+.comm-sidebar { background: #FBFAF7; }
+.comm-channel { border-radius: 9px; margin: 2px 8px; border-left: none; }
+.comm-channel.active { background: var(--vp); box-shadow: inset 3px 0 0 var(--vd); }
+.msg-bubble.mine { background: linear-gradient(180deg, #357A59 0%, #2F6B4F 100%); }
+
+@media (max-width: 720px) {
+  .hero { padding: 22px 18px; }
+  .pgbody { padding: 18px 14px 24px; }
+  .hg { font-size: 24px !important; }
+}
