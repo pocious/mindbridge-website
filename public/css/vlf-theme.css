@@ -212,3 +212,100 @@ body { background: var(--parch); text-rendering: optimizeLegibility; font-varian
   .pgbody { padding: 18px 14px 24px; }
   .hg { font-size: 24px !important; }
 }
+
+/* ══════════════════════════════════════════════════════════
+ * RESPONSIVE — tablets and phones.
+ * Below 900px the sidebar becomes a slide-in menu (☰ in the top bar) and the
+ * content uses the full width; below 600px everything stacks into one column.
+ * ══════════════════════════════════════════════════════════ */
+.vlf-menu-btn, .vlf-sb-overlay, .vlf-sb-shells { display: none; }
+body { overflow-x: hidden; }
+
+@media (max-width: 900px) {
+  .shell { grid-template-columns: 1fr !important; }
+
+  /* Sidebar → slide-in menu */
+  .sb {
+    display: flex !important;
+    position: fixed; left: 0; top: 60px; bottom: 0; height: auto;
+    width: min(290px, 86vw); z-index: 360;
+    transform: translateX(-105%); transition: transform .25s ease;
+    box-shadow: 12px 0 40px rgba(0, 0, 0, .35);
+  }
+  .sb.vlf-open { transform: translateX(0); }
+  .vlf-sb-overlay { display: block; position: fixed; inset: 60px 0 0 0; z-index: 355; background: rgba(10, 20, 15, .45); backdrop-filter: blur(2px); opacity: 0; visibility: hidden; transition: opacity .25s, visibility .25s; }
+  .vlf-sb-overlay.vlf-open { opacity: 1; visibility: visible; }
+  .vlf-menu-btn {
+    display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+    width: 40px; height: 40px; border-radius: 10px; margin-right: 4px;
+    background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .14);
+    color: #fff; font-size: 20px; cursor: pointer;
+  }
+
+  /* View switcher lives in the menu instead of the top bar */
+  .tb-l .shell-bar { display: none; }
+  .vlf-sb-shells { display: flex; gap: 6px; padding: 12px 0 4px; }
+  .vlf-sb-shells button { flex: 1; padding: 9px 8px; border-radius: 9px; font-size: 12px; font-weight: 600; cursor: pointer; background: rgba(255, 255, 255, .05); color: #C9D4CE; border: 1px solid rgba(255, 255, 255, .12); }
+  .vlf-sb-shells button.on { background: var(--vd); color: #fff; border-color: var(--vd); }
+
+  .pgbody { padding: 20px 18px 28px; }
+  .hero { padding: 24px 18px 22px; }
+  .comm-layout { flex-direction: column; height: auto; min-height: calc(100vh - 160px); }
+  .comm-sidebar { width: 100%; max-height: 38vh; overflow-y: auto; border-right: none; border-bottom: 1px solid var(--line); }
+  .comm-main { min-height: 60vh; }
+  .notif-panel { width: min(360px, calc(100vw - 16px)); right: 8px; }
+}
+
+@media (max-width: 600px) {
+  html { font-size: 14px; }
+
+  /* Top bar: fit a phone */
+  .topbar { padding: 0 10px; gap: 6px; }
+  .tb-l { gap: 8px; min-width: 0; flex: 1; }
+  .tb-r { gap: 6px; flex-shrink: 0; }
+  .firm-logo { padding-left: 38px; }
+  .firm-logo::before { width: 30px; height: 30px; font-size: 16px; border-radius: 9px; }
+  .firm-name { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .firm-sub { display: none; }
+  .global-search-btn span:not(:first-child) { display: none; }
+  .global-search-btn { padding: 8px 10px; }
+  .persona-bar { padding: 4px; }
+  .persona-bar > div:not(.av) { display: none; }
+  #vlf-signout button { padding: 8px 9px; font-size: 11px; }
+  .ctx-bar { padding: 0 12px; }
+  .ctx-role { display: none; }
+
+  /* Page headers */
+  .hero-row { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .hero-row > div:last-child { text-align: left !important; }
+  .hero-acts { width: 100%; }
+  .hg { font-size: 24px !important; }
+  .mb-greeting { font-size: 23px; }
+  .pgbody { padding: 16px 12px 24px; gap: 16px; }
+
+  /* Stack two- and three-column layouts */
+  .ctf-row, .fi-2, .ov-grid, .attr-split, .billing-summary, .stat-grid { grid-template-columns: 1fr !important; }
+  [style*="grid-template-columns:repeat(3"], [style*="grid-template-columns:1fr 1fr 1fr"], [style*="grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px"] { grid-template-columns: 1fr 1fr !important; }
+  .admin-grid { grid-template-columns: 1fr 1fr !important; }
+  .admin-n { font-size: 24px; }
+
+  /* Lists and cards */
+  .matter-row, .diary-event { flex-wrap: wrap; padding: 14px; }
+  .mr-right, .de-right { width: 100%; text-align: left; flex-direction: row; align-items: center; justify-content: space-between; }
+  .de-time { min-width: 44px; }
+  .card { padding: 15px; }
+  .sh { flex-wrap: wrap; gap: 8px; }
+  .stitle { font-size: 18px; }
+  .ev-matrix { overflow-x: auto; }
+  .evm-head, .evm-row { min-width: 520px; }
+  .dw-tabs, .mh-tabs, .dr-tabs, .kb-panel-tabs { overflow-x: auto; flex-wrap: nowrap; }
+  .quick-actions { gap: 6px; }
+
+  /* Pop-ups fill the screen width */
+  .m-ov, .sa-modal { padding: 8px; align-items: flex-end; }
+  .modal, .why-modal-wrap, .sb-wrap, .sa-wrap { max-width: 100% !important; width: 100%; max-height: 92vh; border-radius: 16px 16px 12px 12px; }
+  .drawer { width: 100vw; }
+  .m-head, .m-body { padding-left: 16px; padding-right: 16px; }
+  .fab-container { right: 12px; bottom: 16px; }
+  .toast { left: 12px; right: 12px; max-width: none; }
+}

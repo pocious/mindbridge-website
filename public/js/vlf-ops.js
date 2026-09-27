@@ -2004,7 +2004,57 @@
     if (!pollTimer) pollTimer = setInterval(pollNotifications, 30000);
   });
 
+  /* ══ SMALL SCREENS: the sidebar becomes a slide-in menu (see vlf-theme.css) ══ */
+
+  const currentSidebar = () => document.querySelector('#shell-' + currentShell + '-body .sb');
+
+  function setMenu(open) {
+    document.querySelectorAll('.sb').forEach(sb => sb.classList.remove('vlf-open'));
+    const sb = currentSidebar();
+    if (open && sb) sb.classList.add('vlf-open');
+    const overlay = document.getElementById('vlf-sb-overlay');
+    if (overlay) overlay.classList.toggle('vlf-open', !!open);
+    const btn = document.getElementById('vlf-menu-btn');
+    if (btn) { btn.setAttribute('aria-expanded', open ? 'true' : 'false'); btn.textContent = open ? '✕' : '☰'; }
+  }
+
+  function initResponsive() {
+    const left = document.querySelector('.tb-l');
+    if (left && !document.getElementById('vlf-menu-btn')) {
+      left.insertAdjacentHTML('afterbegin', '<button type="button" class="vlf-menu-btn" id="vlf-menu-btn" aria-label="Menu" aria-expanded="false">☰</button>');
+      document.getElementById('vlf-menu-btn').addEventListener('click', () => setMenu(!(currentSidebar() || {}).classList?.contains('vlf-open')));
+    }
+    if (!document.getElementById('vlf-sb-overlay')) {
+      document.body.insertAdjacentHTML('beforeend', '<div class="vlf-sb-overlay" id="vlf-sb-overlay"></div>');
+      document.getElementById('vlf-sb-overlay').addEventListener('click', () => setMenu(false));
+    }
+    // On phones the Advocate / Firm Admin switch moves into the menu.
+    const shells = allowedShells();
+    if (shells.length > 1) {
+      const labels = { adv: 'Advocate', adm: 'Firm Admin', cli: 'Client' };
+      document.querySelectorAll('.sb').forEach(sb => {
+        if (sb.querySelector('.vlf-sb-shells')) return;
+        sb.insertAdjacentHTML('afterbegin', `<div class="vlf-sb-shells">${shells.map(s => `<button type="button" data-shell="${s}" onclick="setShell('${s}')">${labels[s]}</button>`).join('')}</div>`);
+      });
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+    window.addEventListener('resize', () => { if (window.innerWidth > 900) setMenu(false); });
+  }
+
+  function markShellButtons() {
+    document.querySelectorAll('.vlf-sb-shells button').forEach(b => b.classList.toggle('on', b.dataset.shell === currentShell));
+  }
+
+  // Picking a page from the menu closes it.
+  wrap('showPg', function (original, args) {
+    const result = original.apply(this, args);
+    setMenu(false);
+    markShellButtons();
+    return result;
+  });
+
   initIntake();
+  initResponsive();
   initAccount();
 
   window.VLFOPS = {
