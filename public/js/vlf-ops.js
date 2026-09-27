@@ -28,14 +28,14 @@
   const matter = ref => (VLF.matters || {})[ref];
   const firmName = () => S.settings.firm_name || 'Katende, Ssempebwa & Co. Advocates';
 
-  function me() {
-    if (currentShell === 'cli') return 'James Opolot';
-    if (currentShell === 'adm') return 'Grace Akello';
-    return VLF.persona().name;
-  }
+  // The signed-in account, injected by the server when it serves the page.
+  const ME = window.VLF_USER || {};
+  const me = () => ME.name || VLF.persona().name;
+  const myStaff = () => S.staff.find(s => s.userId === ME.id);
 
   const staffMember = name => S.staff.find(s => s.name === name);
-  const isPartner = name => /Partner/.test((staffMember(name) || {}).role || '');
+  // Partner status comes from the signed-in account's role (the server checks it again).
+  const isPartner = name => name === me() ? ME.role === 'partner' : /Partner/.test((staffMember(name) || {}).role || '');
   const advocates = () => S.staff.filter(s => s.active && !/Administrator/.test(s.role));
   const partners = () => S.staff.filter(s => s.active && /Partner/.test(s.role));
 
@@ -242,8 +242,8 @@
       clientId: '', clientName: '', clientType: 'Company', clientTin: '', contactName: '', contactEmail: '',
       opposingParty: '', conflictCheckedFor: null, conflict: null,
       description: '', practiceArea: 'Commercial Litigation', court: 'High Court — Commercial Division', instructionDate: today(),
-      advocate: advocates().some(s => s.name === user) ? user : 'Peter Ssali',
-      supervisor: (partners()[0] || {}).name || 'Margaret Ssempebwa',
+      advocate: advocates().some(s => s.name === user) ? user : ((advocates()[0] || {}).name || ''),
+      supervisor: (partners()[0] || {}).name || '',
       feeArrangement: 'Hourly — UGX 450,000/hr', created: null, submitting: false
     };
   }
@@ -437,7 +437,9 @@
             ${c.matters.map(ref => `<button class="btn btn-ghost btn-sm" onclick="VLFOPS.openMatter(${arg(ref)})">${esc(ref)} →</button>`).join('')}
             <button class="btn btn-ghost btn-sm" onclick="VLFOPS.newMatterForClient(${arg(c.id)})">+ New matter</button>
             <button class="btn btn-ghost btn-sm" onclick="VLFOPS.openClientForm(${arg(c.id)})">Edit</button>
-            ${c.name === 'Equity Bank Uganda Ltd' ? `<button class="btn btn-ghost btn-sm" onclick="openM('m-client-compliance')">Compliance position →</button><button class="btn btn-ghost btn-sm" onclick="openClientMessage()">Message ${esc(c.contactName || 'client')}</button>` : ''}
+            ${c.contactEmail ? `<button class="btn btn-ghost btn-sm" onclick="VLFOPS.inviteClient(${arg(c.id)})">${(c.portalUsers || []).length ? 'Resend portal invite' : 'Invite to portal'}</button>` : ''}
+          </div>
+          <div style="font-size:10px;color:var(--slate);margin-top:6px;">${(c.portalUsers || []).length ? 'Portal access: ' + esc(c.portalUsers.join(', ')) : c.contactEmail ? 'No portal access yet' : 'Add a contact email to invite them to the client portal'}
           </div>
         </div>`;
     }).join('') || emptyBlock('👤', 'No clients on record', 'Clients are added here or created when a new matter is opened through intake.', `<button class="btn btn-v btn-sm" onclick="VLFOPS.openClientForm()">+ New client</button>`)}</div><div style="height:20px;"></div>`;
@@ -475,6 +477,26 @@
         t(id ? 'Client updated' : 'Client added', saved.name, 'g');
       })
       .catch(err => err.fromServer ? showFormError(err.message) : saveFailed(err));
+  }
+
+  function inviteClient(id) {
+    const c = S.clients.find(x => String(x.id) === String(id));
+    api('POST', 'clients/' + id + '/invite').then(saved => {
+      const i = S.clients.findIndex(x => x.id === saved.id);
+      if (i >= 0) S.clients[i] = saved;
+      renderClients();
+      t('Portal invite sent', `${c ? c.contactName : 'The contact'} will get an email to set their password`, 'g');
+    }).catch(saveFailed);
+  }
+
+  function inviteStaff(id) {
+    api('POST', 'staff/' + id + '/invite').then(saved => {
+      const i = S.staff.findIndex(x => x.id === saved.id);
+      if (i >= 0) S.staff[i] = saved;
+      closeM('m-ob-workspace');
+      renderPeople();
+      t('Invite sent', `${saved.name} will get an email to set their password`, 'g');
+    }).catch(saveFailed);
   }
 
   function newMatterForClient(id) {
@@ -886,7 +908,7 @@
       actions = `<button class="btn btn-ghost btn-sm" onclick="openEditableInvoice(${arg(inv.id)})">Edit lines</button>` +
         (isPartner(user)
           ? `<button class="btn btn-v btn-sm" onclick="VLFOPS.invoiceAction(${arg(inv.id)},'approve')">✓ Approve for issue</button>`
-          : `<span style="font-size:11px;color:var(--slate);">Waiting for partner approval — switch to Margaret to approve.</span>`);
+          : `<span style="font-size:11px;color:var(--slate);">Waiting for a partner to approve it for issue.</span>`);
     } else if (inv.status === 'APPROVED') {
       actions = `<button class="btn btn-v btn-sm" onclick="VLFOPS.invoiceAction(${arg(inv.id)},'issue')">Issue to client →</button><button class="btn btn-ghost btn-sm" onclick="openEditableInvoice(${arg(inv.id)})">Edit lines</button>`;
     } else if (inv.status === 'ISSUED' || inv.status === 'OVERDUE') {
@@ -1004,7 +1026,8 @@
         : act('approve', '✓ Approve', 'btn-v') + `<button class="btn btn-ghost btn-sm" onclick="VLFOPS.openReturnFor(${arg(key)})">Return for revision</button>`;
     } else if (s === 'APPROVED') {
       text = 'Approved — ready to seal and file.';
-      buttons = act('file', 'Mark filed', 'btn-v');
+      // Filing is a Class A act: partners only (enforced on the server too).
+      buttons = ME.role === 'partner' ? act('file', 'Mark filed', 'btn-v') : '<span style="font-size:11px;color:var(--slate);">A partner files approved documents (Class A).</span>';
     } else if (s === 'FILED') {
       text = 'Filed — part of the permanent matter record.';
     }
@@ -1247,8 +1270,11 @@
       <div class="create-task-form">
         ${s.id ? '' : field('Full name *', input('vs-name', '', 'e.g. Rita Nakato'))}
         <div class="ctf-row">${field('Role', select('vs-role', roles, s.role || 'Associate'))}${field('Status', select('vs-status', ['Available', 'In court', 'On leave', 'Light load'], s.status || 'Available'))}</div>
-        <div class="ctf-row">${field('Email (for notifications)', input('vs-email', s.email, 'name@firm.com', 'email'))}${field('Hourly rate (UGX)', input('vs-rate', s.rate != null ? s.rate : '', 'e.g. 450000'))}</div>
-        ${s.id ? `<label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink);"><input type="checkbox" id="vs-active" ${s.active ? 'checked' : ''}> Active — can be assigned matters and tasks</label>` : ''}
+        <div class="ctf-row">${field('Email (sign-in and notifications)', input('vs-email', s.email, 'name@firm.com', 'email'))}${field('Hourly rate (UGX)', input('vs-rate', s.rate != null ? s.rate : '', 'e.g. 450000'))}</div>
+        <div style="font-size:11px;color:var(--slate);line-height:1.5;">${s.id
+          ? (s.hasLogin ? `✓ Has a sign-in account. <a href="#" onclick="event.preventDefault();VLFOPS.inviteStaff(${arg(s.id)})" style="color:var(--vd);">Resend set-password email</a>` : 'No sign-in account yet — add an email and save to send them an invite.')
+          : 'With an email, they get an account and an email to set their password. Partners and the administrator can manage the firm; everyone else works on matters.'}</div>
+        ${s.id ? `<label style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink);"><input type="checkbox" id="vs-active" ${s.active ? 'checked' : ''}> Active — can sign in and be assigned work</label>` : ''}
         ${formError()}
         <button class="btn btn-v btn-full" onclick="VLFOPS.saveStaff(${arg(s.id || '')})">${s.id ? 'Save changes' : 'Add to firm'} →</button>
       </div>`);
@@ -1648,7 +1674,7 @@
 
   /* Client portal: only the signed-in client's own matters. */
   function clientContext() {
-    const client = S.clients.find(c => c.contactName === me());
+    const client = S.clients.find(c => c.id === ME.clientId);
     const refs = new Set(client ? client.matters : []);
     return { client, list: matters().filter(m => refs.has(m.ref)), refs };
   }
@@ -1678,8 +1704,20 @@
     const docs = Object.values(DOCUMENTS).filter(d => d && refs.has(d.matterId) && d.visibility === 'CLIENT_APPROVED');
     setBody('pg-cli-docs', !list.length ? noMatters : docs.length ? docs.map(d => `<div class="card" style="display:flex;align-items:center;gap:10px;"><div style="font-size:18px;">📄</div><div style="flex:1;"><div style="font-size:12px;font-weight:500;color:var(--ink);">${esc(d.title)}</div><div style="font-family:var(--mono);font-size:9px;color:var(--slate);margin-top:2px;">${esc(d.matterId)} · ${esc(docStatusLabel(d.currentStatus))}</div></div>${d.file ? `<a class="btn btn-ghost btn-sm" href="${esc(d.file.url)}">Download</a>` : ''}</div>`).join('') : emptyBlock('📄', 'No documents shared yet', 'Documents your legal team approves for you will appear here.'));
 
-    const channel = client && client.name === 'Equity Bank Uganda Ltd' && COMM_DATA['equity-client'] ? COMM_DATA['equity-client'].messages : [];
-    setBody('pg-cli-messages', !list.length ? noMatters : channel.length ? `<div class="card">${channel.map(msg => `<div style="background:${msg.from === 'JO' ? 'var(--vd)' : 'var(--parch)'};color:${msg.from === 'JO' ? 'var(--white)' : 'var(--ink)'};border-radius:12px;padding:10px 12px;margin-bottom:8px;max-width:85%;${msg.from === 'JO' ? 'margin-left:auto;' : ''}"><div style="font-size:12px;line-height:1.55;">${esc(msg.text)}</div><div style="font-family:var(--mono);font-size:9px;opacity:.5;margin-top:4px;">${esc(msg.name || '')} · ${esc(msg.ts)}</div></div>`).join('')}</div>` : emptyBlock('💬', 'No messages yet', 'Messages from your legal team will appear here.'));
+    // One conversation with the legal team per matter ("client-{ref}").
+    setBody('pg-cli-messages', !list.length ? noMatters : list.map(m => {
+      const channel = 'client-' + m.ref;
+      const msgs = (COMM_DATA[channel] && COMM_DATA[channel].messages) || [];
+      return `<div class="card" style="margin-bottom:10px;">
+        <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px;">${esc(m.title)}</div>
+        <div style="font-family:var(--mono);font-size:9px;color:var(--slate);margin-bottom:10px;">${esc(m.ref)} · ${esc(m.advocate || 'Your legal team')}</div>
+        ${msgs.length ? msgs.map(msg => `<div style="background:${msg.mine ? 'var(--vd)' : 'var(--parch)'};color:${msg.mine ? 'var(--white)' : 'var(--ink)'};border-radius:12px;padding:10px 12px;margin-bottom:8px;max-width:85%;${msg.mine ? 'margin-left:auto;' : ''}"><div style="font-size:12px;line-height:1.55;white-space:pre-wrap;">${esc(msg.text)}</div><div style="font-family:var(--mono);font-size:9px;opacity:.5;margin-top:4px;">${esc(msg.name || '')} · ${esc(msg.ts)}</div></div>`).join('') : '<div style="font-size:12px;color:var(--slate);padding:4px 0 10px;">No messages yet.</div>'}
+        <div style="display:flex;gap:7px;border-top:1px solid rgba(28,43,43,.06);padding-top:10px;">
+          <textarea class="ctf-input" id="vlf-cli-msg-${esc(m.ref)}" rows="2" placeholder="Message your legal team…" style="resize:vertical;"></textarea>
+          <button class="btn btn-v btn-sm" onclick="VLFOPS.sendClientMessage(${arg(m.ref)})">Send</button>
+        </div>
+      </div>`;
+    }).join(''));
 
     setBody('pg-cli-billing', !list.length ? noMatters : invoices.length ? `<div class="card">${invoices.map(i => `<div class="recv-row"><div><div class="recv-matter">${esc(i.id)} · ${esc(i.matter)}</div><div class="recv-client">Issued ${esc(i.issueDate || '—')} · Due ${esc(i.dueDate || '—')}</div></div><div style="text-align:right;"><div class="recv-amt" style="color:${i.status === 'PAID' ? 'var(--vd)' : 'var(--ember)'};">${money(i.status === 'PAID' ? i.total : i.total - i.paid)}</div><div class="recv-age">${esc(i.status === 'PAID' ? 'Paid' : 'Outstanding')}</div></div></div>`).join('')}</div>` : emptyBlock('💰', 'No invoices', 'Invoices from the firm will appear here.'));
 
@@ -1702,24 +1740,75 @@
     b.style.display = n ? '' : 'none';
   }
 
-  /* Messages page: hide channels for matters that no longer exist. */
-  const CHANNEL_MATTER = { 'ksc-0891-internal': 'KSC-2026-0891', 'ksc-0823-internal': 'KSC-2026-0823', 'equity-client': 'KSC-2026-0891' };
-  function renderComms() {
-    document.querySelectorAll('#pg-adv-comms .comm-channel').forEach(el => {
-      const m = (el.getAttribute('onclick') || '').match(/switchChannel\('([^']+)'/);
-      const ref = m && CHANNEL_MATTER[m[1]];
-      el.style.display = ref && !matter(ref) ? 'none' : '';
-      const badge = el.querySelector('.comm-channel-badge');
-      if (badge) badge.style.display = 'none';
+  function sendClientMessage(ref) {
+    const box = document.getElementById('vlf-cli-msg-' + ref);
+    const text = box ? box.value.trim() : '';
+    if (!text) return;
+    const channel = 'client-' + ref;
+    api('POST', 'messages', { channel, text }).then(saved => {
+      if (!COMM_DATA[channel]) COMM_DATA[channel] = { title: ref, sub: '', to: ref, context: '', messages: [] };
+      COMM_DATA[channel].messages.push(saved);
+      renderClientPortal();
+      t('Message sent', 'Your legal team has been notified', 'g');
+    }).catch(saveFailed);
+  }
+
+  /*
+   * Messages page, built from the data: for every matter an internal discussion
+   * ("matter-{ref}", firm only) and a client conversation ("client-{ref}"), plus a
+   * direct-message channel with each colleague who has an account ("dm-{staffId}-{staffId}").
+   */
+  function commChannels() {
+    const list = [];
+    matters().sort((a, b) => b.ref.localeCompare(a.ref)).forEach(m => {
+      list.push({ group: 'Matter discussions', id: 'matter-' + m.ref, name: '⚖️ ' + m.ref, sub: m.title, title: m.ref + ' — internal', desc: 'Matter discussion · ' + m.title + ' · Firm only', context: 'Matter · Internal · Firm only' });
     });
-    if (CHANNEL_MATTER[activeChannel] && !matter(CHANNEL_MATTER[activeChannel])) {
-      activeChannel = 'PS-MS';
-      const title = document.getElementById('comm-channel-title');
-      if (title) title.textContent = COMM_DATA['PS-MS'].title;
-      const sub = document.getElementById('comm-channel-sub');
-      if (sub) sub.textContent = COMM_DATA['PS-MS'].sub;
+    matters().filter(m => m.client).sort((a, b) => b.ref.localeCompare(a.ref)).forEach(m => {
+      list.push({ group: 'Client conversations', id: 'client-' + m.ref, name: '👤 ' + m.client, sub: m.ref, title: m.client + ' — ' + m.ref, desc: 'Visible to the client · logged', context: 'Client channel · Visible to client' });
+    });
+    const mine = myStaff();
+    if (mine) {
+      S.staff.filter(s => s.id !== mine.id && s.userId && s.active).forEach(s => {
+        const ids = [mine.id, s.id].sort((a, b) => a - b).join('-');
+        list.push({ group: 'Direct messages', id: 'dm-' + ids, name: '👤 ' + s.name, sub: s.role, title: s.name, desc: 'Direct message · ' + s.role, context: 'Direct message · Internal' });
+      });
     }
-    renderCommMessages(activeChannel);
+    list.forEach(c => {
+      if (!COMM_DATA[c.id]) COMM_DATA[c.id] = { messages: [] };
+      Object.assign(COMM_DATA[c.id], { title: c.title, sub: c.desc, to: c.title, context: c.context });
+    });
+    return list;
+  }
+
+  function renderComms() {
+    const sidebar = document.querySelector('#pg-adv-comms .comm-sidebar');
+    if (!sidebar) return;
+    const channels = commChannels();
+    if (!channels.some(c => c.id === activeChannel)) activeChannel = channels.length ? channels[0].id : '';
+    let group = '';
+    const items = channels.map(c => {
+      const heading = c.group !== group ? `<div style="padding:8px 14px 4px;font-family:var(--mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);opacity:.35;">${esc(c.group)}</div>` : '';
+      group = c.group;
+      return heading + `<div class="comm-channel${c.id === activeChannel ? ' active' : ''}" onclick="switchChannel(${arg(c.id)}, ${arg(c.title)}, ${arg(c.desc)})"><div class="comm-channel-name">${esc(c.name)}</div><div class="comm-channel-sub">${esc(c.sub)}</div></div>`;
+    }).join('');
+    sidebar.innerHTML = `<div class="comm-sb-head"><div class="comm-sb-title">Conversations</div></div><div style="padding:0 0 8px;overflow-y:auto;">${items || '<div style="padding:14px;font-size:11px;color:var(--slate);">Conversations appear here once the firm has matters or colleagues.</div>'}</div>`;
+
+    const data = COMM_DATA[activeChannel];
+    const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+    set('comm-channel-title', data ? data.title : 'No conversation selected');
+    set('comm-channel-sub', data ? data.sub : '');
+    set('comm-compose-to', data ? data.to : '—');
+    set('comm-compose-context', data ? data.context : '');
+    const openBtn = document.querySelector('#comm-main .comm-main-head .btn');
+    if (openBtn) {
+      const ref = activeChannel.replace(/^(matter|client)-/, '');
+      openBtn.style.display = matter(ref) ? '' : 'none';
+      openBtn.setAttribute('onclick', `VLFOPS.openMatter(${arg(ref)})`);
+    }
+    const compose = document.querySelector('#comm-main .comm-compose');
+    if (compose) compose.style.display = activeChannel ? '' : 'none';
+    if (activeChannel) renderCommMessages(activeChannel);
+    else { const area = document.getElementById('comm-messages-area'); if (area) area.innerHTML = ''; }
   }
 
   function renderQueuePage() {
@@ -1813,38 +1902,76 @@
     return result;
   });
 
-  // The page's shell switch shows the shell with the wrong layout and leaves the
-  // header on the last advocate; show the client or administrator who is signed in.
-  const SHELL_USER = {
-    cli: ['JO', 'client', 'James Opolot', 'In-house Counsel · Equity Bank', 'Client · James Opolot'],
-    adm: ['GA', 'admin', 'Grace Akello', 'Firm Administrator', 'Firm Administrator']
-  };
+  /* ══ THE SIGNED-IN ACCOUNT ══
+   * One person per session: no persona switching. The shell switcher only offers the
+   * parts of the app this role may open (the server enforces the same rules). */
+
+  const ROLE_CLASS = { partner: 'partner', associate: 'assoc', junior: 'junior', clerk: 'junior', admin: 'admin', client: 'client' };
+  const allowedShells = () => (ME.shells && ME.shells.length ? ME.shells : ['adv']);
+
+  function showAccount() {
+    const av = document.getElementById('persona-av');
+    if (av) { av.textContent = ME.initials || '?'; av.className = 'av ' + (ROLE_CLASS[ME.role] || 'assoc'); }
+    const name = document.getElementById('persona-name');
+    if (name) name.textContent = ME.name || '';
+    const role = document.getElementById('persona-role');
+    if (role) role.textContent = ME.role === 'client' && ME.clientName ? 'Client · ' + ME.clientName : (ME.roleLabel || '');
+    const ctx = document.getElementById('ctx-role');
+    if (ctx) { ctx.textContent = (ME.roleLabel || '') + ' · ' + (ME.name || ''); ctx.className = 'ctx-role ' + (ME.role === 'client' ? 'client' : ME.role === 'admin' ? 'admin' : ME.role === 'partner' ? 'partner' : 'associate'); }
+    const firm = firmName();
+    document.querySelectorAll('.firm-name').forEach(el => { el.textContent = firm.replace(/\s+Advocates$/, ''); });
+    const crumb = document.getElementById('ctx-firm');
+    if (crumb) crumb.textContent = firm.replace(/\s+Advocates$/, '');
+  }
+
+  function initAccount() {
+    // Old code paths read PERSONAS[personaIdx]; make that the signed-in person.
+    if (typeof PERSONAS !== 'undefined') {
+      PERSONAS.splice(0, PERSONAS.length, { id: 'me', name: ME.name, role: ME.roleLabel, av: ME.initials, cls: ROLE_CLASS[ME.role] || 'assoc' });
+      personaIdx = 0;
+    }
+    window.cyclePersona = function () {};
+    const bar = document.getElementById('persona-bar');
+    if (bar) {
+      bar.onclick = null;
+      bar.style.cursor = 'default';
+      const arrow = bar.lastElementChild;
+      if (arrow && arrow.textContent.trim() === '↕') arrow.remove();
+    }
+
+    const shells = allowedShells();
+    ['adv', 'cli', 'adm'].forEach(s => {
+      const tab = document.getElementById('shell-' + s);
+      if (tab) tab.style.display = shells.includes(s) ? '' : 'none';
+    });
+    const switcher = document.querySelector('.shell-bar');
+    if (switcher && shells.length < 2) switcher.style.display = 'none';
+
+    const right = document.querySelector('.tb-r');
+    if (right && !document.getElementById('vlf-signout')) {
+      right.insertAdjacentHTML('beforeend', `<form id="vlf-signout" method="POST" action="${esc(window.VLF_LOGOUT || '/logout')}" style="margin:0;">
+        <input type="hidden" name="_token" value="${esc((document.querySelector('meta[name="csrf-token"]') || {}).content || '')}">
+        <button type="submit" class="global-search-btn" title="Sign out">Sign out</button></form>`);
+    }
+
+    setShell(shells[0]);
+  }
 
   wrap('setShell', function (original, args) {
-    const result = original.apply(this, args);
-    const shell = args[0];
+    // Only the parts of the app this account may open.
+    const shell = allowedShells().includes(args[0]) ? args[0] : allowedShells()[0];
+    const result = original.call(this, shell);
     const body = document.getElementById('shell-' + shell + '-body');
     if (body) body.style.display = 'grid';
     ['adv', 'cli', 'adm'].forEach(s => { const tab = document.getElementById('shell-' + s); if (tab) tab.classList.toggle('on', s === shell); });
-    const u = SHELL_USER[shell];
-    if (u) {
-      const av = document.getElementById('persona-av');
-      if (av) { av.textContent = u[0]; av.className = 'av ' + u[1]; }
-      const name = document.getElementById('persona-name');
-      if (name) name.textContent = u[2];
-      const role = document.getElementById('persona-role');
-      if (role) role.textContent = u[3];
-      const ctx = document.getElementById('ctx-role');
-      if (ctx) { ctx.textContent = u[4]; ctx.className = 'ctx-role ' + u[1]; }
-    } else if (shell === 'adv') {
-      updatePersonaBar();
-    }
+    showPg({ adv: 'adv-command', cli: 'cli-home', adm: 'adm-home' }[shell]);
+    showAccount();
     onUserChanged();
     return result;
   });
   wrap('updatePersonaBar', function (original, args) {
     const result = original.apply(this, args);
-    if (S.staff.length) onUserChanged();
+    showAccount();
     return result;
   });
 
@@ -1865,12 +1992,14 @@
     S.notifications = st.notifications || {};
     Object.keys(S.notifications).forEach(k => { if (Array.isArray(S.notifications[k]) === false) S.notifications[k] = []; });
     resetSeen();
+    showAccount();
     renderAll();
     renderWorkingDocs();
     if (!pollTimer) pollTimer = setInterval(pollNotifications, 30000);
   });
 
   initIntake();
+  initAccount();
 
   window.VLFOPS = {
     openMatter, openMatterDrawer, assignMatter, saveAssignment, logTimeFor,
@@ -1882,6 +2011,6 @@
     addExtraInvoiceLine, createInvoice, invoiceAction,
     openDoc, docAction, openReturnFor, confirmReturn,
     openStaffForm, saveStaff, openFirmForm, saveFirm, toggleSetting,
-    openNotification, pollNotifications, goTo
+    openNotification, pollNotifications, goTo, sendClientMessage, inviteClient, inviteStaff
   };
 })();

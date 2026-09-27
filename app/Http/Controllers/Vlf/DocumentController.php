@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Vlf;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\Vlf\Document;
 use App\Models\Vlf\Matter;
 use App\Support\VlfNotifier;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -26,9 +28,9 @@ class DocumentController extends Controller
             'title' => 'required|string|max:255',
             'matter' => 'required|string|exists:vlf_matters,ref',
             'folder' => 'required|string|max:100',
-            'visibility' => 'required|string|max:50',
-            'author' => 'required|string|max:100',
+            'visibility' => 'required|in:PRIVILEGED,INTERNAL,CLIENT_APPROVED',
         ]);
+        $data['author'] = $request->user()->name;
 
         $file = $request->file('file');
         $sha = hash_file('sha256', $file->getRealPath());
@@ -52,6 +54,7 @@ class DocumentController extends Controller
     public function download(Request $request, string $key): StreamedResponse
     {
         $document = Document::where('key', $key)->whereNotNull('file_path')->firstOrFail();
+        Gate::authorize('view', $document);
         $disposition = $request->boolean('inline') ? 'inline' : 'attachment';
 
         return Storage::response($document->file_path, $document->file_name, [], $disposition);
@@ -61,22 +64,31 @@ class DocumentController extends Controller
     {
         $data = $request->validate([
             'action' => 'required|in:submit,approve,return,file',
-            'actor' => 'required|string|max:100',
             'reason' => 'required_if:action,return|nullable|string|max:2000',
         ]);
 
+        $user = $request->user();
         $document = Document::where('key', $key)->firstOrFail();
         $doc = $document->data;
         $status = $doc['currentStatus'] ?? 'DRAFT';
-        $actor = $data['actor'];
+        $actor = $user->name;
         $author = $doc['author'] ?? null;
         $matter = Matter::where('ref', $doc['matterId'] ?? '')->first();
-        $reviewer = ($matter?->advocate && $matter->advocate !== $author) ? $matter->advocate : ($matter?->supervisor ?? 'Margaret Ssempebwa');
+        $firstPartner = fn () => User::where('role', 'partner')->where('active', true)->where('name', '!=', $author)->value('name');
+        $reviewer = ($matter?->advocate && $matter->advocate !== $author) ? $matter->advocate : ($matter?->supervisor ?? $firstPartner());
 
         $inReview = ['UNDER_REVIEW', 'PENDING_PARTNER_APPROVAL'];
         $allowedFrom = ['submit' => ['DRAFT', 'REJECTED'], 'approve' => $inReview, 'return' => $inReview, 'file' => ['APPROVED']];
         abort_unless(in_array($status, $allowedFrom[$data['action']], true), 422, "This document is {$status}; it can't be {$data['action']}ed now.");
-        abort_if(in_array($data['action'], ['approve', 'return'], true) && $actor === $author, 422, 'You cannot approve or return your own document — another advocate must review it.');
+
+        // Who may act comes from the signed-in account, never from the request.
+        match ($data['action']) {
+            'submit' => abort_unless($actor === $author || $user->isPartner(), 403, 'Only the author can submit this document for review.'),
+            'approve', 'return' => abort_unless($actor !== $author && ($actor === ($doc['reviewer'] ?? null) || $user->isPartner()), 403,
+                $actor === $author ? 'You cannot approve or return your own document — another advocate must review it.' : 'Only the assigned reviewer or a partner can review this document.'),
+            // Filing is a Class A act: it needs a partner.
+            'file' => abort_unless($user->isPartner(), 403, 'Filing is a Class A action — only a partner can file.'),
+        };
 
         $ts = 'Today · '.now('Africa/Kampala')->format('g:i A');
         $iris = strtoupper($data['action']).'-'.now()->timestamp;

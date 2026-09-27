@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Vlf\FirmController;
+use App\Models\User;
 use App\Models\Vlf\Client;
 use App\Models\Vlf\Comment;
 use App\Models\Vlf\CourtEvent;
@@ -16,34 +17,55 @@ use App\Models\Vlf\Setting;
 use App\Models\Vlf\Staff;
 use App\Models\Vlf\Task;
 use App\Models\Vlf\TimeEntry;
+use App\Support\VlfAccess;
 use App\Support\VlfNotifier;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 
 /**
- * JSON API for the VLF prototype page (public/vlf-fixed.html).
+ * JSON API for the VLF app (resources/vlf/app.html).
  * Response shapes mirror the in-page JavaScript objects so public/js/vlf-api.js
  * can drop them straight into TASKS, TIME_ENTRIES, INVOICES, etc.
+ * The acting person is always the signed-in user.
  */
 class VlfController extends Controller
 {
-    public function state(): JsonResponse
+    /** Document fields only the review workflow may change — never a plain save. */
+    private const DOCUMENT_WORKFLOW_FIELDS = ['currentStatus', 'currentLifecycleStep', 'approvalChain', 'history', 'reviewer', 'returnReason', 'author', 'file'];
+
+    /**
+     * Everything the page needs, limited to what this person may see.
+     * Clients get only their own organisation's matters, issued invoices, client-approved
+     * documents and client channels; firm-internal records (tasks, time, comments,
+     * deadlines, staff) are not sent to them at all.
+     */
+    public function state(Request $request): JsonResponse
     {
+        $user = $request->user();
+        $refs = VlfAccess::matterRefs($user);
+        $inScope = fn ($query, string $column = 'matter_ref') => $refs === null ? $query : $query->whereIn($column, $refs);
+        $staffOnly = fn (callable $load) => $user->isStaff() ? $load() : [];
+
         return response()->json([
-            'matters' => Matter::with('client')->orderBy('ref')->get()->mapWithKeys(fn (Matter $m) => [$m->ref => $m->toClient()]),
-            'clients' => Client::with('matters')->orderBy('name')->get()->map->toClient(),
-            'events' => CourtEvent::orderBy('date')->orderBy('time')->get()->map->toClient(),
-            'deadlines' => Deadline::orderBy('due_date')->orderBy('due_time')->get()->map->toClient(),
-            'staff' => Staff::orderBy('id')->get()->map->toClient(),
+            'me' => $user->toClient(),
+            'matters' => $inScope(Matter::with('client'), 'ref')->orderBy('ref')->get()->mapWithKeys(fn (Matter $m) => [$m->ref => $m->toClient()]),
+            'clients' => ($user->isStaff() ? Client::query() : Client::whereKey($user->client_id))->with('matters')->orderBy('name')->get()->map->toClient(),
+            'events' => $inScope(CourtEvent::query())->orderBy('date')->orderBy('time')->get()->map->toClient(),
+            'deadlines' => $staffOnly(fn () => Deadline::orderBy('due_date')->orderBy('due_time')->get()->map->toClient()),
+            'staff' => $staffOnly(fn () => Staff::orderBy('id')->get()->map->toClient()),
             'settings' => (object) Setting::whereIn('key', FirmController::SETTING_KEYS)->pluck('value', 'key')->all(),
-            'notifications' => Notification::latest('id')->limit(200)->get()->groupBy('recipient')->map(fn ($rows) => $rows->map->toClient()->values()),
-            'tasks' => Task::orderBy('id')->get()->map->toClient(),
-            'timeEntries' => TimeEntry::orderByDesc('id')->get()->map->toClient(),
-            'invoices' => Invoice::orderBy('id')->get()->map->toClient(),
-            'messages' => Message::orderBy('id')->get()->groupBy('channel')->map(fn ($rows) => $rows->map->toClient()->values()),
-            'comments' => Comment::orderBy('id')->get()->groupBy('matter_ref')->map(fn ($rows) => $rows->map->toClient()->values()),
-            'documents' => Document::all()->mapWithKeys(fn (Document $d) => [$d->key => $d->toClient()]),
+            'notifications' => (object) [$user->name => Notification::where('recipient', $user->name)->latest('id')->limit(100)->get()->map->toClient()],
+            'tasks' => $staffOnly(fn () => Task::orderBy('id')->get()->map->toClient()),
+            'timeEntries' => $staffOnly(fn () => TimeEntry::orderByDesc('id')->get()->map->toClient()),
+            'invoices' => Invoice::orderBy('id')->get()->filter(fn (Invoice $i) => Gate::forUser($user)->allows('view', $i))->values()->map->toClient(),
+            'messages' => Message::orderBy('id')->get()
+                ->filter(fn (Message $m) => $this->canUseChannel($user, $m->channel))
+                ->groupBy('channel')->map(fn ($rows) => $rows->map(fn (Message $m) => $m->toClient($user))->values()),
+            'comments' => $staffOnly(fn () => Comment::orderBy('id')->get()->groupBy('matter_ref')->map(fn ($rows) => $rows->map->toClient()->values())),
+            'documents' => (object) Document::all()->filter(fn (Document $d) => Gate::forUser($user)->allows('view', $d))
+                ->mapWithKeys(fn (Document $d) => [$d->key => $d->toClient()])->all(),
         ]);
     }
 
@@ -51,40 +73,39 @@ class VlfController extends Controller
     {
         $data = $request->validate([
             'matter' => 'required|string|max:50|exists:vlf_matters,ref',
-            'matterTitle' => 'nullable|string|max:255',
             'class' => 'required|in:A,B,C',
             'title' => 'required|string|max:255',
             'desc' => 'nullable|string|max:5000',
             'priority' => 'nullable|string|max:20',
-            'assignedTo' => 'required|string|max:100',
-            'assignedBy' => 'nullable|string|max:100',
+            'assignedTo' => 'required|string|max:100|exists:vlf_staff,name',
             'deadline' => 'nullable|string|max:100',
             'estimatedTime' => 'nullable|string|max:30',
             'billable' => 'boolean',
             'relatedDoc' => 'nullable|string|max:255',
         ]);
 
+        $assigner = $request->user()->name;
         $task = Task::create([
             'code' => (string) Str::uuid(),
             'matter_ref' => $data['matter'],
-            'matter_title' => $data['matterTitle'] ?? null,
+            'matter_title' => Matter::where('ref', $data['matter'])->value('title'),
             'class' => $data['class'],
             'title' => $data['title'],
             'description' => $data['desc'] ?? null,
             'priority' => $data['priority'] ?? null,
             'assigned_to' => $data['assignedTo'],
-            'assigned_by' => $data['assignedBy'] ?? null,
+            'assigned_by' => $assigner,
             'deadline' => $data['deadline'] ?? null,
             'status' => 'PENDING',
             'estimated_time' => $data['estimatedTime'] ?? null,
             'billable' => $data['billable'] ?? true,
             'related_doc' => $data['relatedDoc'] ?? null,
         ]);
-        $task->update(['code' => sprintf('TSK-KSC-%s-%03d', substr($task->matter_ref, -4), 100 + $task->id)]);
+        $task->update(['code' => sprintf('TSK-%s-%03d', substr($task->matter_ref, -4), 100 + $task->id)]);
 
-        if ($task->assigned_to !== $task->assigned_by) {
+        if ($task->assigned_to !== $assigner) {
             VlfNotifier::notify($task->assigned_to, 'task',
-                ($task->assigned_by ?? 'A colleague')." assigned you: {$task->title} ({$task->matter_ref}, Class {$task->class})".($task->deadline ? " — due {$task->deadline}" : '').'.',
+                "{$assigner} assigned you: {$task->title} ({$task->matter_ref}, Class {$task->class})".($task->deadline ? " — due {$task->deadline}" : '').'.',
                 ['matter' => $task->matter_ref, 'tab' => 'work']);
         }
 
@@ -94,11 +115,13 @@ class VlfController extends Controller
     public function updateTask(Request $request, string $code): JsonResponse
     {
         $task = Task::where('code', $code)->firstOrFail();
+        $user = $request->user();
+        abort_unless(in_array($user->name, [$task->assigned_to, $task->assigned_by], true) || $user->isPartner(), 403,
+            'Only the person assigned, the person who assigned it, or a partner can change this task.');
 
         $data = $request->validate([
             'status' => 'required|in:PENDING,IN_PROGRESS,BLOCKED,DONE',
             'blockedBy' => 'required_if:status,BLOCKED|nullable|string|max:255',
-            'actor' => 'nullable|string|max:100',
         ]);
 
         $task->update([
@@ -106,7 +129,7 @@ class VlfController extends Controller
             'blocked_by' => $data['status'] === 'BLOCKED' ? $data['blockedBy'] : null,
         ]);
 
-        $actor = $data['actor'] ?? $task->assigned_to;
+        $actor = $user->name;
         if (in_array($data['status'], ['DONE', 'BLOCKED'], true) && $task->assigned_by && $task->assigned_by !== $actor) {
             VlfNotifier::notify($task->assigned_by, $data['status'] === 'DONE' ? 'info' : 'warn',
                 $data['status'] === 'DONE'
@@ -119,18 +142,20 @@ class VlfController extends Controller
         return response()->json($task->toClient());
     }
 
+    /** Time is always logged as the signed-in person, at the rate on their staff record. */
     public function storeTimeEntry(Request $request): JsonResponse
     {
         $data = $request->validate([
             'matter' => 'required|string|max:50|exists:vlf_matters,ref',
             'task' => 'nullable|string|max:50',
             'desc' => 'required|string|max:1000',
-            'advocate' => 'required|string|max:100',
             'durationMins' => 'required|integer|min:1|max:1440',
             'billable' => 'boolean',
-            'rate' => 'required|integer|min:0|max:10000000',
         ]);
 
+        $user = $request->user();
+        $staff = Staff::where('user_id', $user->id)->first() ?? Staff::where('name', $user->name)->first();
+        $rate = (int) ($staff?->rate ?? 0);
         $mins = $data['durationMins'];
         $billable = $data['billable'] ?? true;
 
@@ -139,57 +164,90 @@ class VlfController extends Controller
             'matter_ref' => $data['matter'],
             'task_code' => $data['task'] ?? null,
             'description' => $data['desc'],
-            'advocate' => $data['advocate'],
+            'advocate' => $user->name,
             'duration' => intdiv($mins, 60) > 0 ? intdiv($mins, 60).'h '.($mins % 60).'m' : $mins.'m',
             'duration_mins' => $mins,
             'billable' => $billable,
-            'rate' => $data['rate'],
-            'amount' => $billable ? (int) round($mins / 60 * $data['rate']) : 0,
+            'rate' => $rate,
+            'amount' => $billable ? (int) round($mins / 60 * $rate) : 0,
         ]);
         $entry->update(['code' => sprintf('TE-%03d', $entry->id)]);
-        Staff::where('name', $entry->advocate)->increment('month_hours', round($mins / 60, 1));
+        $staff?->increment('month_hours', round($mins / 60, 1));
 
         return response()->json($entry->toClient(), 201);
+    }
+
+    /**
+     * Channels: "matter-{ref}" (firm-internal), "client-{ref}" (firm and that matter's client),
+     * "dm-{staffId}-{staffId}" (two staff members). Anything else is firm-internal.
+     */
+    public function canUseChannel(User $user, string $channel): bool
+    {
+        if (str_starts_with($channel, 'client-')) {
+            return VlfAccess::canSeeMatter($user, substr($channel, 7));
+        }
+        if (! $user->isStaff()) {
+            return false;
+        }
+        if (preg_match('/^dm-(\d+)-(\d+)$/', $channel, $m)) {
+            $staffId = Staff::where('user_id', $user->id)->value('id');
+
+            return $staffId !== null && in_array((string) $staffId, [$m[1], $m[2]], true);
+        }
+
+        return true;
     }
 
     public function storeMessage(Request $request): JsonResponse
     {
         $data = $request->validate([
             'channel' => 'required|string|max:100',
-            'from' => 'required|string|max:8',
-            'name' => 'nullable|string|max:100',
             'text' => 'required|string|max:5000',
         ]);
 
+        $user = $request->user();
+        abort_unless($this->canUseChannel($user, $data['channel']), 403, 'You can’t post in this conversation.');
+
         $message = Message::create([
             'channel' => $data['channel'],
-            'author_av' => $data['from'],
-            'author_name' => $data['name'] ?? null,
+            'user_id' => $user->id,
+            'author_av' => $user->initials(),
+            'author_name' => $user->name,
             'text' => $data['text'],
             'mine' => true,
         ]);
 
-        if ($message->channel === 'equity-client' && $message->author_av !== 'JO') {
-            VlfNotifier::notify('James Opolot', 'info', ($message->author_name ?? 'Your legal team').': '.Str::limit($message->text, 160), ['page' => 'cli-messages'], 'New message');
+        $preview = $user->name.': '.Str::limit($message->text, 160);
+        if (str_starts_with($message->channel, 'client-')) {
+            $matter = Matter::where('ref', substr($message->channel, 7))->first();
+            if ($user->isStaff()) {
+                User::where('client_id', $matter?->client_id)->where('active', true)->pluck('name')
+                    ->each(fn ($name) => VlfNotifier::notify($name, 'info', $preview, ['page' => 'cli-messages'], 'New message'));
+            } else {
+                VlfNotifier::notify($matter?->advocate, 'action', $preview, ['page' => 'adv-comms'], 'Client message');
+            }
+        } elseif (preg_match('/^dm-(\d+)-(\d+)$/', $message->channel, $m)) {
+            Staff::whereIn('id', [$m[1], $m[2]])->where('name', '!=', $user->name)->pluck('name')
+                ->each(fn ($name) => VlfNotifier::notify($name, 'info', $preview, ['page' => 'adv-comms'], 'Direct message'));
         }
 
-        return response()->json($message->toClient(), 201);
+        return response()->json($message->toClient($user), 201);
     }
 
     public function storeComment(Request $request): JsonResponse
     {
         $data = $request->validate([
             'matter' => 'required|string|max:50|exists:vlf_matters,ref',
-            'author' => 'required|string|max:100',
-            'av' => 'required|string|max:8',
             'context' => 'nullable|string|max:255',
             'text' => 'required|string|max:5000',
         ]);
 
+        $user = $request->user();
         $comment = Comment::create([
             'matter_ref' => $data['matter'],
-            'author' => $data['author'],
-            'author_av' => $data['av'],
+            'user_id' => $user->id,
+            'author' => $user->name,
+            'author_av' => $user->initials(),
             'context' => $data['context'] ?? null,
             'text' => $data['text'],
             'replies' => [],
@@ -226,14 +284,15 @@ class VlfController extends Controller
     public function updateMatter(Request $request, string $ref): JsonResponse
     {
         $matter = Matter::where('ref', $ref)->firstOrFail();
+        Gate::authorize('update', $matter);
 
         $data = $request->validate([
             'title' => 'sometimes|string|max:255',
             'court' => 'sometimes|nullable|string|max:255',
             'judge' => 'sometimes|nullable|string|max:255',
-            'advocate' => 'sometimes|nullable|string|max:100',
+            'advocate' => 'sometimes|nullable|string|max:100|exists:vlf_staff,name',
             'stage' => 'sometimes|nullable|string|max:100',
-            'supervisor' => 'sometimes|nullable|string|max:100',
+            'supervisor' => 'sometimes|nullable|string|max:100|exists:vlf_staff,name',
             'statusLabel' => 'sometimes|nullable|string|max:100',
             'statusLevel' => 'sometimes|nullable|in:urgent,warn,ok',
             'riskLevel' => 'sometimes|nullable|string|max:20',
@@ -242,9 +301,14 @@ class VlfController extends Controller
 
         $matter->update(collect($data)->mapWithKeys(fn ($v, $k) => [Str::snake($k) => $v])->all());
 
-        return response()->json($matter->toClient());
+        return response()->json($matter->load('client')->toClient());
     }
 
+    /**
+     * Saves a working document's content. The review fields (status, approvals, history,
+     * author) are kept from the stored record, so a save can never approve or file a
+     * document — only the review workflow can. Documents under review are locked.
+     */
     public function updateDocument(Request $request, string $key): JsonResponse
     {
         abort_unless(preg_match('/^[A-Za-z0-9_-]{1,100}$/', $key), 404);
@@ -252,11 +316,33 @@ class VlfController extends Controller
         $request->validate([
             'data' => 'required|array',
             'data.title' => 'required|string|max:255',
+            'data.matterId' => 'required|string|exists:vlf_matters,ref',
         ]);
 
-        // validate() would return only data.title; the document is a free-form nested object.
-        $document = Document::updateOrCreate(['key' => $key], ['data' => $request->input('data')]);
+        $incoming = $request->input('data');
+        $existing = Document::where('key', $key)->first();
 
-        return response()->json(['key' => $document->key, 'data' => $document->data]);
+        if ($existing) {
+            $status = $existing->data['currentStatus'] ?? 'DRAFT';
+            abort_unless(in_array($status, ['DRAFT', 'REJECTED'], true), 422,
+                'This document is '.strtolower(str_replace('_', ' ', $status)).' — its content is locked. Return it for revision to change it.');
+            foreach (self::DOCUMENT_WORKFLOW_FIELDS as $field) {
+                if (array_key_exists($field, $existing->data)) {
+                    $incoming[$field] = $existing->data[$field];
+                } else {
+                    unset($incoming[$field]);
+                }
+            }
+            $existing->update(['data' => $incoming]);
+            $document = $existing;
+        } else {
+            $incoming['author'] = $request->user()->name;
+            $incoming['currentStatus'] = 'DRAFT';
+            $incoming['currentLifecycleStep'] = 0;
+            unset($incoming['reviewer'], $incoming['returnReason'], $incoming['file']);
+            $document = Document::create(['key' => $key, 'data' => $incoming]);
+        }
+
+        return response()->json(['key' => $document->key, 'data' => $document->toClient()]);
     }
 }

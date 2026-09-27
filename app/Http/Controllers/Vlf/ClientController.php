@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Vlf;
 use App\Http\Controllers\Controller;
 use App\Models\Vlf\Client;
 use App\Models\Vlf\Matter;
+use App\Support\VlfAccounts;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -32,6 +33,14 @@ class ClientController extends Controller
     {
         $rules = array_map(fn ($rule) => 'sometimes|'.$rule, self::RULES);
         $client->update($this->columns($request->validate($rules + ['verified' => 'sometimes|boolean'])));
+
+        return response()->json($client->load('matters')->toClient());
+    }
+
+    /** Give the client's contact person a portal account and email them a set-your-password link. */
+    public function invite(Client $client): JsonResponse
+    {
+        VlfAccounts::forClientContact($client);
 
         return response()->json($client->load('matters')->toClient());
     }

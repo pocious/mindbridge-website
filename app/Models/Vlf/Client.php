@@ -2,6 +2,7 @@
 
 namespace App\Models\Vlf;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -32,6 +33,7 @@ class Client extends Model
             'verified' => $this->verified,
             'notes' => $this->notes,
             'matters' => $this->matters->pluck('ref')->values(),
+            'portalUsers' => User::where('client_id', $this->id)->pluck('email')->values(),
         ];
     }
 }

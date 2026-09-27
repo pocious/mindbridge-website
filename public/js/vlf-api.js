@@ -12,13 +12,29 @@
   const EQUITY = 'KSC-2026-0891';
   let MATTERS = {};
 
+  const csrf = (document.querySelector('meta[name="csrf-token"]') || {}).content || '';
+
   function api(method, path, body) {
     const isForm = body instanceof FormData;
+    const headers = { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': csrf };
+    if (!isForm) headers['Content-Type'] = 'application/json';
     return fetch(API + path, {
       method,
-      headers: isForm ? { 'Accept': 'application/json' } : { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      headers,
+      credentials: 'same-origin',
       body: body === undefined ? undefined : (isForm ? body : JSON.stringify(body))
     }).then(res => res.json().catch(() => ({})).then(json => {
+      // Signed out or session expired: go to the sign-in page (unsaved work is kept in the form).
+      if (res.status === 401 || res.status === 419) {
+        const banner = document.getElementById('session-banner');
+        if (banner) {
+          banner.classList.add('on');
+          banner.querySelector('.session-banner-action').onclick = () => { window.location.href = '/login'; };
+        }
+        const err = new Error('Your session has ended — please sign in again.');
+        err.fromServer = true;
+        throw err;
+      }
       if (!res.ok) {
         const err = new Error(json.message || (method + ' ' + path + ' → ' + res.status));
         err.fromServer = Boolean(json.message);
@@ -36,8 +52,10 @@
     else t('Not saved to server', 'The change is only on this screen — check your connection and try again', 'r');
   }
 
+  // The signed-in person (injected by the server when the page is served).
   function persona() {
-    return (typeof PERSONAS !== 'undefined' && PERSONAS[personaIdx]) || { name: 'Peter Ssali', av: 'PS' };
+    const u = window.VLF_USER || {};
+    return { name: u.name || '', av: u.initials || '' };
   }
 
   function replaceArray(target, items) {
@@ -148,7 +166,7 @@
   function saveMessage(channel, list, before) {
     if (!list || list.length === before) return;
     const msg = list[list.length - 1];
-    api('POST', 'messages', { channel, from: msg.from, name: msg.name || persona().name, text: msg.text })
+    api('POST', 'messages', { channel, text: msg.text })
       .then(saved => Object.assign(msg, saved)).catch(saveFailed);
   }
 
@@ -236,13 +254,14 @@
   // Partner approval — save the approved document and the lowered risk level
   wrap('partnerApprove', function (original, args) {
     original.apply(this, args);
-    const doc = DOCUMENTS['witness-statement'];
-    if (doc) api('PUT', 'documents/witness-statement', { data: doc }).catch(saveFailed);
+    // The approval itself is not saved from here: the server only accepts approvals
+    // through the review workflow, never from a plain save.
     const explain = document.querySelector('#matter-risk-bar .mrs-explain');
     api('PUT', 'matters/' + EQUITY, { riskLevel: 'HIGH', riskNote: explain ? explain.textContent : null })
       .then(saved => { MATTERS[EQUITY] = saved; }).catch(saveFailed);
-    api('POST', 'notifications', {
-      recipient: 'Peter Ssali', type: 'action', label: 'Partner approval received',
+    const advocate = MATTERS[EQUITY] && MATTERS[EQUITY].advocate;
+    if (advocate && advocate !== persona().name) api('POST', 'notifications', {
+      recipient: advocate, type: 'action', label: 'Partner approval received',
       text: persona().name + ' approved the witness statement (KSC-2026-0891). File with the Commercial Division registry before 5:00 PM.',
       link: { matter: EQUITY, doc: 'witness-statement' }
     }).catch(saveFailed);

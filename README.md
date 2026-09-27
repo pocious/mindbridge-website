@@ -1,58 +1,81 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# MindBridge — Virtual Law Firm (VLF)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel 13 application with two parts:
 
-## About Laravel
+- **MindBridge website** — the public site at `/`.
+- **VLF app** — a law-firm workspace at `/app` (sign-in required): matters and intake, clients, court diary, deadlines, tasks, time recording, invoicing, document review and uploads, messages and notifications.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Setup
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Requirements: PHP 8.3+, Composer, MySQL.
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install
+cp .env.example .env        # set DB_*, APP_URL and MAIL_* (see below)
+php artisan key:generate
+php artisan migrate
+php artisan db:seed --class=VlfEmptySeeder     # empty firm, settings only
+php artisan vlf:user you@yourfirm.com "Your Name" partner
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+`vlf:user` emails a set-your-password link. Add `--password="…"` to set one directly (at least 10 characters).
+Everyone else is added from inside the app: staff under **Firm Admin → People & Workload**, client contacts with **Invite to portal** on the **Clients** screen. Each receives a set-your-password email.
 
-## Contributing
+### Mail
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Invites, password resets and notifications are sent by email. With `MAIL_MAILER=log` they are written to `storage/logs/laravel.log` instead of being sent. For real delivery set the SMTP settings in `.env`, for example:
 
-## Code of Conduct
+```
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.yourprovider.com
+MAIL_PORT=587
+MAIL_USERNAME=…
+MAIL_PASSWORD=…
+MAIL_FROM_ADDRESS=noreply@yourfirm.com
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Demo data
 
-## Security Vulnerabilities
+`php artisan db:seed --class=VlfSeeder` loads a sample firm (Katende, Ssempebwa & Co.) with demo accounts, all with the password `password`:
+`margaret@ksc-advocates.example` (partner), `peter@ksc-advocates.example` (associate), `tendo@ksc-advocates.example` (junior), `grace@ksc-advocates.example` (administrator), `james.opolot@equitybank.example` (client).
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**Both seeders delete all VLF data and all sign-in accounts.** Don't run them on a live system.
 
-## License
+## Roles
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+| Role | Opens | Can |
+|---|---|---|
+| Partner | Advocate + Firm Admin | Everything, including Class A acts: approving invoices, filing documents |
+| Associate | Advocate | Matters, intake, tasks, time, drafting and reviewing documents |
+| Junior / Clerk | Advocate | Same screens; work is reviewed before it is approved |
+| Administrator | Firm Admin | Staff, settings, billing overview |
+| Client | Client portal | Only their own organisation's matters, issued invoices, client-approved documents and their conversation with the firm |
+
+## Authority classes
+
+- **Class A** — partner authority: filing a document, approving an invoice for issue.
+- **Class B** — associate authority: drafting, reviewing, internal coordination, client communication.
+- **Class C** — junior work: research and first drafts, always reviewed.
+
+These rules are enforced on the server. Who is acting always comes from the signed-in account, never from the request, and the browser cannot approve or file anything by editing a document.
+Document review: Draft → Under review (with the matter's advocate, or a partner) → Approved → Filed (partner). Nobody can review their own document.
+Invoices: Draft (from unbilled time) → Approved (partner) → Issued → Paid. Issued invoices can't be edited.
+
+## Tests
+
+The tests use a separate MySQL database:
+
+```bash
+mysql -u root -e "CREATE DATABASE mindbridge_test"
+php artisan test
+```
+
+`tests/Feature/VlfAccessTest.php` covers sign-in, per-person data, the Class A rules and notifications.
+
+## Layout
+
+- `resources/vlf/app.html` — the app page (served by `VlfAppController`, never directly from `public/`).
+- `public/js/vlf-api.js`, `public/js/vlf-ops.js` — load and save through the API.
+- `routes/web.php` — sign-in routes and the `/api/vlf/*` API (session + CSRF protected).
+- `app/Http/Controllers/Vlf*`, `app/Policies`, `app/Support/Vlf*` — the rules.

@@ -6,10 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\Vlf\Notification;
 use App\Models\Vlf\Setting;
 use App\Models\Vlf\Staff;
+use App\Support\VlfAccounts;
 use App\Support\VlfNotifier;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 /**
  * Firm administration: staff, firm settings and notifications.
@@ -23,36 +28,66 @@ class FirmController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:100|unique:vlf_staff,name',
             'role' => 'required|string|max:100',
-            'email' => 'nullable|email|max:255',
+            'email' => 'nullable|email|max:255|unique:users,email',
             'rate' => 'nullable|integer|min:0|max:10000000',
             'status' => 'nullable|string|max:50',
         ]);
 
-        $staff = Staff::create([
-            'name' => $data['name'],
-            'initials' => Str::upper(collect(explode(' ', $data['name']))->filter()->map(fn ($p) => $p[0])->take(2)->implode('')),
-            'role' => $data['role'],
-            'email' => $data['email'] ?? null,
-            'rate' => $data['rate'] ?? 0,
-            'status' => $data['status'] ?? 'Available',
-        ]);
+        $staff = DB::transaction(function () use ($data) {
+            $staff = Staff::create([
+                'name' => $data['name'],
+                'initials' => Str::upper(collect(explode(' ', $data['name']))->filter()->map(fn ($p) => $p[0])->take(2)->implode('')),
+                'role' => $data['role'],
+                'email' => $data['email'] ?? null,
+                'rate' => $data['rate'] ?? 0,
+                'status' => $data['status'] ?? 'Available',
+            ]);
+            // With an email, the staff member gets an account and a "set your password" email.
+            VlfAccounts::forStaff($staff);
 
-        return response()->json($staff->toClient(), 201);
+            return $staff;
+        });
+
+        return response()->json($staff->fresh()->toClient(), 201);
     }
 
     public function updateStaff(Request $request, Staff $staff): JsonResponse
     {
         $data = $request->validate([
             'role' => 'sometimes|string|max:100',
-            'email' => 'sometimes|nullable|email|max:255',
+            'email' => ['sometimes', 'nullable', 'email', 'max:255', Rule::unique('users', 'email')->ignore($staff->user_id)],
             'rate' => 'sometimes|integer|min:0|max:10000000',
             'status' => 'sometimes|string|max:50',
             'active' => 'sometimes|boolean',
         ]);
 
-        $staff->update($data);
+        abort_if(($data['active'] ?? true) === false && $staff->user_id === $request->user()->id, 422, 'You can’t deactivate your own account.');
 
-        return response()->json($staff->toClient());
+        DB::transaction(function () use ($staff, $data) {
+            $staff->update($data);
+            if ($staff->user) {
+                // Keep the sign-in account in step: role follows the job title; deactivating blocks sign-in.
+                $staff->user->update(array_filter([
+                    'email' => $staff->email,
+                    'role' => VlfAccounts::roleForTitle($staff->role),
+                    'active' => $staff->active,
+                ], fn ($v) => $v !== null));
+            } elseif ($staff->email) {
+                VlfAccounts::forStaff($staff);
+            }
+        });
+
+        return response()->json($staff->fresh()->toClient());
+    }
+
+    /** Resend the "set your password" email. */
+    public function inviteStaff(Staff $staff): JsonResponse
+    {
+        abort_unless($staff->email, 422, 'Add an email address first.');
+        $user = $staff->user ?? VlfAccounts::forStaff($staff, false);
+        Password::sendResetLink(['email' => $user->email]);
+
+        return response()->json($staff->fresh()->toClient());
     }
 
     public function updateSetting(Request $request, string $key): JsonResponse
@@ -68,12 +103,11 @@ class FirmController extends Controller
         return response()->json(['key' => $key, 'value' => $value]);
     }
 
+    /** The signed-in person's own notifications (never anyone else's). */
     public function notifications(Request $request): JsonResponse
     {
-        $recipient = $request->validate(['recipient' => 'required|string|max:100'])['recipient'];
-
         return response()->json(
-            Notification::where('recipient', $recipient)->latest('id')->limit(50)->get()->map->toClient()
+            Notification::where('recipient', $request->user()->name)->latest('id')->limit(50)->get()->map->toClient()
         );
     }
 
@@ -98,6 +132,7 @@ class FirmController extends Controller
 
     public function readNotification(Notification $notification): JsonResponse
     {
+        Gate::authorize('update', $notification);
         $notification->update(['read_at' => $notification->read_at ?? now()]);
 
         return response()->json($notification->toClient());
@@ -105,9 +140,7 @@ class FirmController extends Controller
 
     public function readAllNotifications(Request $request): JsonResponse
     {
-        $recipient = $request->validate(['recipient' => 'required|string|max:100'])['recipient'];
-
-        $count = Notification::where('recipient', $recipient)->whereNull('read_at')->update(['read_at' => now()]);
+        $count = Notification::where('recipient', $request->user()->name)->whereNull('read_at')->update(['read_at' => now()]);
 
         return response()->json(['marked' => $count]);
     }

@@ -2,12 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\Vlf\Staff;
-
 /**
- * Starts the VLF app empty: no matters, clients, tasks, time, invoices, messages,
- * documents, diary events, deadlines or notifications. Keeps the firm's staff
- * (with no hours logged) and firm settings so work can be assigned.
+ * Starts the VLF app as a real, empty firm: no accounts, staff, matters, clients,
+ * tasks, time, invoices, messages, documents, diary events, deadlines or notifications.
+ * Only the firm settings are created. Then create the first account:
+ *   php artisan vlf:user you@yourfirm.com "Your Name" partner
+ *
+ * WARNING: this deletes all VLF data and all sign-in accounts.
  * Run: php artisan db:seed --class=VlfEmptySeeder
  */
 class VlfEmptySeeder extends VlfSeeder
@@ -15,7 +16,6 @@ class VlfEmptySeeder extends VlfSeeder
     public function run(): void
     {
         $this->wipe();
-        $this->seedFirm();
-        Staff::query()->update(['month_hours' => 0, 'status' => 'Available']);
+        $this->seedSettings();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use App\Models\Vlf\Client;
 use App\Models\Vlf\Comment;
 use App\Models\Vlf\CourtEvent;
@@ -16,6 +17,7 @@ use App\Models\Vlf\Staff;
 use App\Models\Vlf\Task;
 use App\Models\Vlf\TimeEntry;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -27,8 +29,14 @@ class VlfSeeder extends Seeder
     public function run(): void
     {
         $this->wipe();
-        $this->seedFirm();
+        $this->seedSettings();
+        $this->seedDemoStaff();
         $clients = $this->seedClients();
+        // Demo client portal login for Equity Bank's in-house counsel.
+        User::create([
+            'name' => 'James Opolot', 'email' => 'james.opolot@equitybank.example', 'password' => 'password',
+            'role' => 'client', 'client_id' => $clients['Equity Bank Uganda Ltd']->id,
+        ]);
         $this->seedMatters($clients);
         $this->seedDiary();
 
@@ -72,22 +80,22 @@ class VlfSeeder extends Seeder
         ]);
 
         $messages = [
-            'ksc-0891-internal' => [
+            'matter-KSC-2026-0891' => [
                 ['PS', 'Peter Ssali', 'Today · 9:32 AM', false, 'Witness statement v2 is ready. Para 7 has been fully substantiated with the interest computation. Submitted to Margaret for approval.'],
                 ['MS', 'Margaret Ssempebwa', 'Today · 10:15 AM', false, 'Thank you Peter. Reviewing now. I will approve before 2 PM. Please prepare the conference brief tonight and leave it on my desk.'],
                 ['PS', 'Peter Ssali', 'Today · 10:22 AM', true, 'Understood. Conference brief will be ready by 6 PM. I will also ask Tendo to prepare the authorities bundle.'],
             ],
-            'ksc-0823-internal' => [
+            'matter-KSC-2026-0823' => [
                 ['PS', 'Peter Ssali', 'Yesterday · 3:11 PM', true, 'Letters of Administration petition is drafted. Awaiting the death certificate from the client before we can file.'],
             ],
-            'equity-client' => [
+            'client-KSC-2026-0891' => [
                 ['JO', 'James Opolot', 'Today · 8:00 AM', false, 'Good morning Peter. Has the witness statement been filed? The Scheduling Conference is tomorrow at 9:30 AM.'],
                 ['PS', 'Peter Ssali', 'Today · 8:45 AM', true, 'Good morning Counsel Opolot. The statement is complete and awaiting final partner approval, which is expected by 2:00 PM today. Filing will follow immediately. I will confirm once done.'],
             ],
-            'PS-MS' => [
+            'dm-'.$this->staffId('Peter Ssali', 'Margaret Ssempebwa') => [
                 ['MS', 'Margaret Ssempebwa', 'Today · 10:15 AM', false, 'Peter — I will approve the witness statement before 2 PM. Please ensure the conference brief is ready tonight.'],
             ],
-            'PS-TM' => [
+            'dm-'.$this->staffId('Peter Ssali', 'Tendo Mukasa') => [
                 ['PS', 'Peter Ssali', 'Today · 10:25 AM', true, 'Tendo — please prepare the authorities bundle for the Scheduling Conference. I need it by 4 PM. Check the Intelligence tab for the authority list.'],
                 ['TM', 'Tendo Mukasa', 'Today · 10:28 AM', false, 'Understood Counsel. I will have it ready by 3:30 PM.'],
             ],
@@ -99,7 +107,8 @@ class VlfSeeder extends Seeder
         ];
         foreach ($messages as $channel => $rows) {
             foreach ($rows as [$av, $name, $ts, $mine, $text]) {
-                Message::create(['channel' => $channel, 'author_av' => $av, 'author_name' => $name, 'ts_label' => $ts, 'mine' => $mine, 'text' => $text]);
+                $author = $name ? User::where('name', $name)->value('id') : null;
+                Message::create(['channel' => $channel, 'user_id' => $author, 'author_av' => $av, 'author_name' => $name, 'ts_label' => $ts, 'mine' => $mine, 'text' => $text]);
             }
         }
 
@@ -117,8 +126,16 @@ class VlfSeeder extends Seeder
         $this->seedNotifications();
     }
 
+    /** Direct-message channel id for two staff members: "{lowerId}-{higherId}". */
+    private function staffId(string $a, string $b): string
+    {
+        $ids = Staff::whereIn('name', [$a, $b])->pluck('id')->sort()->values();
+
+        return $ids->implode('-');
+    }
+
     /**
-     * Deletes every VLF record and uploaded file.
+     * Deletes every VLF record, uploaded file and sign-in account.
      */
     protected function wipe(): void
     {
@@ -126,11 +143,20 @@ class VlfSeeder extends Seeder
             $model::query()->delete();
         }
         Storage::deleteDirectory('vlf-uploads');
+
+        // Sign-in accounts and their sessions and reset links.
+        DB::table('sessions')->delete();
+        DB::table('password_reset_tokens')->delete();
+        User::query()->delete();
     }
 
-    protected function seedFirm(): void
+    /**
+     * Demo staff, each with a sign-in account (password "password" — demo only).
+     * Addresses use the reserved .example domain so no real mailbox is ever emailed.
+     */
+    protected function seedDemoStaff(): void
     {
-        // Addresses use the reserved .example domain so no real mailbox is ever emailed.
+        $roles = ['Senior Partner' => 'partner', 'Associate' => 'associate', 'Junior Associate' => 'junior', 'Firm Administrator' => 'admin'];
         foreach ([
             ['Margaret Ssempebwa', 'MS', 'Senior Partner', 'margaret@ksc-advocates.example', 600000, 'Available', 52.0],
             ['Peter Ssali', 'PS', 'Associate', 'peter@ksc-advocates.example', 450000, 'In court', 47.5],
@@ -138,9 +164,13 @@ class VlfSeeder extends Seeder
             ['James Ouma', 'JO', 'Junior Associate', 'james.ouma@ksc-advocates.example', 110000, 'Available', 20.0],
             ['Grace Akello', 'GA', 'Firm Administrator', 'grace@ksc-advocates.example', 0, 'Available', 0],
         ] as [$name, $initials, $role, $email, $rate, $status, $hours]) {
-            Staff::create(compact('name', 'initials', 'role', 'email', 'rate', 'status') + ['month_hours' => $hours]);
+            $user = User::create(['name' => $name, 'email' => $email, 'password' => 'password', 'role' => $roles[$role]]);
+            Staff::create(compact('name', 'initials', 'role', 'email', 'rate', 'status') + ['month_hours' => $hours, 'user_id' => $user->id]);
         }
+    }
 
+    protected function seedSettings(): void
+    {
         foreach ([
             'firm_name' => 'Katende, Ssempebwa & Co. Advocates',
             'firm_address' => 'Plot 18 Hannington Road, Kampala',

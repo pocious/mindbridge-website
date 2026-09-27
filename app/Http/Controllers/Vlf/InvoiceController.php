@@ -3,15 +3,15 @@
 namespace App\Http\Controllers\Vlf;
 
 use App\Http\Controllers\Controller;
-use App\Models\Vlf\Client;
+use App\Models\User;
 use App\Models\Vlf\Invoice;
 use App\Models\Vlf\Matter;
-use App\Models\Vlf\Staff;
 use App\Models\Vlf\TimeEntry;
 use App\Support\VlfNotifier;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 /**
  * Invoice lifecycle: Draft (from unbilled time) → Approved (partner) → Issued → Paid.
@@ -66,9 +66,10 @@ class InvoiceController extends Controller
             return $invoice;
         });
 
-        VlfNotifier::notify($matter->supervisor ?? 'Margaret Ssempebwa', 'action',
+        $approvers = $matter->supervisor ? collect([$matter->supervisor]) : User::where('role', 'partner')->where('active', true)->pluck('name');
+        $approvers->each(fn ($name) => VlfNotifier::notify($name, 'action',
             "Draft invoice {$invoice->code} for {$invoice->client} (UGX ".number_format($invoice->total).') needs partner approval before issue.',
-            ['matter' => $matter->ref, 'tab' => 'billing'], 'Invoice approval');
+            ['matter' => $matter->ref, 'tab' => 'billing'], 'Invoice approval'));
 
         return response()->json($invoice->toClient(), 201);
     }
@@ -81,15 +82,14 @@ class InvoiceController extends Controller
         $data = $request->validate([
             'action' => 'required|in:approve,issue,pay',
             'amount' => 'nullable|integer|min:1',
-            'actor' => 'required_if:action,approve|nullable|string|max:100',
         ]);
 
-        if ($data['action'] === 'approve') {
-            $role = Staff::where('name', $data['actor'])->value('role') ?? '';
-            abort_unless(str_contains($role, 'Partner'), 422, 'Only a partner can approve an invoice for issue.');
-        }
-
         $invoice = Invoice::where('code', $code)->firstOrFail();
+
+        // Partner sign-off comes from the signed-in account's role, never from the request.
+        if ($data['action'] === 'approve' && Gate::denies('approve', $invoice)) {
+            abort(403, 'Only a partner can approve an invoice for issue.');
+        }
         $today = now('Africa/Kampala');
 
         $allowedFrom = ['approve' => ['DRAFT'], 'issue' => ['APPROVED'], 'pay' => ['ISSUED', 'OVERDUE']][$data['action']];
@@ -116,13 +116,15 @@ class InvoiceController extends Controller
             $invoice->update(['status' => 'PAID']);
         }
 
-        $contact = $invoice->client_id ? Client::find($invoice->client_id)?->contact_name : null;
         $amount = 'UGX '.number_format($invoice->total);
-        match ($data['action']) {
-            'approve' => null,
-            'issue' => VlfNotifier::notify($contact, 'action', "Invoice {$invoice->code} for {$amount} has been issued. Due {$invoice->due_date}.", ['page' => 'cli-billing'], 'New invoice', 'notify_invoices'),
-            'pay' => VlfNotifier::notify('Grace Akello', 'info', "Payment recorded on {$invoice->code} ({$invoice->client}) — UGX ".number_format($invoice->paid).' of '.$amount.'.', ['page' => 'adm-billing'], 'Payment received', 'notify_invoices'),
-        };
+        if ($data['action'] === 'issue') {
+            // Everyone with a portal account for this client.
+            User::where('client_id', $invoice->client_id)->where('active', true)->pluck('name')
+                ->each(fn ($name) => VlfNotifier::notify($name, 'action', "Invoice {$invoice->code} for {$amount} has been issued. Due {$invoice->due_date}.", ['page' => 'cli-billing'], 'New invoice', 'notify_invoices'));
+        } elseif ($data['action'] === 'pay') {
+            User::where('role', 'admin')->where('active', true)->pluck('name')
+                ->each(fn ($name) => VlfNotifier::notify($name, 'info', "Payment recorded on {$invoice->code} ({$invoice->client}) — UGX ".number_format($invoice->paid).' of '.$amount.'.', ['page' => 'adm-billing'], 'Payment received', 'notify_invoices'));
+        }
 
         return response()->json($invoice->toClient());
     }

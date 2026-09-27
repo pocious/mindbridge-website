@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Models\User;
 use App\Models\Vlf\Client;
 use App\Models\Vlf\Notification;
 use App\Models\Vlf\Setting;
@@ -52,7 +53,8 @@ class VlfNotifier
             'link' => $link,
         ]);
 
-        $email = Staff::where('name', $recipient)->value('email')
+        $email = User::where('name', $recipient)->where('active', true)->value('email')
+            ?? Staff::where('name', $recipient)->value('email')
             ?? Client::where('contact_name', $recipient)->value('contact_email');
 
         if ($email) {
