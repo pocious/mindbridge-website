@@ -172,7 +172,7 @@ class VlfSeeder extends Seeder
     protected function seedSettings(): void
     {
         foreach ([
-            'firm_name' => 'Katende, Ssempebwa & Co. Advocates',
+            'firm_name' => 'GAVEL.CO',
             'firm_address' => 'Plot 18 Hannington Road, Kampala',
             'notify_deadlines' => true,
             'notify_hearings' => true,

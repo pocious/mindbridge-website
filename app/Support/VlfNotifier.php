@@ -59,7 +59,7 @@ class VlfNotifier
 
         if ($email) {
             try {
-                Mail::raw($text."\n\n— Katende, Ssempebwa & Co. Virtual Law Firm", function ($message) use ($email, $label, $defaultLabel) {
+                Mail::raw($text."\n\n— GAVEL.CO Virtual Law Firm", function ($message) use ($email, $label, $defaultLabel) {
                     $message->to($email)->subject('[VLF] '.($label ?? $defaultLabel));
                 });
                 $notification->update(['emailed_at' => now()]);

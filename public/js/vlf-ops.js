@@ -26,7 +26,7 @@
   const today = () => new Date().toISOString().slice(0, 10);
   const matters = () => Object.values(VLF.matters || {});
   const matter = ref => (VLF.matters || {})[ref];
-  const firmName = () => S.settings.firm_name || 'Katende, Ssempebwa & Co. Advocates';
+  const firmName = () => S.settings.firm_name || 'GAVEL.CO';
 
   // The signed-in account, injected by the server when it serves the page.
   const ME = window.VLF_USER || {};
