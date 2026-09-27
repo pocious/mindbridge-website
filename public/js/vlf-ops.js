@@ -106,9 +106,10 @@
 
     const advList = document.querySelector('#pg-adv-matters .matter-list');
     if (advList) {
-      advList.innerHTML = mine.map(m => matterRow(m, m.advocate !== user)).join('');
-      const empty = document.getElementById('matters-empty-state');
-      if (empty) empty.style.display = mine.length ? 'none' : 'block';
+      advList.innerHTML = mine.map(m => matterRow(m, m.advocate !== user)).join('') ||
+        emptyBlock('⚖️', 'No matters yet', 'Matters you are responsible for or supervise will appear here.', `<button class="btn btn-v btn-sm" onclick="openIntake()">+ Open new matter</button>`);
+      const outside = document.getElementById('matters-empty-state');
+      if (outside) outside.style.display = 'none';
       const hs = document.querySelector('#pg-adv-matters .hs');
       if (hs) hs.textContent = `${user} · ${mine.length} active matter${mine.length === 1 ? '' : 's'} · ${firmName()}`;
       const badge = document.querySelector('#sbi-adv-matters .sb-b');
@@ -415,8 +416,8 @@
     const hs = page.querySelector(':scope > .hero .hs');
     if (hs) hs.textContent = `${firmName()} · ${S.clients.length} client${S.clients.length === 1 ? '' : 's'} on record`;
 
-    const empty = document.getElementById('clients-empty-state');
-    if (empty) empty.style.display = S.clients.length ? 'none' : 'block';
+    const outside = document.getElementById('clients-empty-state');
+    if (outside) outside.style.display = 'none';
 
     const colours = { Company: 'var(--gold)', Estate: 'var(--plum)', Individual: 'var(--sky)', Government: 'var(--vd)', NGO: 'var(--ruby)' };
     body.innerHTML = `<div style="display:flex;flex-direction:column;gap:7px;">${S.clients.map(c => {
@@ -439,7 +440,7 @@
             ${c.name === 'Equity Bank Uganda Ltd' ? `<button class="btn btn-ghost btn-sm" onclick="openM('m-client-compliance')">Compliance position →</button><button class="btn btn-ghost btn-sm" onclick="openClientMessage()">Message ${esc(c.contactName || 'client')}</button>` : ''}
           </div>
         </div>`;
-    }).join('')}</div><div style="height:20px;"></div>`;
+    }).join('') || emptyBlock('👤', 'No clients on record', 'Clients are added here or created when a new matter is opened through intake.', `<button class="btn btn-v btn-sm" onclick="VLFOPS.openClientForm()">+ New client</button>`)}</div><div style="height:20px;"></div>`;
   }
 
   function openClientForm(id) {
@@ -1414,6 +1415,364 @@
     lastSeen = new Set(myNotifications().map(n => n.id));
   }
 
+  /* ══ DASHBOARDS — built from the saved data, empty when there is none ══ */
+
+  const DAY = 86400000;
+  const startOfToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+  const longDate = d => d.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const greeting = () => { const h = new Date().getHours(); return h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'; };
+  const firstName = name => String(name || '').split(' ')[0];
+  const byDate = (a, b) => (a || '').localeCompare(b || '');
+
+  function emptyBlock(icon, title, desc, buttons) {
+    return `<div class="empty-state"><div class="empty-state-icon">${icon}</div><div class="empty-state-title">${esc(title)}</div><div class="empty-state-desc">${esc(desc)}</div>${buttons ? `<div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:center;">${buttons}</div>` : ''}</div>`;
+  }
+
+  function section(title, more, content) {
+    return `<div><div class="sh"><div class="st"><div class="r-rule"><div class="a"></div><div class="b"></div><div class="c"></div></div><div class="stitle">${esc(title)}</div></div>${more || ''}</div>${content}</div>`;
+  }
+  const quiet = text => `<div class="card" style="font-size:12px;color:var(--slate);">${esc(text)}</div>`;
+  const moreBtn = (label, onclick) => `<button class="smore" onclick="${onclick}">${esc(label)} →</button>`;
+
+  function heroHtml(kicker, title, sub, figure, figureLabel, figureColour) {
+    return `<div class="hero-i"><div class="hero-row">
+      <div><div style="font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);opacity:.4;margin-bottom:6px;">${esc(kicker)}</div>
+      <div class="hg" style="font-size:22px;">${title}</div><div class="hs">${esc(sub)}</div></div>
+      ${figure === undefined ? '' : `<div style="text-align:right;"><div style="font-family:var(--serif);font-size:40px;font-weight:300;line-height:1;color:${figureColour || 'var(--white)'};">${esc(figure)}</div><div style="font-family:var(--mono);font-size:9px;color:var(--slate);opacity:.4;letter-spacing:.1em;text-transform:uppercase;margin-top:3px;">${esc(figureLabel)}</div></div>`}
+    </div></div>`;
+  }
+
+  function eventCard(e) {
+    const m = matter(e.matter);
+    const [pillCls, pillText] = LEVEL_PILL[e.level] || LEVEL_PILL.scheduled;
+    return `<div class="diary-event ${esc(e.level)}" onclick="openDiaryEvent(${arg(e.id)})">
+      <div class="de-time">${esc(e.time || '—')}</div>
+      <div class="de-body"><div class="de-matter">${esc(e.matter)}${m ? ' · ' + esc(m.client || '') : ''}</div><div class="de-title">${esc(e.title)}</div>
+      <div class="de-court">${esc(e.dateLabel)}${e.court ? ' · ' + esc(e.court) : ''}</div></div>
+      <div class="de-right"><span class="pill ${pillCls}">${pillText}</span></div></div>`;
+  }
+
+  function taskCard(tk) {
+    const cls = tk.status === 'BLOCKED' ? 'urgent' : tk.status === 'IN_PROGRESS' ? 'pending' : '';
+    return `<div class="task-item ${cls}" onclick="openTaskWorkspace(${arg(tk.id)})">
+      <div class="task-cb"></div>
+      <div class="task-info"><div class="task-title">${esc(tk.title)}</div><div class="task-matter">${esc(tk.matter)} · ${esc(tk.matterTitle || '')}</div>
+      <div class="task-meta">${esc(tk.status.replace('_', ' '))}${tk.blockedBy ? ' · ' + esc(tk.blockedBy) : ''}</div></div>
+      <div class="task-due ${tk.status === 'BLOCKED' ? 'urg' : 'warn'}">${esc(tk.deadline || '')}</div></div>`;
+  }
+
+  function attentionRow(icon, bg, border, title, meta, onclick, cta) {
+    return `<div style="display:flex;align-items:flex-start;gap:9px;padding:10px 12px;background:${bg};border-radius:var(--r-sm);border-left:3px solid ${border};cursor:pointer;" onclick="${onclick}">
+      <span style="font-size:16px;flex-shrink:0;">${icon}</span>
+      <div style="flex:1;"><div style="font-size:12px;font-weight:500;color:var(--ink);">${esc(title)}</div><div style="font-size:11px;color:var(--slate);">${esc(meta)}</div></div>
+      <span style="font-family:var(--mono);font-size:9px;color:${border};">${esc(cta)} →</span></div>`;
+  }
+
+  function reviewsFor(user) {
+    return Object.entries(DOCUMENTS).filter(([, d]) => d && d.reviewer === user && ['UNDER_REVIEW', 'PENDING_PARTNER_APPROVAL'].includes(d.currentStatus));
+  }
+
+  function commandData() {
+    const user = me();
+    const mine = matters().filter(m => m.advocate === user || m.supervisor === user);
+    const refs = new Set(mine.map(m => m.ref));
+    const deadlines = S.deadlines.filter(d => !d.done && (d.owner === user || refs.has(d.matter))).sort((a, b) => byDate(a.dueDate, b.dueDate));
+    const reviews = reviewsFor(user);
+    const tasks = Object.values(TASKS).filter(tk => tk.assignedTo === user && tk.status !== 'DONE');
+    const blockedForMe = Object.values(TASKS).filter(tk => tk.assignedBy === user && tk.status === 'BLOCKED');
+    const events = S.events.filter(e => e.level !== 'complete' && (e.advocate === user || refs.has(e.matter))).sort((a, b) => byDate(a.date + (a.time || ''), b.date + (b.time || '')));
+    const attention = deadlines.filter(d => d.severity === 'critical').length + reviews.length + blockedForMe.length;
+    return { user, mine, deadlines, reviews, tasks, blockedForMe, events, attention };
+  }
+
+  function renderCommand() {
+    const page = document.getElementById('pg-adv-command');
+    if (!page) return;
+    const d = commandData();
+    const critical = d.deadlines.filter(x => x.severity === 'critical');
+    const hero = page.querySelector(':scope > .hero');
+    if (hero) hero.innerHTML = heroHtml(longDate(new Date()) + ' · ' + d.user, 'Command Centre',
+      `${firmName()} · ${d.mine.length} active matter${d.mine.length === 1 ? '' : 's'}`, critical.length, 'Critical deadlines', critical.length ? 'var(--ember)' : 'var(--white)');
+
+    const body = page.querySelector(':scope > .pgbody');
+    if (!body) return;
+    if (!matters().length) {
+      body.innerHTML = `<div class="mb-greeting" style="padding:6px 0 0;">${greeting()}, ${esc(firstName(d.user))}.</div>` +
+        emptyBlock('⚖️', 'No matters yet', 'The firm has no matters on record. Open a new matter through intake to get started — deadlines, hearings, tasks and notifications will appear here.',
+          `<button class="btn btn-v btn-sm" onclick="openIntake()">+ Open new matter</button><button class="btn btn-ghost btn-sm" onclick="VLFOPS.openClientForm()">+ Add client</button>`);
+      return;
+    }
+
+    const attention = [
+      ...critical.map(x => attentionRow('⛔', 'var(--ember-p)', 'var(--ember)', x.title, `${x.matter} · due ${x.dueLabel}${x.dueTime ? ' ' + x.dueTime : ''}`, `showPg('adv-deadlines')`, 'Deadline')),
+      ...d.reviews.map(([key, doc]) => attentionRow('📝', 'rgba(37,99,168,.06)', 'var(--sky)', `Review: ${doc.title}`, `${doc.matterId} · submitted by ${doc.author || '—'}`, `VLFOPS.goTo({matter:${arg(doc.matterId)},doc:${arg(key)}})`, 'Review')),
+      ...d.blockedForMe.map(tk => attentionRow('⚠', 'rgba(139,115,53,.07)', 'var(--gold-d)', `Blocked: ${tk.title}`, `${tk.assignedTo} · ${tk.blockedBy || ''}`, `openTaskWorkspace(${arg(tk.id)})`, 'Unblock'))
+    ];
+
+    body.innerHTML = `
+      <div class="monday-brief" style="padding:0;">
+        <div class="mb-greeting">${greeting()}, ${esc(firstName(d.user))}.</div>
+        <div class="mb-date">${esc(longDate(new Date()))} · ${esc(firmName())}</div>
+        <div class="mb-attention">${attention.length ? `${attention.length} thing${attention.length === 1 ? '' : 's'} need${attention.length === 1 ? 's' : ''} your attention:` : 'Nothing needs your attention right now.'}</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">${attention.join('')}</div>
+      </div>
+      ${section('Upcoming in court', moreBtn('Full diary', "showPg('adv-diary')"), d.events.length ? `<div style="display:flex;flex-direction:column;gap:7px;">${d.events.slice(0, 4).map(eventCard).join('')}</div>` : quiet('No hearings scheduled.'))}
+      ${section('My tasks', moreBtn('Full queue', "showPg('adv-queue')"), d.tasks.length ? d.tasks.slice(0, 5).map(taskCard).join('') : quiet('No open tasks assigned to you.'))}
+      ${section('Upcoming deadlines', moreBtn('All deadlines', "showPg('adv-deadlines')"), d.deadlines.length ? `<div class="card">${d.deadlines.slice(0, 5).map(x => deadlineRow(x, true)).join('')}</div>` : quiet('No open deadlines.'))}
+      ${section('My matters', moreBtn('All matters', "showPg('adv-matters')"), d.mine.length ? `<div class="matter-list">${d.mine.slice(0, 5).map(m => matterRow(m, false)).join('')}</div>` : quiet('You have no matters assigned.'))}
+      <div style="height:20px;"></div>`;
+  }
+
+  function adminStat(value, label, cls, big) {
+    return `<div class="admin-stat" style="border-radius:var(--r);"><div class="admin-n ${cls || ''}" ${big ? 'style="font-size:22px;"' : ''}>${esc(value)}</div><div class="admin-l">${esc(label)}</div></div>`;
+  }
+
+  function invoiceTotals() {
+    const now = new Date();
+    const thisMonth = i => { if (!i.issueDate) return false; const d = new Date(i.issueDate); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); };
+    const outstanding = INVOICES.filter(i => i.status === 'ISSUED' || i.status === 'OVERDUE');
+    return {
+      outstanding,
+      outstandingSum: outstanding.reduce((s, i) => s + i.total - i.paid, 0),
+      invoicedMonth: INVOICES.filter(thisMonth).reduce((s, i) => s + i.total, 0),
+      collected: INVOICES.reduce((s, i) => s + i.paid, 0)
+    };
+  }
+
+  const compact = n => n >= 1e6 ? 'UGX ' + (n / 1e6).toFixed(1) + 'M' : money(n);
+
+  function receivableRow(i) {
+    return `<div class="recv-row" onclick="openInvoiceWorkspace(${arg(i.id)})"><div><div class="recv-matter">${esc(i.id)} · ${esc(i.matter)}</div><div class="recv-client">${esc(i.client)}</div></div><div style="text-align:right;"><div class="recv-amt" style="color:var(--ember);">${money(i.total - i.paid)}</div><div class="recv-age" style="color:var(--slate);">Due ${esc(i.dueDate || '—')}</div></div></div>`;
+  }
+
+  function renderAdminHome() {
+    const page = document.getElementById('pg-adm-home');
+    if (!page) return;
+    const all = matters();
+    const critical = S.deadlines.filter(d => !d.done && d.severity === 'critical');
+    const today = startOfToday().getTime();
+    const week = S.events.filter(e => { const t = new Date(e.date).getTime(); return e.level !== 'complete' && t >= today && t < today + 7 * DAY; });
+    const unassigned = all.filter(m => !m.advocate);
+    const inv = invoiceTotals();
+    const hours = S.staff.reduce((s, x) => s + (x.monthHours || 0), 0);
+
+    const hero = page.querySelector(':scope > .hero');
+    if (hero) hero.innerHTML = heroHtml(longDate(new Date()) + ' · ' + me(), 'Firm Dashboard', `${firmName()} · Is the firm operating properly?`);
+    const body = page.querySelector(':scope > .pgbody');
+    if (!body) return;
+
+    const alerts = [
+      ...critical.map(d => attentionRow('⛔', 'var(--white)', 'var(--ember)', d.title, `${d.matter} · ${d.owner || 'Unassigned'} · due ${d.dueLabel}`, `showPg('adm-deadlines')`, 'Critical')),
+      ...(inv.outstanding.length ? [attentionRow('💰', 'var(--white)', 'var(--ember)', `${inv.outstanding.length} invoice${inv.outstanding.length === 1 ? '' : 's'} outstanding — ${money(inv.outstandingSum)}`, 'Awaiting client payment', `showPg('adm-billing')`, 'Billing')] : []),
+      ...(unassigned.length ? [attentionRow('⚠', 'var(--white)', 'var(--gold-d)', `${unassigned.length} matter${unassigned.length === 1 ? '' : 's'} without an advocate`, unassigned.map(m => m.ref).join(' · '), `showPg('adm-matters')`, 'Assign')] : [])
+    ];
+
+    body.innerHTML = `
+      <div style="background:var(--ink);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:8px;">
+      <div class="admin-grid">
+        ${adminStat(all.length, 'Active Matters')}${adminStat(critical.length, 'Critical Deadlines', critical.length ? 'warn' : '')}
+        ${adminStat(inv.outstanding.length, 'Outstanding Invoices', inv.outstanding.length ? 'urg' : '')}${adminStat(week.length, 'Hearings This Week', 'ok')}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        ${adminStat(compact(inv.invoicedMonth), 'Invoiced This Month', 'ok', true)}${adminStat(compact(inv.outstandingSum), 'Outstanding Receivables', inv.outstandingSum ? 'urg' : '', true)}
+        ${adminStat(hours.toFixed(1) + ' hrs', 'Lawyer Hours — This Month', 'warn', true)}${adminStat(unassigned.length, 'Unassigned Matters', unassigned.length ? 'urg' : '', true)}
+      </div>
+      </div>
+      ${section('Firm alerts', '', alerts.length ? `<div style="display:flex;flex-direction:column;gap:6px;">${alerts.join('')}</div>` : quiet(all.length ? 'No alerts — everything is on track.' : 'No matters on record yet.'))}
+      ${section('Advocate workload', moreBtn('Full view', "showPg('adm-people')"), `<div class="card" data-vlf-workload="1">${workloadRows()}</div>`)}
+      ${section('Outstanding receivables', moreBtn('All', "showPg('adm-billing')"), inv.outstanding.length ? `<div class="card" style="padding:0;overflow:hidden;">${inv.outstanding.map(receivableRow).join('')}</div>` : quiet('No outstanding invoices.'))}
+      <div style="height:20px;"></div>`;
+  }
+
+  function renderAdminBilling() {
+    const page = document.getElementById('pg-adm-billing');
+    const body = page && page.querySelector(':scope > .pgbody');
+    if (!body) return;
+    const inv = invoiceTotals();
+    const hs = page.querySelector('.hs');
+    if (hs) hs.textContent = `${firmName()} · ${INVOICES.length} invoice${INVOICES.length === 1 ? '' : 's'}`;
+    body.innerHTML = `
+      <div class="admin-grid" style="background:var(--ink);border-radius:var(--r);padding:12px;">
+        ${adminStat(compact(inv.invoicedMonth), 'Invoiced This Month', 'ok', true)}${adminStat(compact(inv.outstandingSum), 'Outstanding', inv.outstandingSum ? 'warn' : '', true)}
+        ${adminStat(INVOICES.filter(i => i.status === 'DRAFT' || i.status === 'APPROVED').length, 'Awaiting Issue', '', true)}${adminStat(compact(inv.collected), 'Collected', 'ok', true)}
+      </div>
+      <div class="card"><div class="section-label">All invoices</div>
+        ${INVOICES.length ? INVOICES.slice().reverse().map(i => `<div class="recv-row" onclick="openInvoiceWorkspace(${arg(i.id)})"><div><div class="recv-matter">${esc(i.id)} · ${esc(i.matter)}</div><div class="recv-client">${esc(i.client)}</div></div><div style="text-align:right;"><div class="recv-amt">${money(i.total)}</div><div class="recv-age"><span class="inv-status ${i.status.toLowerCase()}">${esc(i.status)}</span></div></div></div>`).join('') : '<div style="font-size:12px;color:var(--slate);padding:6px 0;">No invoices yet. Invoices are drafted from a matter’s unbilled time.</div>'}
+      </div>
+      <div style="height:20px;"></div>`;
+  }
+
+  function renderAdminTime() {
+    const page = document.getElementById('pg-adm-time');
+    const body = page && page.querySelector(':scope > .pgbody');
+    if (!body) return;
+    const people = advocates();
+    const hours = people.reduce((s, x) => s + (x.monthHours || 0), 0);
+    const value = people.reduce((s, x) => s + (x.monthHours || 0) * (x.rate || 0), 0);
+    const hs = page.querySelector('.hs');
+    if (hs) hs.textContent = `All advocates · ${new Date().toLocaleDateString('en-GB', { month: 'long', year: 'numeric' })}`;
+    body.innerHTML = `
+      <div class="card" style="background:var(--ink);">
+        <div class="section-label" style="color:var(--slate);opacity:.38;">Firm total — this month</div>
+        <div style="font-family:var(--serif);font-size:36px;font-weight:300;color:var(--white);">${hours.toFixed(1)} <span style="font-size:18px;color:var(--vu);">hrs</span></div>
+        <div style="font-size:11px;color:var(--slate);margin-top:4px;">${compact(value)} billable value · ${people.length} advocate${people.length === 1 ? '' : 's'}</div>
+      </div>
+      <div class="card"><div class="section-label">By advocate</div>
+        ${people.map(s => `<div class="time-row"><div><div class="time-who">${esc(s.name)}</div><div class="time-desc">${esc(s.role)} · ${money(s.rate)}/hr</div></div><div><div class="time-hrs">${(s.monthHours || 0).toFixed(1)} hrs</div><div class="time-amt">${compact((s.monthHours || 0) * (s.rate || 0))}</div></div></div>`).join('')}
+      </div>
+      <div style="height:20px;"></div>`;
+  }
+
+  function renderAdvTime() {
+    const page = document.getElementById('pg-adv-time');
+    const body = page && page.querySelector(':scope > .pgbody');
+    if (!body) return;
+    const user = me();
+    const entries = TIME_ENTRIES.filter(te => te.advocate === user);
+    const mins = entries.reduce((s, te) => s + (te.durationMins || 0), 0);
+    const billable = entries.filter(te => te.billable).reduce((s, te) => s + te.amount, 0);
+    const hs = page.querySelector('.hs');
+    if (hs) hs.textContent = `${user} · ${entries.length} time entr${entries.length === 1 ? 'y' : 'ies'}`;
+    body.innerHTML = `
+      <div class="card" style="background:var(--ink);">
+        <div class="section-label" style="color:var(--slate);opacity:.38;">Recorded time</div>
+        <div style="font-family:var(--serif);font-size:36px;font-weight:300;color:var(--white);margin-bottom:4px;">${(mins / 60).toFixed(1)} <span style="font-size:18px;color:var(--vu);">hrs</span></div>
+        <div style="font-size:11px;color:var(--slate);">${money(billable)} billable</div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;"><button class="btn btn-v btn-sm" onclick="openTimeLogger('')">+ Log time</button></div>
+      <div class="card"><div class="section-label">Time entries</div>
+        ${entries.length ? entries.map(te => `<div class="time-row"><div><div class="time-who">${esc(te.matter)}${matter(te.matter) ? ' — ' + esc(matter(te.matter).title) : ''}</div><div class="time-desc">${esc(te.desc)}</div></div><div><div class="time-hrs">${esc(te.duration)}</div><div class="time-amt">${esc(te.date)}</div></div></div>`).join('') : '<div style="font-size:12px;color:var(--slate);padding:6px 0;">No time recorded yet.</div>'}
+      </div>
+      <div style="height:20px;"></div>`;
+  }
+
+  /* Client portal: only the signed-in client's own matters. */
+  function clientContext() {
+    const client = S.clients.find(c => c.contactName === me());
+    const refs = new Set(client ? client.matters : []);
+    return { client, list: matters().filter(m => refs.has(m.ref)), refs };
+  }
+
+  function renderClientPortal() {
+    const { client, list, refs } = clientContext();
+    const noMatters = emptyBlock('⚖️', 'No active matters', 'When the firm opens a matter for you, its progress, documents and invoices will appear here.');
+    const setBody = (id, html) => { const b = document.querySelector('#' + id + ' > .pgbody'); if (b) b.innerHTML = html + '<div style="height:20px;"></div>'; };
+
+    const home = document.getElementById('pg-cli-home');
+    const hero = home && home.querySelector(':scope > .hero');
+    if (hero) hero.innerHTML = heroHtml(longDate(new Date()) + (client ? ' · ' + client.name : ''), `${greeting()}, <span class="hi">${esc(firstName(me()))}.</span>`, `${client ? client.name + ' · ' : ''}Legal Matters Portal · ${firmName()}`);
+
+    const invoices = INVOICES.filter(i => refs.has(i.matter) && i.status !== 'DRAFT' && i.status !== 'APPROVED');
+    const owed = invoices.filter(i => i.status === 'ISSUED' || i.status === 'OVERDUE');
+    setBody('pg-cli-home', !list.length ? noMatters : list.map(m => {
+      const next = S.events.filter(e => e.matter === m.ref && e.level !== 'complete').sort((a, b) => byDate(a.date, b.date))[0];
+      return `<div class="client-matter"><div class="cm-head"><div class="cm-id">${esc(m.ref)} · ${esc(m.court || '')}</div><div class="cm-title">${esc(m.title)}</div><div class="cm-status"><span class="pill warn">${esc(m.stage || 'Open')}</span></div></div>
+        <div class="cm-body">
+          <div class="cm-row"><div><div class="cm-label">Your legal team</div><div class="cm-val">${esc(m.advocate || 'Being assigned')}${m.supervisor ? ' · ' + esc(m.supervisor) + ' (partner)' : ''}</div></div></div>
+          <div class="cm-row"><div><div class="cm-label">Next court event</div><div class="cm-val">${next ? esc(next.title + ' — ' + next.dateLabel + (next.time ? ' · ' + next.time : '')) : 'None scheduled'}</div></div></div>
+        </div></div>`;
+    }).join('') + (owed.length ? `<div class="card" style="border-left:3px solid var(--ember);"><div class="section-label" style="color:var(--ember);">Outstanding balance</div><div style="font-family:var(--serif);font-size:26px;font-weight:300;color:var(--ember);">${money(owed.reduce((s, i) => s + i.total - i.paid, 0))}</div><button class="btn btn-ember btn-sm" style="margin-top:8px;" onclick="showPg('cli-billing')">View invoices →</button></div>` : ''));
+
+    setBody('pg-cli-matter', !list.length ? noMatters : list.map(m => `<div class="card"><div class="cm-label">${esc(m.ref)}</div><div style="font-size:14px;font-weight:500;color:var(--ink);margin:4px 0;">${esc(m.title)}</div><div style="font-size:11px;color:var(--slate);">${esc([m.court, m.stage, m.advocate].filter(Boolean).join(' · '))}</div>${m.description ? `<div style="font-size:12px;color:var(--ink);margin-top:6px;">${esc(m.description)}</div>` : ''}</div>`).join(''));
+
+    const docs = Object.values(DOCUMENTS).filter(d => d && refs.has(d.matterId) && d.visibility === 'CLIENT_APPROVED');
+    setBody('pg-cli-docs', !list.length ? noMatters : docs.length ? docs.map(d => `<div class="card" style="display:flex;align-items:center;gap:10px;"><div style="font-size:18px;">📄</div><div style="flex:1;"><div style="font-size:12px;font-weight:500;color:var(--ink);">${esc(d.title)}</div><div style="font-family:var(--mono);font-size:9px;color:var(--slate);margin-top:2px;">${esc(d.matterId)} · ${esc(docStatusLabel(d.currentStatus))}</div></div>${d.file ? `<a class="btn btn-ghost btn-sm" href="${esc(d.file.url)}">Download</a>` : ''}</div>`).join('') : emptyBlock('📄', 'No documents shared yet', 'Documents your legal team approves for you will appear here.'));
+
+    const channel = client && client.name === 'Equity Bank Uganda Ltd' && COMM_DATA['equity-client'] ? COMM_DATA['equity-client'].messages : [];
+    setBody('pg-cli-messages', !list.length ? noMatters : channel.length ? `<div class="card">${channel.map(msg => `<div style="background:${msg.from === 'JO' ? 'var(--vd)' : 'var(--parch)'};color:${msg.from === 'JO' ? 'var(--white)' : 'var(--ink)'};border-radius:12px;padding:10px 12px;margin-bottom:8px;max-width:85%;${msg.from === 'JO' ? 'margin-left:auto;' : ''}"><div style="font-size:12px;line-height:1.55;">${esc(msg.text)}</div><div style="font-family:var(--mono);font-size:9px;opacity:.5;margin-top:4px;">${esc(msg.name || '')} · ${esc(msg.ts)}</div></div>`).join('')}</div>` : emptyBlock('💬', 'No messages yet', 'Messages from your legal team will appear here.'));
+
+    setBody('pg-cli-billing', !list.length ? noMatters : invoices.length ? `<div class="card">${invoices.map(i => `<div class="recv-row"><div><div class="recv-matter">${esc(i.id)} · ${esc(i.matter)}</div><div class="recv-client">Issued ${esc(i.issueDate || '—')} · Due ${esc(i.dueDate || '—')}</div></div><div style="text-align:right;"><div class="recv-amt" style="color:${i.status === 'PAID' ? 'var(--vd)' : 'var(--ember)'};">${money(i.status === 'PAID' ? i.total : i.total - i.paid)}</div><div class="recv-age">${esc(i.status === 'PAID' ? 'Paid' : 'Outstanding')}</div></div></div>`).join('')}</div>` : emptyBlock('💰', 'No invoices', 'Invoices from the firm will appear here.'));
+
+    const link = document.getElementById('sbi-cli-matter');
+    if (link) {
+      link.style.display = list.length ? '' : 'none';
+      const label = link.querySelector('.sb-l');
+      if (label && list[0]) label.textContent = list[0].title;
+    }
+    setBadge('sbi-cli-home', list.length);
+    setBadge('sbi-cli-matter', 0);
+    setBadge('sbi-cli-docs', docs.length);
+    setBadge('sbi-cli-messages', 0);
+  }
+
+  function setBadge(id, n) {
+    const b = document.querySelector('#' + id + ' .sb-b');
+    if (!b) return;
+    b.textContent = n;
+    b.style.display = n ? '' : 'none';
+  }
+
+  /* Messages page: hide channels for matters that no longer exist. */
+  const CHANNEL_MATTER = { 'ksc-0891-internal': 'KSC-2026-0891', 'ksc-0823-internal': 'KSC-2026-0823', 'equity-client': 'KSC-2026-0891' };
+  function renderComms() {
+    document.querySelectorAll('#pg-adv-comms .comm-channel').forEach(el => {
+      const m = (el.getAttribute('onclick') || '').match(/switchChannel\('([^']+)'/);
+      const ref = m && CHANNEL_MATTER[m[1]];
+      el.style.display = ref && !matter(ref) ? 'none' : '';
+      const badge = el.querySelector('.comm-channel-badge');
+      if (badge) badge.style.display = 'none';
+    });
+    if (CHANNEL_MATTER[activeChannel] && !matter(CHANNEL_MATTER[activeChannel])) {
+      activeChannel = 'PS-MS';
+      const title = document.getElementById('comm-channel-title');
+      if (title) title.textContent = COMM_DATA['PS-MS'].title;
+      const sub = document.getElementById('comm-channel-sub');
+      if (sub) sub.textContent = COMM_DATA['PS-MS'].sub;
+    }
+    renderCommMessages(activeChannel);
+  }
+
+  function renderQueuePage() {
+    const page = document.getElementById('pg-adv-queue');
+    if (!page) return;
+    page.querySelectorAll('.wq-section').forEach(el => el.remove()); // sample cards from the prototype
+    const hs = page.querySelector('.hs');
+    if (hs) hs.textContent = `${me()} · All matters`;
+    // The prototype's empty-state box sits above the page title; show the message in the page instead.
+    const outside = document.getElementById('queue-empty-state');
+    if (outside) outside.style.display = 'none';
+    const old = document.getElementById('vlf-queue-empty');
+    if (old) old.remove();
+    const body = page.querySelector(':scope > .pgbody');
+    if (body && !Object.keys(TASKS).length) {
+      body.insertAdjacentHTML('beforeend', `<div id="vlf-queue-empty">${emptyBlock('📋', 'Your queue is clear', 'No tasks yet. Tasks appear here when work is assigned on a matter.', `<button class="btn btn-ghost btn-sm" onclick="showPg('adv-command')">Go to Command Centre</button>`)}</div>`);
+    }
+  }
+
+  function renderBadges() {
+    const d = commandData();
+    setBadge('sbi-adv-command', d.attention);
+    setBadge('sbi-adv-queue', d.tasks.length);
+    setBadge('sbi-adv-approvals', d.reviews.length);
+    setBadge('sbi-adv-comms', 0);
+    const equityLink = document.getElementById('sbi-adv-matter-open');
+    if (equityLink) equityLink.style.display = matter(EQUITY) ? '' : 'none';
+    setBadge('sbi-adm-billing', invoiceTotals().outstanding.length);
+    ['sbi-adv-matters', 'sbi-adv-diary', 'sbi-adv-deadlines', 'sbi-adm-deadlines', 'sbi-adm-matters'].forEach(id => {
+      const b = document.querySelector('#' + id + ' .sb-b');
+      if (b) b.style.display = b.textContent === '0' ? 'none' : '';
+    });
+    // The prototype's second bell showed a fixed "2"; the working bell is the one with the live count.
+    document.querySelectorAll('.tb-bell').forEach(b => { b.style.display = 'none'; });
+  }
+
+  function renderDashboards() {
+    renderCommand();
+    renderAdminHome();
+    renderAdminBilling();
+    renderAdminTime();
+    renderAdvTime();
+    renderClientPortal();
+    renderQueuePage();
+    renderComms();
+    renderBadges();
+  }
+
+  // The Command Centre is built from real data; stop the prototype injecting its sample
+  // panels (morning brief, "why critical" banner and scenario walkthrough cards) into it.
+  ['renderMondayBrief', 'injectCommandWhyLayer', 'injectCommandCentreTrigger', 'injectBCTriggers', 'injectDEFTriggers']
+    .forEach(name => { if (typeof window[name] === 'function') window[name] = function () {}; });
+
   /* ══ WIRING ══ */
 
   function renderAll() {
@@ -1424,6 +1783,7 @@
     renderPeople();
     renderSettings();
     renderNotifPanel();
+    renderDashboards();
   }
 
   function onUserChanged() {
@@ -1441,7 +1801,15 @@
     else if (id === 'adv-clients') renderClients();
     else if (id === 'adm-people' || id === 'adm-home') renderPeople();
     else if (id === 'adm-settings') renderSettings();
-    else if (id === 'adv-queue') refreshQueue(true);
+    else if (id === 'adv-queue') { refreshQueue(true); renderQueuePage(); }
+    else if (id === 'adv-command') renderCommand();
+    else if (id === 'adm-billing') renderAdminBilling();
+    else if (id === 'adm-time') renderAdminTime();
+    else if (id === 'adv-time') renderAdvTime();
+    else if (id === 'adv-comms') renderComms();
+    else if (id && id.startsWith('cli-')) renderClientPortal();
+    if (id === 'adm-home') renderAdminHome();
+    renderBadges();
     return result;
   });
 
@@ -1514,6 +1882,6 @@
     addExtraInvoiceLine, createInvoice, invoiceAction,
     openDoc, docAction, openReturnFor, confirmReturn,
     openStaffForm, saveStaff, openFirmForm, saveFirm, toggleSetting,
-    openNotification, pollNotifications
+    openNotification, pollNotifications, goTo
   };
 })();

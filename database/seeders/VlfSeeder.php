@@ -26,11 +26,7 @@ class VlfSeeder extends Seeder
 {
     public function run(): void
     {
-        foreach ([Notification::class, Setting::class, Staff::class, Deadline::class, CourtEvent::class, Task::class, TimeEntry::class, Invoice::class, Message::class, Comment::class, Document::class, Matter::class, Client::class] as $model) {
-            $model::query()->delete();
-        }
-        Storage::deleteDirectory('vlf-uploads');
-
+        $this->wipe();
         $this->seedFirm();
         $clients = $this->seedClients();
         $this->seedMatters($clients);
@@ -121,7 +117,18 @@ class VlfSeeder extends Seeder
         $this->seedNotifications();
     }
 
-    private function seedFirm(): void
+    /**
+     * Deletes every VLF record and uploaded file.
+     */
+    protected function wipe(): void
+    {
+        foreach ([Notification::class, Setting::class, Staff::class, Deadline::class, CourtEvent::class, Task::class, TimeEntry::class, Invoice::class, Message::class, Comment::class, Document::class, Matter::class, Client::class] as $model) {
+            $model::query()->delete();
+        }
+        Storage::deleteDirectory('vlf-uploads');
+    }
+
+    protected function seedFirm(): void
     {
         // Addresses use the reserved .example domain so no real mailbox is ever emailed.
         foreach ([
