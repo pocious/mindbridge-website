@@ -356,3 +356,7 @@ body { overflow-x: hidden; }
 .notif-type { font-family: var(--sans); text-transform: none; letter-spacing: 0; font-size: 12px; font-weight: 600; }
 .persona-role { font-family: var(--sans); letter-spacing: 0; text-transform: none; font-size: 11px; }
 .vlf-figure-label { font-family: var(--sans); font-size: 12.5px; color: #A9B8B0; margin-top: 4px; }
+
+/* The breadcrumb bar under the top bar is removed: the sidebar shows the current page
+   and the top bar shows who is signed in. */
+.ctx-bar { display: none !important; }
