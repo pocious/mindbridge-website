@@ -171,4 +171,51 @@ class VlfAccessTest extends TestCase
         $this->assertSame('junior', $rita->role);
         NotificationFacade::assertSentTo($rita, ResetPassword::class);
     }
+
+    public function test_an_account_request_cannot_sign_in_until_approved(): void
+    {
+        $partner = $this->staff('Margaret Ssempebwa', 'partner');
+
+        $this->post('/register', [
+            'name' => 'Grace Achieng', 'email' => 'grace@example.com', 'signup_as' => 'client', 'organisation' => 'Achieng Traders',
+            'password' => 'grace-pass-123', 'password_confirmation' => 'grace-pass-123',
+        ])->assertRedirect('/login');
+
+        $grace = User::where('email', 'grace@example.com')->first();
+        $this->assertTrue($grace->isPendingSignup());
+        $this->assertFalse($grace->active);
+        $this->assertSame(1, Notification::where('recipient', 'Margaret Ssempebwa')->count());
+
+        $this->post('/login', ['email' => 'grace@example.com', 'password' => 'grace-pass-123'])->assertSessionHasErrors('email');
+        $this->assertGuest();
+
+        $this->actingAs($partner)->getJson('/api/vlf/state')->assertJsonPath('signupRequests.0.email', 'grace@example.com');
+        $this->actingAs($partner)->postJson("/api/vlf/signups/{$grace->id}/approve", ['as' => 'client', 'clientName' => 'Achieng Traders'])->assertOk();
+
+        $grace->refresh();
+        $this->assertTrue($grace->active);
+        $this->assertSame('client', $grace->role);
+        $this->assertSame('Achieng Traders', $grace->client->name);
+
+        auth()->logout();
+        $this->post('/login', ['email' => 'grace@example.com', 'password' => 'grace-pass-123'])->assertRedirect('/app');
+    }
+
+    public function test_only_partners_and_the_administrator_can_approve_requests(): void
+    {
+        $associate = $this->staff('Peter Ssali', 'associate');
+        $pending = User::factory()->create(['role' => 'client', 'active' => false, 'signup_status' => 'pending', 'signup_as' => 'staff']);
+
+        $this->actingAs($associate)->postJson("/api/vlf/signups/{$pending->id}/approve", ['as' => 'staff', 'title' => 'Partner'])->assertForbidden();
+        $this->actingAs($associate)->getJson('/api/vlf/state')->assertJsonCount(0, 'signupRequests');
+        $this->assertTrue($pending->fresh()->isPendingSignup());
+
+        $admin = $this->staff('Ann Admin', 'admin');
+        $this->actingAs($admin)->postJson("/api/vlf/signups/{$pending->id}/approve", ['as' => 'staff', 'title' => 'Junior Associate'])->assertOk();
+        $this->assertSame('junior', $pending->fresh()->role);
+        $this->assertNotNull($pending->fresh()->staff);
+
+        // Approved accounts can't be approved or declined again.
+        $this->actingAs($admin)->deleteJson("/api/vlf/signups/{$pending->id}")->assertNotFound();
+    }
 }

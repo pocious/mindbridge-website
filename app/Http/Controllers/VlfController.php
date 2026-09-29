@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Vlf\FirmController;
+use App\Http\Controllers\Vlf\SignupController;
 use App\Models\User;
 use App\Models\Vlf\Client;
 use App\Models\Vlf\Comment;
@@ -55,6 +56,7 @@ class VlfController extends Controller
             'events' => $inScope(CourtEvent::query())->orderBy('date')->orderBy('time')->get()->map->toClient(),
             'deadlines' => $staffOnly(fn () => Deadline::orderBy('due_date')->orderBy('due_time')->get()->map->toClient()),
             'staff' => $staffOnly(fn () => Staff::orderBy('id')->get()->map->toClient()),
+            'signupRequests' => $user->isFirmAdmin() ? SignupController::pending() : [],
             'settings' => (object) Setting::whereIn('key', FirmController::SETTING_KEYS)->pluck('value', 'key')->all(),
             'notifications' => (object) [$user->name => Notification::where('recipient', $user->name)->latest('id')->limit(100)->get()->map->toClient()],
             'tasks' => $staffOnly(fn () => Task::orderBy('id')->get()->map->toClient()),

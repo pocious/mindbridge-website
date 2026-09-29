@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role', 'client_id', 'phone', 'active'])]
+#[Fillable(['name', 'email', 'password', 'role', 'client_id', 'phone', 'active', 'signup_status', 'signup_as', 'signup_organisation'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -56,6 +56,12 @@ class User extends Authenticatable
     public function staff(): HasOne
     {
         return $this->hasOne(Staff::class, 'user_id');
+    }
+
+    /** Asked for an account from the sign-in page and not yet approved. */
+    public function isPendingSignup(): bool
+    {
+        return $this->signup_status === 'pending';
     }
 
     public function isClient(): bool

@@ -1246,9 +1246,10 @@
       card.insertAdjacentHTML('beforeend', workloadRows());
     });
 
-    const cards = document.querySelectorAll('#pg-adm-people .pgbody > .card');
+    const cards = document.querySelectorAll('#pg-adm-people .pgbody > .card:not(#vlf-signups)');
     const team = cards[1];
     if (!team) return;
+    renderSignups(team);
     team.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
         <div class="section-label" style="margin:0;">Team — ${esc(firmName())}</div>
@@ -1262,6 +1263,84 @@
             <span class="pill ${s.active ? (STATUS_PILL[s.status] || 'info') : 'ruby'}">${esc(s.active ? s.status : 'Inactive')}</span>
           </div>`).join('')}
       </div>`;
+  }
+
+  /* Account requests from the sign-in page wait here for a partner or the administrator. */
+  function renderSignups(team) {
+    let card = document.getElementById('vlf-signups');
+    const list = S.signupRequests || [];
+    if (!list.length) { if (card) card.remove(); return; }
+    if (!card) {
+      card = document.createElement('div');
+      card.className = 'card';
+      card.id = 'vlf-signups';
+      team.parentElement.insertBefore(card, team);
+    }
+    card.innerHTML = `
+      <div class="section-label" style="margin:0 0 6px;">Account requests · ${list.length}</div>
+      ${list.map(r => `
+        <div style="display:flex;align-items:center;gap:11px;padding:8px 0;border-bottom:1px solid rgba(28,43,43,.06);flex-wrap:wrap;">
+          <div class="av ${r.as === 'staff' ? 'assoc' : 'client'}" style="width:34px;height:34px;font-size:11px;">${esc(r.name.split(/\s+/).map(p => p[0] || '').slice(0, 2).join('').toUpperCase())}</div>
+          <div style="flex:1;min-width:180px;"><div style="font-size:13px;font-weight:500;color:var(--ink);">${esc(r.name)}</div>
+            <div style="font-size:11px;color:var(--slate);">${r.as === 'staff' ? 'Staff' : 'Client'}${r.organisation ? ' · ' + esc(r.organisation) : ''} · ${esc(r.email)}${r.phone ? ' · ' + esc(r.phone) : ''}</div></div>
+          <button class="btn btn-v btn-sm" onclick="VLFOPS.openSignup(${arg(r.id)})">Review</button>
+        </div>`).join('')}`;
+  }
+
+  function openSignup(id) {
+    const r = (S.signupRequests || []).find(x => String(x.id) === String(id));
+    if (!r) return;
+    const roles = ['Senior Partner', 'Partner', 'Associate', 'Junior Associate', 'Pupil Advocate', 'Legal Assistant', 'Firm Administrator'];
+    const clients = [['', 'New client: ' + (r.organisation || r.name)]].concat(S.clients.map(c => [c.id, c.name]));
+    modal('Account request', r.name + ' · ' + r.email, `
+      <div class="create-task-form">
+        <div style="font-size:12px;color:var(--slate);line-height:1.5;">Asked for ${r.as === 'staff' ? 'a staff account' : 'a client account'}${r.organisation ? ' for ' + esc(r.organisation) : ''}. Choose what they can open, or decline.</div>
+        ${field('Give access as', select('vsu-as', [['client', 'Client (portal: their own matters only)'], ['staff', 'Staff member']], r.as))}
+        <div id="vsu-staff" class="ctf-row">${field('Role', select('vsu-title', roles, 'Associate'))}${field('Hourly rate (UGX)', input('vsu-rate', '', 'e.g. 450000'))}</div>
+        <div id="vsu-client">${field('Client record', select('vsu-client-id', clients, ''))}</div>
+        ${formError()}
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-out btn-full" style="flex:1;" onclick="VLFOPS.declineSignup(${arg(r.id)})">Decline</button>
+          <button class="btn btn-v btn-full" style="flex:1;" onclick="VLFOPS.approveSignup(${arg(r.id)})">Approve</button>
+        </div>
+      </div>`);
+    const sync = () => {
+      const staff = val('vsu-as') === 'staff';
+      document.getElementById('vsu-staff').style.display = staff ? '' : 'none';
+      document.getElementById('vsu-client').style.display = staff ? 'none' : '';
+    };
+    document.getElementById('vsu-as').addEventListener('change', sync);
+    sync();
+  }
+
+  function approveSignup(id) {
+    const r = (S.signupRequests || []).find(x => String(x.id) === String(id));
+    const as = val('vsu-as');
+    const body = as === 'staff'
+      ? { as, title: val('vsu-title'), rate: parseInt(val('vsu-rate').replace(/[^0-9]/g, '') || '0', 10) }
+      : { as, clientId: val('vsu-client-id') ? parseInt(val('vsu-client-id'), 10) : null, clientName: r ? (r.organisation || r.name) : '' };
+    api('POST', 'signups/' + id + '/approve', body).then(res => {
+      S.signupRequests = (S.signupRequests || []).filter(x => String(x.id) !== String(id));
+      if (res.staff) S.staff.push(res.staff);
+      if (res.client) {
+        const i = S.clients.findIndex(c => c.id === res.client.id);
+        if (i >= 0) S.clients[i] = res.client; else S.clients.push(res.client);
+      }
+      closeM('m-ob-workspace');
+      renderAll();
+      t('Account approved', `${r ? r.name : 'They'} can sign in now`, 'g');
+    }).catch(err => err.fromServer ? showFormError(err.message) : saveFailed(err));
+  }
+
+  function declineSignup(id) {
+    const r = (S.signupRequests || []).find(x => String(x.id) === String(id));
+    if (!confirm(`Decline ${r ? r.name : 'this request'}? Their request is deleted and they get an email saying so.`)) return;
+    api('DELETE', 'signups/' + id).then(() => {
+      S.signupRequests = (S.signupRequests || []).filter(x => String(x.id) !== String(id));
+      closeM('m-ob-workspace');
+      renderPeople();
+      t('Request declined', r ? r.email : '', 'r');
+    }).catch(err => err.fromServer ? showFormError(err.message) : saveFailed(err));
   }
 
   function openStaffForm(id) {
@@ -2020,6 +2099,7 @@
     S.events = st.events || [];
     S.deadlines = st.deadlines || [];
     S.staff = st.staff || [];
+    S.signupRequests = st.signupRequests || [];
     S.settings = Array.isArray(st.settings) ? {} : (st.settings || {});
     S.notifications = st.notifications || {};
     Object.keys(S.notifications).forEach(k => { if (Array.isArray(S.notifications[k]) === false) S.notifications[k] = []; });
@@ -2093,7 +2173,7 @@
     setTaskStatus,
     addExtraInvoiceLine, createInvoice, invoiceAction,
     openDoc, docAction, openReturnFor, confirmReturn,
-    openStaffForm, saveStaff, openFirmForm, saveFirm, toggleSetting,
+    openStaffForm, saveStaff, openSignup, approveSignup, declineSignup, openFirmForm, saveFirm, toggleSetting,
     openNotification, pollNotifications, goTo, sendClientMessage, inviteClient, inviteStaff
   };
 })();

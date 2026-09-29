@@ -7,6 +7,7 @@ use App\Http\Controllers\Vlf\DocumentController;
 use App\Http\Controllers\Vlf\FirmController;
 use App\Http\Controllers\Vlf\IntakeController;
 use App\Http\Controllers\Vlf\InvoiceController;
+use App\Http\Controllers\Vlf\SignupController;
 use App\Http\Controllers\VlfAppController;
 use App\Http\Controllers\VlfController;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,8 @@ Route::middleware('guest')->group(function () {
     Route::post('forgot-password', [AuthController::class, 'sendResetLink'])->middleware('throttle:6,1')->name('password.email');
     Route::get('reset-password/{token}', [AuthController::class, 'showReset'])->name('password.reset');
     Route::post('reset-password', [AuthController::class, 'reset'])->name('password.update');
+    Route::get('register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('register', [AuthController::class, 'register'])->middleware('throttle:5,1');
 });
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
@@ -84,6 +87,8 @@ Route::prefix('api/vlf')->middleware('auth')->group(function () {
             Route::patch('staff/{staff}', [FirmController::class, 'updateStaff']);
             Route::post('staff/{staff}/invite', [FirmController::class, 'inviteStaff']);
             Route::put('settings/{key}', [FirmController::class, 'updateSetting']);
+            Route::post('signups/{user}/approve', [SignupController::class, 'approve']);
+            Route::delete('signups/{user}', [SignupController::class, 'decline']);
         });
     });
 });
