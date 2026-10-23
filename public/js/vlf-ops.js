@@ -2058,6 +2058,9 @@
     const switcher = document.querySelector('.shell-bar');
     if (switcher && shells.length < 2) switcher.style.display = 'none';
 
+    // The "+" shortcuts (new document, task, time, matter) are staff work; clients don't get them.
+    if (ME.role === 'client') document.getElementById('fab-container')?.remove();
+
     const right = document.querySelector('.tb-r');
     if (right && !document.getElementById('vlf-signout')) {
       right.insertAdjacentHTML('beforeend', `<form id="vlf-signout" method="POST" action="${esc(window.VLF_LOGOUT || '/logout')}" style="margin:0;">
