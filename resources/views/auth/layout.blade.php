@@ -25,6 +25,11 @@
   button{width:100%;margin-top:18px;padding:11px;border:none;border-radius:6px;background:var(--vd);color:#fff;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;}
   button:hover{background:var(--vu);}
   .error{background:var(--ember-p);color:var(--ember);font-size:12px;padding:9px 11px;border-radius:6px;margin-bottom:10px;}
+  .pw{position:relative;}
+  .pw input{padding-right:44px;}
+  .pw .pw-toggle{position:absolute;top:50%;right:6px;transform:translateY(-50%);width:34px;height:34px;margin:0;padding:0;display:flex;align-items:center;justify-content:center;background:none;color:var(--slate);border-radius:6px;}
+  .pw .pw-toggle:hover{background:rgba(28,43,43,.06);color:var(--ink);}
+  .pw .pw-toggle:focus-visible{outline:2px solid var(--vd);outline-offset:1px;}
   .hint{font-size:11px;color:var(--slate);margin-top:4px;}
   .switch{font-size:12px;color:var(--slate);text-align:center;margin-top:16px;padding-top:14px;border-top:1px solid rgba(28,43,43,.08);}
   .switch a{font-weight:600;}
@@ -40,5 +45,31 @@
       @yield('content')
     </div>
   </main>
+<script>
+  // An eye button in each password box shows or hides what was typed.
+  (function () {
+    var eye = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+    var eyeOff = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.6 5.1A10.4 10.4 0 0 1 12 5c6.5 0 10 7 10 7a17.6 17.6 0 0 1-3.2 4.2M6.6 6.6C3.8 8.4 2 12 2 12s3.5 7 10 7a9.8 9.8 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/><path d="M2 2l20 20"/></svg>';
+    document.querySelectorAll('input[type=password]').forEach(function (input) {
+      var wrap = document.createElement('div');
+      wrap.className = 'pw';
+      input.parentNode.insertBefore(wrap, input);
+      wrap.appendChild(input);
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'pw-toggle';
+      btn.innerHTML = eye;
+      btn.setAttribute('aria-label', 'Show password');
+      btn.addEventListener('click', function () {
+        var show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        btn.innerHTML = show ? eyeOff : eye;
+        btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+        input.focus();
+      });
+      wrap.appendChild(btn);
+    });
+  })();
+</script>
 </body>
 </html>
