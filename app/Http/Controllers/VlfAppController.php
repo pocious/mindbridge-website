@@ -22,6 +22,14 @@ class VlfAppController extends Controller
 
         $html = preg_replace('~</head>~', $head.'</head>', $html, 1);
 
+        // The host lets browsers keep js/css for a week; a version from the file's
+        // modified time makes them fetch the new copy as soon as a file changes.
+        $html = preg_replace_callback('~(src|href)="((?:js|css)/[\w.-]+\.(?:js|css))"~', function (array $m) {
+            $path = public_path($m[2]);
+
+            return is_file($path) ? $m[1].'="'.$m[2].'?v='.filemtime($path).'"' : $m[0];
+        }, $html);
+
         return response($html)->header('Cache-Control', 'no-store, private');
     }
 }
