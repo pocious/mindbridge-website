@@ -3,179 +3,193 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ $firmName }} · Virtual Law Firm</title>
-<meta name="description" content="{{ $firmName }} runs its legal work online: matters, court dates, deadlines, documents, time and billing, with a private portal for every client.">
+<title>{{ $firmName }} · Advocates</title>
+<meta name="description" content="Work with {{ $firmName }} and always know where your matter stands: your next court date, your documents, your bills and a direct line to your legal team.">
 <link rel="icon" href="{{ asset('favicon.ico') }}">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --ink:#1C2B2B;--ink-m:#2A3E3E;--parch:#F2EDE4;--parch-d:#E8E1D6;--white:#fff;
-    --vd:#3F5E46;--vu:#5A7D61;--vp:#EDF1EC;--slate:#8A9BA8;--muted:#5B6B6B;
-    --ember:#B85C2A;--ember-p:#FBF0EB;--gold:#8B7335;--gold-p:#F7F2E5;--sky:#2563A8;--sky-p:#EBF2FC;
-    --serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
-    --line:rgba(28,43,43,.09);
+    --ink:#1F2A2A;--ink-soft:#2C3B3A;--text:#4A5654;--quiet:#7C8784;
+    --cream:#FAF6EF;--sand:#F1E9DC;--sand-d:#E6DBC9;--white:#FFFFFF;
+    --green:#3F5E46;--green-l:#5A7D61;--green-p:#E8EFE6;
+    --clay:#B4643A;--clay-p:#F7E7DC;--sun:#D9A441;
+    --serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',system-ui,sans-serif;
+    --line:rgba(31,42,42,.1);
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
   html{scroll-behavior:smooth;}
-  body{font-family:var(--sans);background:var(--parch);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  body{font-family:var(--sans);background:var(--cream);color:var(--ink);line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased;}
   a{color:inherit;}
-  .wrap{max-width:1120px;margin:0 auto;padding:0 16px;}
-  .skip{position:absolute;left:-9999px;top:8px;background:var(--ink);color:#fff;padding:8px 12px;border-radius:6px;z-index:100;}
+  img,svg{display:block;max-width:100%;}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 20px;}
+  .skip{position:absolute;left:-9999px;top:8px;background:var(--ink);color:#fff;padding:8px 12px;border-radius:8px;z-index:100;}
   .skip:focus{left:8px;}
+  em{font-style:italic;color:var(--clay);}
 
   /* Buttons */
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;padding:12px 20px;border-radius:6px;border:1.5px solid transparent;transition:background .15s,border-color .15s,color .15s;white-space:nowrap;}
-  .btn-v{background:var(--vd);color:#fff;}
-  .btn-v:hover{background:var(--vu);}
-  .btn-line{border-color:rgba(242,237,228,.35);color:var(--parch);}
-  .btn-line:hover{border-color:var(--parch);}
-  .btn-ink-line{border-color:rgba(28,43,43,.2);color:var(--ink);}
-  .btn-ink-line:hover{border-color:var(--ink);}
-  .btn:focus-visible,.nav a:focus-visible{outline:2px solid var(--vu);outline-offset:2px;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:600 15px/1 var(--sans);text-decoration:none;padding:15px 26px;border-radius:999px;border:1.5px solid transparent;cursor:pointer;transition:background .2s,border-color .2s,transform .2s;white-space:nowrap;}
+  .btn:hover{transform:translateY(-1px);}
+  .btn-main{background:var(--green);color:#fff;}
+  .btn-main:hover{background:var(--green-l);}
+  .btn-soft{background:transparent;border-color:rgba(31,42,42,.22);color:var(--ink);}
+  .btn-soft:hover{border-color:var(--ink);}
+  .btn-light{background:var(--cream);color:var(--ink);}
+  .btn-light:hover{background:#fff;}
+  .btn-ghost-light{border-color:rgba(250,246,239,.4);color:var(--cream);background:none;}
+  .btn-ghost-light:hover{border-color:var(--cream);}
+  a:focus-visible,button:focus-visible{outline:3px solid var(--sun);outline-offset:3px;}
 
   /* Header */
-  header.top{position:sticky;top:0;z-index:50;background:var(--ink);border-bottom:1px solid rgba(255,255,255,.06);}
-  .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px;}
-  .brand{text-decoration:none;color:#fff;min-width:0;}
-  .brand .firm{font-family:var(--serif);font-size:20px;font-weight:600;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;}
-  .brand .sub{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);}
-  .nav{display:flex;align-items:center;gap:22px;}
-  .nav a.link{color:rgba(242,237,228,.75);text-decoration:none;font-size:13px;}
-  .nav a.link:hover{color:#fff;}
-  .nav .btn{padding:9px 16px;font-size:11px;}
-  @media (max-width:820px){ .nav a.link{display:none;} }
-
-  /* Hero */
-  .hero{background:var(--ink);color:var(--parch);padding:72px 0 88px;overflow:hidden;}
-  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;}
-  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--vu);margin-bottom:16px;}
-  .hero h1{font-family:var(--serif);font-weight:600;font-size:clamp(34px,5vw,54px);line-height:1.08;color:#fff;margin-bottom:18px;}
-  .hero p.lead{font-size:16px;color:rgba(242,237,228,.78);max-width:520px;margin-bottom:28px;}
-  .cta{display:flex;flex-wrap:wrap;gap:12px;}
-  .hero .note{font-size:12px;color:var(--slate);margin-top:16px;}
-  .hero .note a{color:var(--parch);}
-
-  /* Hero preview: a small picture of the workspace */
-  .preview{background:var(--parch);border-radius:14px;box-shadow:0 24px 64px rgba(0,0,0,.35);overflow:hidden;color:var(--ink);}
-  .preview .bar{background:var(--ink-m);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;}
-  .preview .bar span{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);}
-  .preview .dots{display:flex;gap:5px;}
-  .preview .dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.18);}
-  .preview .body{padding:16px;display:grid;gap:10px;}
-  .preview .ttl{font-family:var(--serif);font-size:18px;font-weight:600;}
-  .pv-row{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
-  .pv-row b{font-size:12.5px;font-weight:500;display:block;}
-  .pv-row small{font-family:var(--mono);font-size:9.5px;color:var(--slate);}
-  .pill{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:10px;white-space:nowrap;}
-  .pill.urg{background:var(--ember-p);color:var(--ember);}
-  .pill.warn{background:var(--gold-p);color:var(--gold);}
-  .pill.ok{background:var(--vp);color:var(--vd);}
-  .pill.sky{background:var(--sky-p);color:var(--sky);}
-  @media (max-width:900px){ .hero .wrap{grid-template-columns:1fr;} .hero{padding:48px 0 64px;} }
-
-  /* Sections */
-  section.band{padding:80px 0;}
-  section.band.alt{background:var(--white);}
-  .sec-head{max-width:640px;margin-bottom:40px;}
-  .sec-head h2{font-family:var(--serif);font-weight:600;font-size:clamp(28px,3.6vw,38px);line-height:1.15;margin-bottom:10px;}
-  .sec-head p{color:var(--muted);font-size:15px;}
-  @media (max-width:640px){ section.band{padding:56px 0;} }
-
-  /* Feature grid */
-  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-  @media (max-width:900px){ .grid{grid-template-columns:repeat(2,1fr);} }
-  @media (max-width:600px){ .grid{grid-template-columns:1fr;} }
-  .feat{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:22px;}
-  .alt .feat{background:var(--parch);}
-  .feat .ic{width:38px;height:38px;border-radius:9px;background:var(--vp);color:var(--vd);display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
-  .feat h3{font-size:15px;font-weight:600;margin-bottom:6px;}
-  .feat p{font-size:13.5px;color:var(--muted);}
-
-  /* Authority classes */
-  .classes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;}
-  @media (max-width:760px){ .classes{grid-template-columns:1fr;} }
-  .cls{background:var(--white);border-radius:12px;border:1px solid var(--line);padding:22px;border-top:4px solid var(--vd);}
-  .cls.a{border-top-color:var(--ember);}
-  .cls.b{border-top-color:var(--gold);}
-  .cls .k{font-family:var(--serif);font-size:30px;font-weight:600;line-height:1;}
-  .cls .who{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);margin:6px 0 10px;}
-  .cls p{font-size:13.5px;color:var(--muted);}
-  .rules{display:grid;grid-template-columns:repeat(2,1fr);gap:10px 28px;list-style:none;}
-  @media (max-width:760px){ .rules{grid-template-columns:1fr;} }
-  .rules li{font-size:14px;padding-left:26px;position:relative;}
-  .rules li::before{content:"";position:absolute;left:0;top:4px;width:16px;height:16px;border-radius:50%;background:var(--vp) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233F5E46' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center/10px no-repeat;}
-
-  /* Steps (document review / invoice flow) */
-  .flows{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-  @media (max-width:860px){ .flows{grid-template-columns:1fr;} }
-  .flow{background:var(--parch);border-radius:12px;padding:22px;}
-  .flow h3{font-size:15px;font-weight:600;margin-bottom:14px;}
-  .steps{display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
-  .step{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:7px 11px;font-size:12.5px;font-weight:500;}
-  .step.key{border-color:var(--ember);color:var(--ember);}
-  .arr{color:var(--slate);font-size:13px;}
-  .flow p{font-size:13px;color:var(--muted);margin-top:12px;}
-
-  /* Portal split */
-  .split{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;}
-  @media (max-width:860px){ .split{grid-template-columns:1fr;gap:28px;} }
-  .ticks{list-style:none;display:grid;gap:12px;margin:20px 0 26px;}
-  .ticks li{font-size:14.5px;padding-left:26px;position:relative;}
-  .ticks li::before{content:"";position:absolute;left:0;top:5px;width:16px;height:16px;border-radius:50%;background:var(--vp) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233F5E46' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center/10px no-repeat;}
-  .portal-card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:0 12px 36px rgba(28,43,43,.08);}
-  .portal-card .ttl{font-family:var(--serif);font-size:20px;font-weight:600;margin-bottom:12px;}
-  .portal-card .pv-row{background:var(--parch);}
-
-  /* Roles table */
-  .roles{width:100%;border-collapse:collapse;background:var(--white);border-radius:12px;overflow:hidden;border:1px solid var(--line);}
-  .roles th,.roles td{text-align:left;padding:14px 18px;font-size:14px;border-bottom:1px solid var(--line);vertical-align:top;}
-  .roles th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);font-weight:400;background:var(--parch);}
-  .roles tr:last-child td{border-bottom:none;}
-  .roles td:first-child{font-weight:600;white-space:nowrap;}
-  .roles td{color:var(--muted);}
-  .roles td:first-child{color:var(--ink);}
-  @media (max-width:640px){
-    .roles thead{display:none;}
-    .roles tr{display:block;padding:12px 16px;border-bottom:1px solid var(--line);}
-    .roles td{display:block;border:none;padding:2px 0;}
+  header.top{position:sticky;top:0;z-index:50;background:rgba(250,246,239,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:72px;}
+  .brand{display:flex;align-items:center;gap:12px;text-decoration:none;min-width:0;}
+  .mark{width:40px;height:40px;border-radius:50%;background:var(--green);color:var(--cream);display:flex;align-items:center;justify-content:center;font:600 18px var(--serif);flex-shrink:0;}
+  .brand .firm{font:600 21px/1.1 var(--serif);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .nav{display:flex;align-items:center;gap:26px;}
+  .nav a.link{text-decoration:none;font-size:14.5px;color:var(--text);}
+  .nav a.link:hover{color:var(--ink);}
+  .nav .btn{padding:11px 20px;font-size:14px;}
+  @media (max-width:860px){ .nav a.link{display:none;} }
+  .brand .firm{min-width:0;}
+  @media (max-width:520px){
+    .top .wrap{height:auto;min-height:68px;padding-top:10px;padding-bottom:10px;}
+    .brand .firm{font-size:17px;white-space:normal;line-height:1.15;}
+    .mark{width:34px;height:34px;font-size:16px;}
+    .nav .btn{padding:10px 16px;font-size:13.5px;}
   }
 
-  /* Closing call to action */
-  .closing{background:var(--ink);color:var(--parch);padding:72px 0;text-align:center;}
-  .closing h2{font-family:var(--serif);font-weight:600;font-size:clamp(28px,4vw,40px);color:#fff;margin-bottom:12px;}
-  .closing p{color:rgba(242,237,228,.75);max-width:560px;margin:0 auto 28px;}
+  /* Hero */
+  .hero{padding:72px 0 64px;position:relative;overflow:hidden;}
+  .hero::before{content:"";position:absolute;right:-180px;top:-160px;width:560px;height:560px;border-radius:50%;background:radial-gradient(circle,var(--sand) 0%,rgba(241,233,220,0) 70%);z-index:-1;}
+  .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;}
+  .hero .wrap > *{min-width:0;}
+  @media (max-width:520px){ .hero .cta .btn{white-space:normal;text-align:center;} }
+  .hello{display:inline-flex;align-items:center;gap:10px;font-size:14px;color:var(--green);background:var(--green-p);padding:7px 14px;border-radius:999px;margin-bottom:22px;}
+  .hello i{width:8px;height:8px;border-radius:50%;background:var(--green-l);}
+  .hero h1{font-family:var(--serif);font-weight:500;font-size:clamp(40px,6vw,66px);line-height:1.04;letter-spacing:-.01em;margin-bottom:22px;}
+  .hero p.lead{font-size:18.5px;color:var(--text);max-width:520px;margin-bottom:32px;}
+  .cta{display:flex;flex-wrap:wrap;gap:12px;}
+  .hero .note{font-size:14px;color:var(--quiet);margin-top:20px;}
+  .hero .note a{color:var(--green);font-weight:500;}
+  @media (max-width:900px){ .hero .wrap{grid-template-columns:1fr;gap:40px;} .hero{padding:44px 0 48px;} }
+
+  /* Hero illustration */
+  .scene{position:relative;}
+  .scene svg{width:100%;height:auto;}
+  .bubble{position:absolute;background:var(--white);border-radius:18px;box-shadow:0 14px 40px rgba(31,42,42,.12);padding:14px 16px;font-size:14px;max-width:250px;line-height:1.45;}
+  .bubble small{display:block;font-size:12px;color:var(--quiet);margin-bottom:3px;}
+  .bubble.one{left:-8px;top:8%;border-bottom-left-radius:4px;}
+  .bubble.two{right:-6px;bottom:10%;border-bottom-right-radius:4px;background:var(--green);color:var(--cream);}
+  .bubble.two small{color:rgba(250,246,239,.7);}
+  @media (max-width:520px){ .bubble{position:static;max-width:none;margin-top:10px;} }
+
+  /* Sections */
+  section.band{padding:96px 0;}
+  section.band.sand{background:var(--sand);}
+  .head{max-width:640px;margin-bottom:48px;}
+  .head.center{margin-left:auto;margin-right:auto;text-align:center;}
+  .kicker{font-size:14px;font-weight:500;color:var(--clay);margin-bottom:10px;}
+  .head h2{font-family:var(--serif);font-weight:500;font-size:clamp(32px,4.4vw,46px);line-height:1.1;margin-bottom:14px;}
+  .head p{color:var(--text);font-size:17px;}
+  @media (max-width:640px){ section.band{padding:64px 0;} .head{margin-bottom:34px;} }
+
+  /* Promise strip */
+  .promise{padding:28px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .promise .wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+  .promise div{display:flex;gap:14px;align-items:flex-start;font-size:15px;color:var(--text);}
+  .promise b{display:block;color:var(--ink);font-weight:600;}
+  .promise .dot{width:38px;height:38px;border-radius:50%;background:var(--clay-p);color:var(--clay);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  @media (max-width:760px){ .promise .wrap{grid-template-columns:1fr;} }
+
+  /* Journey */
+  .journey{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;counter-reset:step;position:relative;}
+  .journey::before{content:"";position:absolute;top:30px;left:8%;right:8%;height:2px;background:repeating-linear-gradient(90deg,var(--sand-d) 0 8px,transparent 8px 16px);z-index:0;}
+  .stop{position:relative;z-index:1;}
+  .stop .num{width:60px;height:60px;border-radius:50%;background:var(--cream);border:2px solid var(--sand-d);display:flex;align-items:center;justify-content:center;font:500 26px var(--serif);color:var(--green);margin-bottom:18px;}
+  .sand .stop .num{background:var(--sand);}
+  .stop h3{font:600 23px/1.2 var(--serif);margin-bottom:8px;}
+  .stop p{font-size:15px;color:var(--text);}
+  @media (max-width:900px){ .journey{grid-template-columns:1fr 1fr;gap:34px 22px;} .journey::before{display:none;} }
+  @media (max-width:520px){ .journey{grid-template-columns:1fr;} }
+
+  /* Cards */
+  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+  @media (max-width:760px){ .cards{grid-template-columns:1fr;} }
+  .card{background:var(--white);border-radius:22px;padding:30px;border:1px solid var(--line);}
+  .card .ic{width:48px;height:48px;border-radius:14px;background:var(--green-p);color:var(--green);display:flex;align-items:center;justify-content:center;margin-bottom:18px;}
+  .card:nth-child(2) .ic{background:var(--clay-p);color:var(--clay);}
+  .card:nth-child(3) .ic{background:#F6EED8;color:#94721F;}
+  .card:nth-child(4) .ic{background:#E6EEF4;color:#3B6683;}
+  .card h3{font:600 25px/1.2 var(--serif);margin-bottom:8px;}
+  .card p{color:var(--text);font-size:15.5px;}
+
+  /* Care / trust */
+  .care{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:center;}
+  @media (max-width:860px){ .care{grid-template-columns:1fr;gap:36px;} }
+  .quote{font:italic 500 clamp(28px,3.6vw,38px)/1.25 var(--serif);color:var(--ink);border-left:3px solid var(--clay);padding-left:24px;}
+  .quote span{display:block;font:400 15px var(--sans);color:var(--quiet);margin-top:16px;font-style:normal;}
+  .checks{list-style:none;display:grid;gap:18px;}
+  .checks li{display:flex;gap:14px;align-items:flex-start;font-size:16px;color:var(--text);}
+  .checks li b{color:var(--ink);font-weight:600;}
+  .tick{width:26px;height:26px;border-radius:50%;background:var(--green);color:var(--cream);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+
+  /* Team strip */
+  .team{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;background:var(--ink);color:var(--cream);border-radius:28px;padding:52px;}
+  .team h2{font:500 clamp(30px,3.8vw,40px)/1.12 var(--serif);margin-bottom:14px;color:#fff;}
+  .team p{color:rgba(250,246,239,.78);font-size:16.5px;margin-bottom:26px;}
+  .team ul{list-style:none;display:grid;gap:12px;}
+  .team li{background:rgba(250,246,239,.07);border-radius:14px;padding:14px 18px;font-size:15px;color:rgba(250,246,239,.88);}
+  .team li b{color:#fff;font-weight:600;}
+  @media (max-width:860px){ .team{grid-template-columns:1fr;padding:34px 24px;gap:30px;} }
+
+  /* Questions */
+  .faq{max-width:760px;margin:0 auto;}
+  .faq details{background:var(--white);border:1px solid var(--line);border-radius:18px;margin-bottom:12px;}
+  .faq summary{list-style:none;cursor:pointer;padding:20px 24px;font:600 21px/1.3 var(--serif);display:flex;justify-content:space-between;align-items:center;gap:16px;}
+  .faq summary::-webkit-details-marker{display:none;}
+  .faq summary::after{content:"+";font:400 26px/1 var(--sans);color:var(--clay);transition:transform .2s;}
+  .faq details[open] summary::after{transform:rotate(45deg);}
+  .faq details p{padding:0 24px 22px;color:var(--text);font-size:15.5px;}
+
+  /* Closing */
+  .closing{text-align:center;padding:100px 0;}
+  .closing h2{font:500 clamp(34px,5vw,54px)/1.08 var(--serif);margin-bottom:16px;}
+  .closing p{color:var(--text);font-size:17.5px;max-width:540px;margin:0 auto 32px;}
   .closing .cta{justify-content:center;}
 
-  footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.07);color:var(--slate);font-size:12.5px;padding:24px 0;}
-  footer .wrap{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;}
-  footer a{color:rgba(242,237,228,.8);text-decoration:none;}
-  footer a:hover{color:#fff;}
-  footer nav{display:flex;flex-wrap:wrap;gap:18px;}
+  footer{background:var(--sand);color:var(--text);font-size:14px;padding:30px 0;}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:14px 28px;justify-content:space-between;align-items:center;}
+  footer .firm{font:600 19px var(--serif);color:var(--ink);}
+  footer nav{display:flex;flex-wrap:wrap;gap:20px;}
+  footer a{text-decoration:none;}
+  footer a:hover{color:var(--ink);text-decoration:underline;}
+
+  @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto;} .btn{transition:none;} .btn:hover{transform:none;} }
 </style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
 @php
-  // Signed-in people go straight to the system; everyone else signs in first.
   $appUrl = route('app');
+  $initial = mb_strtoupper(mb_substr(trim($firmName), 0, 1));
 @endphp
 
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="{{ url('/') }}">
+    <a class="brand" href="{{ url('/') }}" aria-label="{{ $firmName }}, home">
+      <span class="mark" aria-hidden="true">{{ $initial }}</span>
       <span class="firm">{{ $firmName }}</span>
-      <span class="sub">Virtual Law Firm</span>
     </a>
     <nav class="nav" aria-label="Main">
-      <a class="link" href="#features">What it does</a>
-      <a class="link" href="#authority">Authority</a>
-      <a class="link" href="#portal">Client portal</a>
-      <a class="link" href="#roles">Who uses it</a>
+      <a class="link" href="#how">How we work</a>
+      <a class="link" href="#portal">Your portal</a>
+      <a class="link" href="#care">Our promise</a>
+      <a class="link" href="#questions">Questions</a>
       @auth
-        <a class="btn btn-v" href="{{ $appUrl }}">Open the app</a>
+        <a class="btn btn-main" href="{{ $appUrl }}">Open my account</a>
       @else
-        <a class="btn btn-v" href="{{ route('login') }}">Sign in</a>
+        <a class="btn btn-main" href="{{ route('login') }}">Sign in</a>
       @endauth
     </nav>
   </div>
@@ -187,171 +201,214 @@
   <section class="hero">
     <div class="wrap">
       <div>
-        <div class="eyebrow">Law firm management system</div>
-        <h1>Every matter, deadline and decision in one place.</h1>
-        <p class="lead">{{ $firmName }} runs its legal work online: matters, court dates, deadlines, documents, time and billing. Every important step is checked against who is allowed to take it, and every client follows their own matters in a private portal.</p>
+        @auth
+          <div class="hello"><i></i>Welcome back, {{ \Illuminate\Support\Str::of(auth()->user()->name)->before(' ') }}</div>
+        @else
+          <div class="hello"><i></i>Advocates, working with you</div>
+        @endauth
+        <h1>Legal matters are stressful. <em>Knowing where yours stands</em> shouldn't be.</h1>
+        <p class="lead">At {{ $firmName }}, you're never left wondering. Your next court date, your documents, your bills and a direct line to the people handling your case are all in one private place, whenever you need them.</p>
         <div class="cta">
           @auth
-            <a class="btn btn-v" href="{{ $appUrl }}">Open the app</a>
-            <form method="POST" action="{{ route('logout') }}" style="display:inline">@csrf<button class="btn btn-line" type="submit" style="background:none;cursor:pointer;font-family:inherit">Sign out</button></form>
+            <a class="btn btn-main" href="{{ $appUrl }}">Open my account</a>
+            <form method="POST" action="{{ route('logout') }}">@csrf<button class="btn btn-soft" type="submit">Sign out</button></form>
           @else
-            <a class="btn btn-v" href="{{ route('login') }}">Sign in</a>
-            <a class="btn btn-line" href="#portal">I'm a client</a>
+            <a class="btn btn-main" href="{{ route('login') }}">Sign in to follow your matter</a>
+            <a class="btn btn-soft" href="#how">See how we work</a>
           @endauth
         </div>
         @guest
-          <p class="note">New to the firm? <a href="{{ route('register') }}">Create an account</a>. The firm approves it before you can sign in.</p>
+          <p class="note">First time here? <a href="{{ route('register') }}">Create your account</a> and the firm will confirm it with you.</p>
         @endguest
       </div>
 
-      <div class="preview" aria-hidden="true">
-        <div class="bar"><div class="dots"><i></i><i></i><i></i></div><span>Command Centre</span></div>
-        <div class="body">
-          <div class="ttl">What needs your attention</div>
-          <div class="pv-row"><div><b>Filing deadline: written submissions</b><small>Due today · 4:00 PM</small></div><span class="pill urg">Critical</span></div>
-          <div class="pv-row"><div><b>Witness statement awaiting partner sign-off</b><small>Class A · Document review</small></div><span class="pill warn">Approval</span></div>
-          <div class="pv-row"><div><b>Hearing: mention before the registrar</b><small>Tomorrow · 9:30 AM · Preparation 3 of 4</small></div><span class="pill sky">Court</span></div>
-          <div class="pv-row"><div><b>Invoice approved and issued</b><small>Client notified in the portal</small></div><span class="pill ok">Done</span></div>
-        </div>
+      <div class="scene" aria-hidden="true">
+        <!-- Two people at a table: an advocate and a client going through papers together -->
+        <svg viewBox="0 0 480 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="240" cy="200" r="182" fill="#F1E9DC"/>
+          <circle cx="388" cy="78" r="26" fill="#D9A441" opacity=".35"/>
+          <!-- window -->
+          <rect x="176" y="62" width="128" height="92" rx="10" fill="#FAF6EF" stroke="#E6DBC9" stroke-width="3"/>
+          <path d="M240 62v92M176 108h128" stroke="#E6DBC9" stroke-width="3"/>
+          <path d="M190 140c14-18 28-26 42-22 12 3 18 14 30 12 10-2 18-10 28-8" stroke="#5A7D61" stroke-width="3" stroke-linecap="round" opacity=".55"/>
+          <!-- plant -->
+          <path d="M84 300c-4-40 4-70 20-92M104 300c2-34 14-58 30-72M94 300c-10-30-26-46-44-52" stroke="#3F5E46" stroke-width="5" stroke-linecap="round"/>
+          <ellipse cx="104" cy="206" rx="12" ry="20" transform="rotate(25 104 206)" fill="#5A7D61"/>
+          <ellipse cx="136" cy="226" rx="11" ry="18" transform="rotate(50 136 226)" fill="#3F5E46"/>
+          <ellipse cx="50" cy="246" rx="11" ry="18" transform="rotate(-55 50 246)" fill="#5A7D61"/>
+          <path d="M70 300h52l-6 42H76z" fill="#B4643A"/>
+          <!-- left person: advocate -->
+          <circle cx="168" cy="196" r="26" fill="#7A4A30"/>
+          <path d="M142 190c2-20 16-30 30-30 16 0 26 12 26 26-10-8-26-10-36-4-8 4-14 6-20 8z" fill="#1F2A2A"/>
+          <path d="M120 300c0-46 22-74 48-74s48 28 48 74z" fill="#1F2A2A"/>
+          <path d="M160 228l8 18 8-18" stroke="#FAF6EF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <!-- right person: client -->
+          <circle cx="316" cy="192" r="26" fill="#A86B47"/>
+          <path d="M288 196c-6-26 8-44 28-44 22 0 34 18 30 40-4 12-6 22-2 34-14-4-18-18-18-30-6 4-18 4-26-2-4 4-8 6-12 2z" fill="#2C3B3A"/>
+          <path d="M268 300c0-46 22-76 48-76s48 30 48 76z" fill="#B4643A"/>
+          <!-- table -->
+          <rect x="96" y="292" width="292" height="16" rx="8" fill="#3F5E46"/>
+          <path d="M128 308v58M356 308v58" stroke="#3F5E46" stroke-width="8" stroke-linecap="round"/>
+          <!-- papers + cup -->
+          <rect x="196" y="270" width="64" height="24" rx="3" fill="#FFFFFF" transform="rotate(-6 228 282)"/>
+          <path d="M206 278h40M206 285h30" stroke="#E6DBC9" stroke-width="3" stroke-linecap="round" transform="rotate(-6 228 282)"/>
+          <rect x="232" y="274" width="58" height="20" rx="3" fill="#FAF6EF" transform="rotate(7 261 284)"/>
+          <path d="M300 276h18v16h-18z" fill="#FFFFFF"/>
+          <path d="M318 280c8 0 8 9 0 9" stroke="#FFFFFF" stroke-width="3"/>
+          <!-- hands -->
+          <circle cx="204" cy="286" r="8" fill="#7A4A30"/>
+          <circle cx="282" cy="288" r="8" fill="#A86B47"/>
+        </svg>
+        <div class="bubble one"><small>Your legal team</small>Your hearing is confirmed for Thursday. Everything you need to bring is listed in your portal.</div>
+        <div class="bubble two"><small>You</small>Thank you, that's a weight off my mind.</div>
       </div>
     </div>
   </section>
 
-  <!-- Features -->
-  <section class="band" id="features">
+  <!-- Promise strip -->
+  <div class="promise">
     <div class="wrap">
-      <div class="sec-head">
-        <div class="eyebrow">What it does</div>
-        <h2>The firm's day-to-day work, from intake to invoice.</h2>
-        <p>One system for advocates, clerks, the firm administrator and clients. Each person signs in with their own account and sees only what their role allows.</p>
-      </div>
-      <div class="grid">
-        <div class="feat">
-          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18v13H3z"/><path d="M8 7V4h8v3"/></svg></div>
-          <h3>Matters and intake</h3>
-          <p>A five-step intake opens each matter, with a required conflict check against existing clients and opposing parties. A conflict stops the matter from opening.</p>
-        </div>
-        <div class="feat">
-          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div>
-          <h3>Court diary and deadlines</h3>
-          <p>Hearings with court, judge, appearing advocate and a preparation checklist. Deadlines are graded normal, important or critical, and the responsible person is notified.</p>
-        </div>
-        <div class="feat">
-          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg></div>
-          <h3>Tasks with authority classes</h3>
-          <p>Assign work to colleagues with a class (A, B or C), priority and deadline. Tasks move through pending, in progress, blocked and done.</p>
-        </div>
-        <div class="feat">
-          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg></div>
-          <h3>Time and invoicing</h3>
-          <p>Time is logged at each advocate's own rate. Invoices are built from unbilled time, approved by a partner, issued to the client and tracked until paid.</p>
-        </div>
-        <div class="feat">
-          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M9 14l2 2 4-4"/></svg></div>
-          <h3>Documents and review</h3>
-          <p>Draft in the editor or upload files. Each upload is fingerprinted, reviewed by someone other than the author, and filed only by a partner.</p>
-        </div>
-        <div class="feat">
-          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-          <h3>Messages and notifications</h3>
-          <p>Each matter has an internal conversation and a client conversation. People are notified, in the app and by email, when something affects them.</p>
-        </div>
-      </div>
+      <div><span class="dot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><span><b>Never miss a date</b>Court dates and deadlines in one place.</span></div>
+      <div><span class="dot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span><span><b>Talk to your team</b>A conversation for every matter.</span></div>
+      <div><span class="dot"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span><span><b>Private by design</b>Only you and your team see your matter.</span></div>
     </div>
-  </section>
+  </div>
 
-  <!-- Authority -->
-  <section class="band alt" id="authority">
+  <!-- How we work -->
+  <section class="band" id="how">
     <div class="wrap">
-      <div class="sec-head">
-        <div class="eyebrow">Authority you can rely on</div>
-        <h2>Nothing important happens without the right person's sign-off.</h2>
-        <p>Work is sorted into three authority classes, and the server enforces them on every request. The acting person always comes from their own signed-in account.</p>
+      <div class="head">
+        <div class="kicker">How we work with you</div>
+        <h2>From the first conversation to the final outcome.</h2>
+        <p>Every matter follows the same careful path, so you always know what's happening and what comes next.</p>
       </div>
-      <div class="classes">
-        <div class="cls a"><div class="k">Class A</div><div class="who">Needs a partner</div><p>Filing a document with the court and approving an invoice for issue.</p></div>
-        <div class="cls b"><div class="k">Class B</div><div class="who">Needs an associate</div><p>Drafting, reviewing, internal coordination and client communication.</p></div>
-        <div class="cls"><div class="k">Class C</div><div class="who">Junior work</div><p>Research and first drafts, always reviewed before they go further.</p></div>
-      </div>
-
-      <div class="flows">
-        <div class="flow">
-          <h3>A document's path</h3>
-          <div class="steps">
-            <span class="step">Draft</span><span class="arr">→</span>
-            <span class="step">Under review</span><span class="arr">→</span>
-            <span class="step">Approved</span><span class="arr">→</span>
-            <span class="step key">Filed by a partner</span>
-          </div>
-          <p>Nobody reviews their own document. Once submitted, its content is locked; the reviewer approves it or returns it with a reason.</p>
+      <div class="journey">
+        <div class="stop">
+          <div class="num">1</div>
+          <h3>We listen</h3>
+          <p>We hear your situation, take down your details and check that nothing stands in the way of us acting for you.</p>
         </div>
-        <div class="flow">
-          <h3>An invoice's path</h3>
-          <div class="steps">
-            <span class="step">Draft</span><span class="arr">→</span>
-            <span class="step key">Approved by a partner</span><span class="arr">→</span>
-            <span class="step">Issued</span><span class="arr">→</span>
-            <span class="step">Paid</span>
-          </div>
-          <p>Billed time is never invoiced twice. Issued invoices can't be edited, and clients only ever see issued and paid invoices.</p>
+        <div class="stop">
+          <div class="num">2</div>
+          <h3>We take it on</h3>
+          <p>Your matter is opened with a named advocate responsible for it and a partner overseeing their work.</p>
+        </div>
+        <div class="stop">
+          <div class="num">3</div>
+          <h3>You stay informed</h3>
+          <p>You're invited to your own private portal to follow progress, read documents and message your team.</p>
+        </div>
+        <div class="stop">
+          <div class="num">4</div>
+          <h3>We see it through</h3>
+          <p>From preparing for each hearing to the final bill, every step is recorded and nothing is left to chance.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Client portal -->
-  <section class="band" id="portal">
-    <div class="wrap split">
+  <!-- Portal -->
+  <section class="band sand" id="portal">
+    <div class="wrap">
+      <div class="head">
+        <div class="kicker">Your private portal</div>
+        <h2>Your matter, in plain sight. <em>Any time.</em></h2>
+        <p>No more waiting on hold to ask what's happening. Sign in from your phone or computer and see it for yourself.</p>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div>
+          <h3>Where things stand</h3>
+          <p>The stage your matter has reached, which court it's in, who's on your legal team and when you're next due in court.</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <h3>A direct line to your team</h3>
+          <p>Ask a question or share an update in the conversation for your matter. Your advocate is told as soon as you write.</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg></div>
+          <h3>Your documents</h3>
+          <p>Documents your team has finished and approved for you, ready to read or download whenever you need them.</p>
+        </div>
+        <div class="card">
+          <div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20M6 15h4"/></svg></div>
+          <h3>Clear, honest bills</h3>
+          <p>Every invoice you've been sent and what's still outstanding, with the work it covers. No surprises.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our promise -->
+  <section class="band" id="care">
+    <div class="wrap care">
       <div>
-        <div class="eyebrow">For clients</div>
-        <div class="sec-head" style="margin-bottom:0">
-          <h2>Follow your matter without chasing your lawyer.</h2>
-          <p>When you instruct {{ $firmName }}, the firm invites you to a private portal. It shows your own organisation's work and nothing else.</p>
-        </div>
-        <ul class="ticks">
-          <li>Each matter's stage, court, legal team and next court date</li>
-          <li>Documents the firm has approved for you, ready to download</li>
-          <li>A conversation with your legal team for every matter</li>
-          <li>Issued invoices and what is still outstanding</li>
-        </ul>
-        <div class="cta">
+        <div class="kicker">Our promise to you</div>
+        <p class="quote">"Your case deserves more than one pair of eyes."<span>That's why careful checks are built into how we work, not left to memory.</span></p>
+      </div>
+      <ul class="checks">
+        <li><span class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></span><span><b>A partner signs off</b> on every document before it is filed in court, and on every invoice before it reaches you.</span></li>
+        <li><span class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></span><span><b>No one checks their own work.</b> Every document is reviewed by a second advocate before it goes further.</span></li>
+        <li><span class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></span><span><b>We check for conflicts first.</b> Before we take on your matter, we make sure we've never acted against you.</span></li>
+        <li><span class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></span><span><b>You're never billed twice</b> for the same piece of work, and a sent invoice is never quietly changed.</span></li>
+        <li><span class="tick"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></span><span><b>Your matter stays private.</b> Other clients can never see it, and our internal notes stay with us.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- For the team -->
+  <section class="band" style="padding-top:0">
+    <div class="wrap">
+      <div class="team">
+        <div>
+          <h2>Part of the team?</h2>
+          <p>Advocates, clerks and administrators sign in to the same place to run the firm's work day to day.</p>
           @auth
-            <a class="btn btn-v" href="{{ $appUrl }}">Open your portal</a>
+            <a class="btn btn-light" href="{{ $appUrl }}">Open my workspace</a>
           @else
-            <a class="btn btn-v" href="{{ route('login') }}">Sign in to the portal</a>
-            <a class="btn btn-ink-line" href="{{ route('password.request') }}">Set or reset your password</a>
+            <a class="btn btn-light" href="{{ route('login') }}">Staff sign in</a>
           @endauth
         </div>
-      </div>
-      <div class="portal-card" aria-hidden="true">
-        <div class="ttl">My legal matters</div>
-        <div style="display:grid;gap:10px">
-          <div class="pv-row"><div><b>Commercial dispute: breach of contract</b><small>High Court · Next date: hearing in 6 days</small></div><span class="pill sky">Hearing</span></div>
-          <div class="pv-row"><div><b>Land title transfer</b><small>Documents ready to download</small></div><span class="pill ok">Approved</span></div>
-          <div class="pv-row"><div><b>Invoice issued</b><small>Due in 14 days</small></div><span class="pill warn">Outstanding</span></div>
-        </div>
+        <ul>
+          <li><b>Your day at a glance:</b> what needs you today, your hearings and your deadlines.</li>
+          <li><b>Matters and clients:</b> open a new matter, assign the work and keep notes together.</li>
+          <li><b>Time and billing:</b> record your time as you go and draft invoices from it.</li>
+          <li><b>Running the firm:</b> partners and administrators see workload, billing and settings.</li>
+        </ul>
       </div>
     </div>
   </section>
 
-  <!-- Roles -->
-  <section class="band alt" id="roles">
+  <!-- Questions -->
+  <section class="band sand" id="questions">
     <div class="wrap">
-      <div class="sec-head">
-        <div class="eyebrow">Who uses it</div>
-        <h2>One sign-in, the right view for each person.</h2>
-        <p>Accounts are created or approved by the firm. Each role opens its own workspace.</p>
+      <div class="head center">
+        <div class="kicker">Questions people ask us</div>
+        <h2>Good questions to ask before you start.</h2>
       </div>
-      <table class="roles">
-        <thead><tr><th>Role</th><th>Opens</th><th>Can do</th></tr></thead>
-        <tbody>
-          <tr><td>Partner</td><td>Advocate workspace and Firm Admin</td><td>Everything, including Class A acts: approving invoices and filing documents</td></tr>
-          <tr><td>Associate</td><td>Advocate workspace</td><td>Open matters, run intake, assign tasks, log time, draft and review documents, draft invoices</td></tr>
-          <tr><td>Junior associate and clerk</td><td>Advocate workspace</td><td>The same screens, with their work reviewed before approval</td></tr>
-          <tr><td>Firm administrator</td><td>Firm Admin</td><td>Manage staff, settings and firm-wide billing</td></tr>
-          <tr><td>Client</td><td>Client portal</td><td>See their own matters, approved documents and issued invoices, and message their legal team</td></tr>
-        </tbody>
-      </table>
+      <div class="faq">
+        <details>
+          <summary>How do I get access to the portal?</summary>
+          <p>When we take on your matter, we invite you by email. Open the link, choose your password and you're in. You can also create an account yourself, and the firm will confirm it with you before it opens.</p>
+        </details>
+        <details>
+          <summary>Who can see my matter?</summary>
+          <p>Only you, the people at your organisation you've asked us to include, and your legal team. Other clients can never see your matter, and the firm's internal notes and working papers aren't shown in the portal.</p>
+        </details>
+        <details>
+          <summary>How will I know about my court dates?</summary>
+          <p>Your next court date is shown on your matter as soon as it's set. Your legal team will also keep you updated in the conversation for your matter.</p>
+        </details>
+        <details>
+          <summary>Can I see what I'm being billed for?</summary>
+          <p>Yes. Each invoice in your portal lists the work it covers. A partner approves every invoice before it's sent, and once sent, it's never changed without a correction you can see.</p>
+        </details>
+        <details>
+          <summary>I've forgotten my password. What now?</summary>
+          <p>Use <a href="{{ route('password.request') }}">Forgot password</a> on the sign-in page and we'll email you a link to choose a new one.</p>
+        </details>
+      </div>
     </div>
   </section>
 
@@ -359,15 +416,15 @@
   <section class="closing">
     <div class="wrap">
       @auth
-        <h2>Welcome back.</h2>
-        <p>Pick up where you left off.</p>
-        <div class="cta"><a class="btn btn-v" href="{{ $appUrl }}">Open the app</a></div>
+        <h2>Good to see you again.</h2>
+        <p>Everything about your matter is where you left it.</p>
+        <div class="cta"><a class="btn btn-main" href="{{ $appUrl }}">Open my account</a></div>
       @else
-        <h2>Already working with the firm?</h2>
-        <p>Sign in with the email address the firm registered for you. If you're new, create an account and the firm will approve it.</p>
+        <h2>Peace of mind is <em>one sign-in away.</em></h2>
+        <p>Sign in with the email address you gave the firm. If you're new, create your account and we'll confirm it with you.</p>
         <div class="cta">
-          <a class="btn btn-v" href="{{ route('login') }}">Sign in</a>
-          <a class="btn btn-line" href="{{ route('register') }}">Create an account</a>
+          <a class="btn btn-main" href="{{ route('login') }}">Sign in</a>
+          <a class="btn btn-soft" href="{{ route('register') }}">Create your account</a>
         </div>
       @endauth
     </div>
@@ -376,12 +433,16 @@
 
 <footer>
   <div class="wrap">
-    <div>&copy; {{ date('Y') }} {{ $firmName }}@if ($firmAddress) · {{ $firmAddress }}@endif</div>
+    <div>
+      <div class="firm">{{ $firmName }}</div>
+      <div>&copy; {{ date('Y') }}@if ($firmAddress) · {{ $firmAddress }}@endif</div>
+    </div>
     <nav aria-label="Footer">
-      <a href="#features">What it does</a>
-      <a href="#portal">Client portal</a>
+      <a href="#how">How we work</a>
+      <a href="#portal">Your portal</a>
+      <a href="#questions">Questions</a>
       @auth
-        <a href="{{ $appUrl }}">Open the app</a>
+        <a href="{{ $appUrl }}">Open my account</a>
       @else
         <a href="{{ route('login') }}">Sign in</a>
       @endauth
