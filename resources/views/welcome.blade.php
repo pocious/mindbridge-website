@@ -3,632 +3,390 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MindBridge — Building Intelligent Systems</title>
-<meta name="description" content="MindBridge builds intelligent systems that connect law, education, business, and AI — starting in Uganda, built for institutions across Africa and the world.">
-<meta name="theme-color" content="#1C2B2B">
-<meta property="og:type" content="website">
-<meta property="og:title" content="MindBridge — Building Intelligent Systems">
-<meta property="og:description" content="MindBridge builds intelligent systems that connect law, education, business, and AI — starting in Uganda, built for institutions across Africa and the world.">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231C2B2B'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%235A7D61' text-anchor='middle'%3EM%3C/text%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{{ asset('css/style.css') }}">
+<title>{{ $firmName }} · Virtual Law Firm</title>
+<meta name="description" content="{{ $firmName }} runs its legal work online: matters, court dates, deadlines, documents, time and billing, with a private portal for every client.">
+<link rel="icon" href="{{ asset('favicon.ico') }}">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1C2B2B;--ink-m:#2A3E3E;--parch:#F2EDE4;--parch-d:#E8E1D6;--white:#fff;
+    --vd:#3F5E46;--vu:#5A7D61;--vp:#EDF1EC;--slate:#8A9BA8;--muted:#5B6B6B;
+    --ember:#B85C2A;--ember-p:#FBF0EB;--gold:#8B7335;--gold-p:#F7F2E5;--sky:#2563A8;--sky-p:#EBF2FC;
+    --serif:'Cormorant Garamond',Georgia,serif;--sans:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+    --line:rgba(28,43,43,.09);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:var(--sans);background:var(--parch);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 16px;}
+  .skip{position:absolute;left:-9999px;top:8px;background:var(--ink);color:#fff;padding:8px 12px;border-radius:6px;z-index:100;}
+  .skip:focus{left:8px;}
+
+  /* Buttons */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;padding:12px 20px;border-radius:6px;border:1.5px solid transparent;transition:background .15s,border-color .15s,color .15s;white-space:nowrap;}
+  .btn-v{background:var(--vd);color:#fff;}
+  .btn-v:hover{background:var(--vu);}
+  .btn-line{border-color:rgba(242,237,228,.35);color:var(--parch);}
+  .btn-line:hover{border-color:var(--parch);}
+  .btn-ink-line{border-color:rgba(28,43,43,.2);color:var(--ink);}
+  .btn-ink-line:hover{border-color:var(--ink);}
+  .btn:focus-visible,.nav a:focus-visible{outline:2px solid var(--vu);outline-offset:2px;}
+
+  /* Header */
+  header.top{position:sticky;top:0;z-index:50;background:var(--ink);border-bottom:1px solid rgba(255,255,255,.06);}
+  .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px;}
+  .brand{text-decoration:none;color:#fff;min-width:0;}
+  .brand .firm{font-family:var(--serif);font-size:20px;font-weight:600;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;}
+  .brand .sub{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);}
+  .nav{display:flex;align-items:center;gap:22px;}
+  .nav a.link{color:rgba(242,237,228,.75);text-decoration:none;font-size:13px;}
+  .nav a.link:hover{color:#fff;}
+  .nav .btn{padding:9px 16px;font-size:11px;}
+  @media (max-width:820px){ .nav a.link{display:none;} }
+
+  /* Hero */
+  .hero{background:var(--ink);color:var(--parch);padding:72px 0 88px;overflow:hidden;}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;}
+  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--vu);margin-bottom:16px;}
+  .hero h1{font-family:var(--serif);font-weight:600;font-size:clamp(34px,5vw,54px);line-height:1.08;color:#fff;margin-bottom:18px;}
+  .hero p.lead{font-size:16px;color:rgba(242,237,228,.78);max-width:520px;margin-bottom:28px;}
+  .cta{display:flex;flex-wrap:wrap;gap:12px;}
+  .hero .note{font-size:12px;color:var(--slate);margin-top:16px;}
+  .hero .note a{color:var(--parch);}
+
+  /* Hero preview: a small picture of the workspace */
+  .preview{background:var(--parch);border-radius:14px;box-shadow:0 24px 64px rgba(0,0,0,.35);overflow:hidden;color:var(--ink);}
+  .preview .bar{background:var(--ink-m);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;}
+  .preview .bar span{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);}
+  .preview .dots{display:flex;gap:5px;}
+  .preview .dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.18);}
+  .preview .body{padding:16px;display:grid;gap:10px;}
+  .preview .ttl{font-family:var(--serif);font-size:18px;font-weight:600;}
+  .pv-row{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .pv-row b{font-size:12.5px;font-weight:500;display:block;}
+  .pv-row small{font-family:var(--mono);font-size:9.5px;color:var(--slate);}
+  .pill{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:10px;white-space:nowrap;}
+  .pill.urg{background:var(--ember-p);color:var(--ember);}
+  .pill.warn{background:var(--gold-p);color:var(--gold);}
+  .pill.ok{background:var(--vp);color:var(--vd);}
+  .pill.sky{background:var(--sky-p);color:var(--sky);}
+  @media (max-width:900px){ .hero .wrap{grid-template-columns:1fr;} .hero{padding:48px 0 64px;} }
+
+  /* Sections */
+  section.band{padding:80px 0;}
+  section.band.alt{background:var(--white);}
+  .sec-head{max-width:640px;margin-bottom:40px;}
+  .sec-head h2{font-family:var(--serif);font-weight:600;font-size:clamp(28px,3.6vw,38px);line-height:1.15;margin-bottom:10px;}
+  .sec-head p{color:var(--muted);font-size:15px;}
+  @media (max-width:640px){ section.band{padding:56px 0;} }
+
+  /* Feature grid */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  @media (max-width:900px){ .grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:600px){ .grid{grid-template-columns:1fr;} }
+  .feat{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:22px;}
+  .alt .feat{background:var(--parch);}
+  .feat .ic{width:38px;height:38px;border-radius:9px;background:var(--vp);color:var(--vd);display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+  .feat h3{font-size:15px;font-weight:600;margin-bottom:6px;}
+  .feat p{font-size:13.5px;color:var(--muted);}
+
+  /* Authority classes */
+  .classes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px;}
+  @media (max-width:760px){ .classes{grid-template-columns:1fr;} }
+  .cls{background:var(--white);border-radius:12px;border:1px solid var(--line);padding:22px;border-top:4px solid var(--vd);}
+  .cls.a{border-top-color:var(--ember);}
+  .cls.b{border-top-color:var(--gold);}
+  .cls .k{font-family:var(--serif);font-size:30px;font-weight:600;line-height:1;}
+  .cls .who{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);margin:6px 0 10px;}
+  .cls p{font-size:13.5px;color:var(--muted);}
+  .rules{display:grid;grid-template-columns:repeat(2,1fr);gap:10px 28px;list-style:none;}
+  @media (max-width:760px){ .rules{grid-template-columns:1fr;} }
+  .rules li{font-size:14px;padding-left:26px;position:relative;}
+  .rules li::before{content:"";position:absolute;left:0;top:4px;width:16px;height:16px;border-radius:50%;background:var(--vp) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233F5E46' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center/10px no-repeat;}
+
+  /* Steps (document review / invoice flow) */
+  .flows{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media (max-width:860px){ .flows{grid-template-columns:1fr;} }
+  .flow{background:var(--parch);border-radius:12px;padding:22px;}
+  .flow h3{font-size:15px;font-weight:600;margin-bottom:14px;}
+  .steps{display:flex;flex-wrap:wrap;align-items:center;gap:6px;}
+  .step{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:7px 11px;font-size:12.5px;font-weight:500;}
+  .step.key{border-color:var(--ember);color:var(--ember);}
+  .arr{color:var(--slate);font-size:13px;}
+  .flow p{font-size:13px;color:var(--muted);margin-top:12px;}
+
+  /* Portal split */
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;}
+  @media (max-width:860px){ .split{grid-template-columns:1fr;gap:28px;} }
+  .ticks{list-style:none;display:grid;gap:12px;margin:20px 0 26px;}
+  .ticks li{font-size:14.5px;padding-left:26px;position:relative;}
+  .ticks li::before{content:"";position:absolute;left:0;top:5px;width:16px;height:16px;border-radius:50%;background:var(--vp) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233F5E46' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center/10px no-repeat;}
+  .portal-card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:0 12px 36px rgba(28,43,43,.08);}
+  .portal-card .ttl{font-family:var(--serif);font-size:20px;font-weight:600;margin-bottom:12px;}
+  .portal-card .pv-row{background:var(--parch);}
+
+  /* Roles table */
+  .roles{width:100%;border-collapse:collapse;background:var(--white);border-radius:12px;overflow:hidden;border:1px solid var(--line);}
+  .roles th,.roles td{text-align:left;padding:14px 18px;font-size:14px;border-bottom:1px solid var(--line);vertical-align:top;}
+  .roles th{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--slate);font-weight:400;background:var(--parch);}
+  .roles tr:last-child td{border-bottom:none;}
+  .roles td:first-child{font-weight:600;white-space:nowrap;}
+  .roles td{color:var(--muted);}
+  .roles td:first-child{color:var(--ink);}
+  @media (max-width:640px){
+    .roles thead{display:none;}
+    .roles tr{display:block;padding:12px 16px;border-bottom:1px solid var(--line);}
+    .roles td{display:block;border:none;padding:2px 0;}
+  }
+
+  /* Closing call to action */
+  .closing{background:var(--ink);color:var(--parch);padding:72px 0;text-align:center;}
+  .closing h2{font-family:var(--serif);font-weight:600;font-size:clamp(28px,4vw,40px);color:#fff;margin-bottom:12px;}
+  .closing p{color:rgba(242,237,228,.75);max-width:560px;margin:0 auto 28px;}
+  .closing .cta{justify-content:center;}
+
+  footer{background:var(--ink);border-top:1px solid rgba(255,255,255,.07);color:var(--slate);font-size:12.5px;padding:24px 0;}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;}
+  footer a{color:rgba(242,237,228,.8);text-decoration:none;}
+  footer a:hover{color:#fff;}
+  footer nav{display:flex;flex-wrap:wrap;gap:18px;}
+</style>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 
-<a class="skip-link" href="#main-content">Skip to content</a>
+@php
+  // Signed-in people go straight to the system; everyone else signs in first.
+  $appUrl = route('app');
+@endphp
 
-<!-- ══ LOADING SCREEN ══ -->
-<div id="loader">
-  <div class="loader-word" id="lw">Mind<span class="vi">Bridge</span></div>
-  <div class="loader-line-wrap">
-    <div class="loader-bl" id="lbl"></div>
-    <div class="loader-tail" id="ltail"></div>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="{{ url('/') }}">
+      <span class="firm">{{ $firmName }}</span>
+      <span class="sub">Virtual Law Firm</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a class="link" href="#features">What it does</a>
+      <a class="link" href="#authority">Authority</a>
+      <a class="link" href="#portal">Client portal</a>
+      <a class="link" href="#roles">Who uses it</a>
+      @auth
+        <a class="btn btn-v" href="{{ $appUrl }}">Open the app</a>
+      @else
+        <a class="btn btn-v" href="{{ route('login') }}">Sign in</a>
+      @endauth
+    </nav>
   </div>
-</div>
+</header>
 
-<!-- ══ SCROLL BRIDGE LINE ══ -->
-<div id="scroll-bridge" aria-hidden="true">
-  <div class="sb-track"></div>
-  <div class="sb-fill" id="sb-fill"></div>
-  <div class="sb-dot" id="sb-dot"></div>
-</div>
+<main id="main">
 
-<!-- ══ NAV ══ -->
-<nav id="main-nav">
-  <div class="nav-i">
-    <a class="nav-logo" href="#" aria-label="MindBridge home">Mind<span class="vi">Bridge</span></a>
-    <ul class="nav-links" id="nav-links">
-      <li><a href="#mission">Mission</a></li>
-      <li><a href="#capabilities">Solutions</a></li>
-      <li><a href="#gavel">Gavel</a></li>
-      <li><a href="#africa">Africa</a></li>
-      <li><a href="#insights">Insights</a></li>
-      <li><a href="#faq">FAQ</a></li>
-    </ul>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-links">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</nav>
-
-<main id="main-content">
-<!-- ══════════════════════════
-   HERO
-══════════════════════════ -->
-<section class="hero">
-  <div class="hero-mesh" aria-hidden="true">
-    <div class="mesh-blob mesh-blob-1"></div>
-    <div class="mesh-blob mesh-blob-2"></div>
-    <div class="mesh-blob mesh-blob-3"></div>
-  </div>
-  <div class="hero-grid"></div>
-  <div class="hero-bg-leaf" aria-hidden="true">
-    <svg viewBox="0 0 560 800" fill="none" preserveAspectRatio="xMaxYMid slice">
-      <path d="M460 -20 C520 140 540 340 480 540 C420 720 300 800 160 840" stroke="white" stroke-width="1" opacity="0.04"/>
-      <path d="M460 -20 C420 100 380 260 340 420 C300 580 240 700 160 840" stroke="white" stroke-width="0.7" opacity="0.028"/>
-      <path d="M460 -20 C500 100 530 240 520 400 C508 540 460 660 380 760" stroke="white" stroke-width="0.5" opacity="0.02"/>
-      <path d="M460 -20 L340 420" stroke="white" stroke-width="0.4" opacity="0.032"/>
-      <circle cx="460" cy="-20" r="4" fill="white" opacity="0.035"/>
-      <circle cx="340" cy="420" r="2.5" fill="white" opacity="0.025"/>
-    </svg>
-  </div>
-  <div class="hero-body">
-    <div class="hero-eye reveal"><span class="ey dk">MindBridge (U) Ltd. — Kampala, Uganda</span></div>
-    <h1 class="hero-display reveal delay-1">
-      Building <em>intelligent</em> systems that<br>
-      empower people,<br>
-      strengthen institutions,<br>
-      and <span class="vi">shape the future.</span>
-    </h1>
-    <div class="hero-bl reveal delay-2">
-      <div class="bl dk sm"><div class="s"></div><div class="d"></div><div class="t"></div></div>
-    </div>
-    <p class="hero-sub reveal delay-3">MindBridge develops technology that connects law, education, business, and artificial intelligence into practical solutions for Africa and the world.</p>
-    <div class="hero-actions reveal delay-4">
-      <button class="btn btn-v" data-scroll-to="capabilities">Our Solutions</button>
-      <button class="btn btn-o" data-scroll-to="gavel">Explore Gavel</button>
-    </div>
-  </div>
-  <div class="scroll-hint reveal delay-5">
-    <div class="scroll-hint-line">
-      <div class="scroll-dot"></div>
-      <span class="scroll-label">Scroll to explore</span>
-    </div>
-  </div>
-</section>
-
-<div class="stats-strip">
-  <div class="stats-inner">
-    <div class="stat reveal"><div class="stat-num"><span class="stat-count" data-count="4">0</span><span class="vi">+</span></div><div class="stat-lbl">Core Products</div></div>
-    <div class="stat reveal delay-1"><div class="stat-num"><span class="vi stat-count" data-count="1">0</span></div><div class="stat-lbl">Unified Identity Record</div></div>
-    <div class="stat reveal delay-2"><div class="stat-num"><span class="stat-count" data-count="6">0</span><span class="vi">+</span></div><div class="stat-lbl">Sectors Served</div></div>
-    <div class="stat reveal delay-3"><div class="stat-num"><span class="vi">∞</span></div><div class="stat-lbl">Built to Scale</div></div>
-  </div>
-</div>
-
-<!-- ══════════════════════════
-   MISSION
-══════════════════════════ -->
-<div id="mission" class="mission">
-  <div class="mission-i reveal">
-    <div class="mission-label">Our guiding<br>principle</div>
-    <div class="mission-text">MindBridge exists to connect human intelligence, law, technology, and opportunity through thoughtful innovation.</div>
-  </div>
-</div>
-
-<!-- ══════════════════════════
-   PRINCIPLES
-══════════════════════════ -->
-<section id="principles" class="principles">
-  <div class="principles-inner">
-    <div class="ed-head reveal">
-      <div class="ed-num">02</div>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="wrap">
       <div>
-        <span class="ey v">Design &amp; Operating Philosophy</span>
-        <div class="ed-title lg">Four qualities.<br>Every decision.</div>
+        <div class="eyebrow">Law firm management system</div>
+        <h1>Every matter, deadline and decision in one place.</h1>
+        <p class="lead">{{ $firmName }} runs its legal work online: matters, court dates, deadlines, documents, time and billing. Every important step is checked against who is allowed to take it, and every client follows their own matters in a private portal.</p>
+        <div class="cta">
+          @auth
+            <a class="btn btn-v" href="{{ $appUrl }}">Open the app</a>
+            <form method="POST" action="{{ route('logout') }}" style="display:inline">@csrf<button class="btn btn-line" type="submit" style="background:none;cursor:pointer;font-family:inherit">Sign out</button></form>
+          @else
+            <a class="btn btn-v" href="{{ route('login') }}">Sign in</a>
+            <a class="btn btn-line" href="#portal">I'm a client</a>
+          @endauth
+        </div>
+        @guest
+          <p class="note">New to the firm? <a href="{{ route('register') }}">Create an account</a>. The firm approves it before you can sign in.</p>
+        @endguest
+      </div>
+
+      <div class="preview" aria-hidden="true">
+        <div class="bar"><div class="dots"><i></i><i></i><i></i></div><span>Command Centre</span></div>
+        <div class="body">
+          <div class="ttl">What needs your attention</div>
+          <div class="pv-row"><div><b>Filing deadline: written submissions</b><small>Due today · 4:00 PM</small></div><span class="pill urg">Critical</span></div>
+          <div class="pv-row"><div><b>Witness statement awaiting partner sign-off</b><small>Class A · Document review</small></div><span class="pill warn">Approval</span></div>
+          <div class="pv-row"><div><b>Hearing: mention before the registrar</b><small>Tomorrow · 9:30 AM · Preparation 3 of 4</small></div><span class="pill sky">Court</span></div>
+          <div class="pv-row"><div><b>Invoice approved and issued</b><small>Client notified in the portal</small></div><span class="pill ok">Done</span></div>
+        </div>
       </div>
     </div>
-    <div class="principles-grid">
-      <button class="pc reveal" type="button" data-pc="0">
-        <div class="pc-num">I</div>
-        <div class="pc-body-col">
-          <div class="pc-row-top">
-            <div class="pc-title">Intelligent</div>
-            <div class="pc-hint">Tap to explore</div>
-          </div>
-          <div class="pc-body">Technology that solves real problems with precision. Every system we build is grounded in deep research and disciplined thinking — never feature-led, always mission-led.</div>
-        </div>
-      </button>
-      <button class="pc reveal" type="button" data-pc="1">
-        <div class="pc-num">II</div>
-        <div class="pc-body-col">
-          <div class="pc-row-top">
-            <div class="pc-title">Human</div>
-            <div class="pc-hint">Tap to explore</div>
-          </div>
-          <div class="pc-body">Systems designed for people, not processes. Accessibility is not a feature — it is the foundation. If the most constrained user can navigate it, everyone can.</div>
-        </div>
-      </button>
-      <button class="pc reveal" type="button" data-pc="2">
-        <div class="pc-num">III</div>
-        <div class="pc-body-col">
-          <div class="pc-row-top">
-            <div class="pc-title">Enduring</div>
-            <div class="pc-hint">Tap to explore</div>
-          </div>
-          <div class="pc-body">We build for decades, not release cycles. Infrastructure that institutions can depend on — long after the trends have passed and the headlines have moved on.</div>
-        </div>
-      </button>
-      <button class="pc reveal" type="button" data-pc="3">
-        <div class="pc-num">IV</div>
-        <div class="pc-body-col">
-          <div class="pc-row-top">
-            <div class="pc-title">Purposeful</div>
-            <div class="pc-hint">Tap to explore</div>
-          </div>
-          <div class="pc-body">Nothing we build exists without a reason. Every feature, every interface, every interaction must serve the mission. If it cannot justify its presence, it does not ship.</div>
-        </div>
-      </button>
-    </div>
-  </div>
-</section>
+  </section>
 
-<!-- ══════════════════════════
-   CAPABILITIES
-══════════════════════════ -->
-<section id="capabilities" class="capabilities">
-  <div class="cap-inner">
-    <div class="ed-head reveal">
-      <div class="ed-num">03</div>
+  <!-- Features -->
+  <section class="band" id="features">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">What it does</div>
+        <h2>The firm's day-to-day work, from intake to invoice.</h2>
+        <p>One system for advocates, clerks, the firm administrator and clients. Each person signs in with their own account and sees only what their role allows.</p>
+      </div>
+      <div class="grid">
+        <div class="feat">
+          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h18v13H3z"/><path d="M8 7V4h8v3"/></svg></div>
+          <h3>Matters and intake</h3>
+          <p>A five-step intake opens each matter, with a required conflict check against existing clients and opposing parties. A conflict stops the matter from opening.</p>
+        </div>
+        <div class="feat">
+          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div>
+          <h3>Court diary and deadlines</h3>
+          <p>Hearings with court, judge, appearing advocate and a preparation checklist. Deadlines are graded normal, important or critical, and the responsible person is notified.</p>
+        </div>
+        <div class="feat">
+          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg></div>
+          <h3>Tasks with authority classes</h3>
+          <p>Assign work to colleagues with a class (A, B or C), priority and deadline. Tasks move through pending, in progress, blocked and done.</p>
+        </div>
+        <div class="feat">
+          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg></div>
+          <h3>Time and invoicing</h3>
+          <p>Time is logged at each advocate's own rate. Invoices are built from unbilled time, approved by a partner, issued to the client and tracked until paid.</p>
+        </div>
+        <div class="feat">
+          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M9 14l2 2 4-4"/></svg></div>
+          <h3>Documents and review</h3>
+          <p>Draft in the editor or upload files. Each upload is fingerprinted, reviewed by someone other than the author, and filed only by a partner.</p>
+        </div>
+        <div class="feat">
+          <div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <h3>Messages and notifications</h3>
+          <p>Each matter has an internal conversation and a client conversation. People are notified, in the app and by email, when something affects them.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Authority -->
+  <section class="band alt" id="authority">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Authority you can rely on</div>
+        <h2>Nothing important happens without the right person's sign-off.</h2>
+        <p>Work is sorted into three authority classes, and the server enforces them on every request. The acting person always comes from their own signed-in account.</p>
+      </div>
+      <div class="classes">
+        <div class="cls a"><div class="k">Class A</div><div class="who">Needs a partner</div><p>Filing a document with the court and approving an invoice for issue.</p></div>
+        <div class="cls b"><div class="k">Class B</div><div class="who">Needs an associate</div><p>Drafting, reviewing, internal coordination and client communication.</p></div>
+        <div class="cls"><div class="k">Class C</div><div class="who">Junior work</div><p>Research and first drafts, always reviewed before they go further.</p></div>
+      </div>
+
+      <div class="flows">
+        <div class="flow">
+          <h3>A document's path</h3>
+          <div class="steps">
+            <span class="step">Draft</span><span class="arr">→</span>
+            <span class="step">Under review</span><span class="arr">→</span>
+            <span class="step">Approved</span><span class="arr">→</span>
+            <span class="step key">Filed by a partner</span>
+          </div>
+          <p>Nobody reviews their own document. Once submitted, its content is locked; the reviewer approves it or returns it with a reason.</p>
+        </div>
+        <div class="flow">
+          <h3>An invoice's path</h3>
+          <div class="steps">
+            <span class="step">Draft</span><span class="arr">→</span>
+            <span class="step key">Approved by a partner</span><span class="arr">→</span>
+            <span class="step">Issued</span><span class="arr">→</span>
+            <span class="step">Paid</span>
+          </div>
+          <p>Billed time is never invoiced twice. Issued invoices can't be edited, and clients only ever see issued and paid invoices.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Client portal -->
+  <section class="band" id="portal">
+    <div class="wrap split">
       <div>
-        <span class="ey v">The MindBridge Ecosystem</span>
-        <div class="ed-title lg">One ecosystem. Four products.<br>Built to work as one.</div>
-      </div>
-    </div>
-    <div class="cap-grid">
-      <div class="cap-card reveal">
-        <div class="cap-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg></div>
-        <div class="cap-name-col">
-          <div class="cap-eye">IRIS</div>
-          <div class="cap-name">Identity Infrastructure</div>
+        <div class="eyebrow">For clients</div>
+        <div class="sec-head" style="margin-bottom:0">
+          <h2>Follow your matter without chasing your lawyer.</h2>
+          <p>When you instruct {{ $firmName }}, the firm invites you to a private portal. It shows your own organisation's work and nothing else.</p>
         </div>
-        <div class="cap-copy">
-          <div class="cap-body">One verified record, recognised across every institution and transaction in Uganda.</div>
-          <div class="cap-more">The identity spine of the MindBridge ecosystem — built on Bridge Chain for permanent, auditable verification across every institutional context.</div>
-        </div>
-      </div>
-      <div class="cap-card reveal">
-        <div class="cap-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M5 7h14"/><path d="M5 7l-3 6a3 3 0 006 0l-3-6z"/><path d="M19 7l-3 6a3 3 0 006 0l-3-6z"/></svg></div>
-        <div class="cap-name-col">
-          <div class="cap-eye">Gavel</div>
-          <div class="cap-name">Legal Technology</div>
-        </div>
-        <div class="cap-copy">
-          <div class="cap-body">Formalisation for Uganda's real economy — not just those who already know the system.</div>
-          <div class="cap-more">Smart document creation, digital signatures, and identity-verified contracts. Legal access for individuals and businesses at every level of formality.</div>
+        <ul class="ticks">
+          <li>Each matter's stage, court, legal team and next court date</li>
+          <li>Documents the firm has approved for you, ready to download</li>
+          <li>A conversation with your legal team for every matter</li>
+          <li>Issued invoices and what is still outstanding</li>
+        </ul>
+        <div class="cta">
+          @auth
+            <a class="btn btn-v" href="{{ $appUrl }}">Open your portal</a>
+          @else
+            <a class="btn btn-v" href="{{ route('login') }}">Sign in to the portal</a>
+            <a class="btn btn-ink-line" href="{{ route('password.request') }}">Set or reset your password</a>
+          @endauth
         </div>
       </div>
-      <div class="cap-card reveal">
-        <div class="cap-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 15l6-6"/><path d="M8 12a4 4 0 010-6l2-2a4 4 0 016 6l-1 1"/><path d="M16 12a4 4 0 010 6l-2 2a4 4 0 01-6-6l1-1"/></svg></div>
-        <div class="cap-name-col">
-          <div class="cap-eye">Bridge Chain</div>
-          <div class="cap-name">Blockchain Infrastructure</div>
-        </div>
-        <div class="cap-copy">
-          <div class="cap-body">Immutable records. Verifiable history. A foundation that institutions can trust.</div>
-          <div class="cap-more">Permissioned blockchain infrastructure that gives every transaction a permanent, tamper-proof record — the trust layer beneath everything MindBridge builds.</div>
-        </div>
-      </div>
-      <div class="cap-card reveal">
-        <div class="cap-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-6 9 6"/><path d="M5 10v9M9 10v9M15 10v9M19 10v9"/><path d="M3 21h18"/></svg></div>
-        <div class="cap-name-col">
-          <div class="cap-eye">Smart SACCO</div>
-          <div class="cap-name">Cooperative Finance</div>
-        </div>
-        <div class="cap-copy">
-          <div class="cap-body">Identity-first financial infrastructure for Uganda's cooperative sector.</div>
-          <div class="cap-more">Built on IRIS and Bridge Chain, Smart SACCO connects Uganda's informal savings groups to formal financial systems — without erasing what makes them work.</div>
-        </div>
-      </div>
-      <div class="cap-card reveal">
-        <div class="cap-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></div>
-        <div class="cap-name-col">
-          <div class="cap-eye">AI Research</div>
-          <div class="cap-name">Applied Intelligence</div>
-        </div>
-        <div class="cap-copy">
-          <div class="cap-body">AI systems designed for African legal and institutional contexts — not adapted, built here.</div>
-          <div class="cap-more">Legal document intelligence, natural language processing for Luganda and English, and predictive analytics grounded in Uganda's real institutional landscape.</div>
-        </div>
-      </div>
-      <div class="cap-card reveal">
-        <div class="cap-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18"/><path d="M6 4h11l-3 4 3 4H6"/></svg></div>
-        <div class="cap-name-col">
-          <div class="cap-eye">Governance</div>
-          <div class="cap-name">Digital Governance</div>
-        </div>
-        <div class="cap-copy">
-          <div class="cap-body">Infrastructure for government agencies, courts, and public institutions.</div>
-          <div class="cap-more">Inter-agency data sharing, citizen record management, and transparent public-sector operations built on the same identity and trust infrastructure as every other MindBridge product.</div>
+      <div class="portal-card" aria-hidden="true">
+        <div class="ttl">My legal matters</div>
+        <div style="display:grid;gap:10px">
+          <div class="pv-row"><div><b>Commercial dispute: breach of contract</b><small>High Court · Next date: hearing in 6 days</small></div><span class="pill sky">Hearing</span></div>
+          <div class="pv-row"><div><b>Land title transfer</b><small>Documents ready to download</small></div><span class="pill ok">Approved</span></div>
+          <div class="pv-row"><div><b>Invoice issued</b><small>Due in 14 days</small></div><span class="pill warn">Outstanding</span></div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ══════════════════════════
-   GAVEL SHOWCASE
-══════════════════════════ -->
-<section id="gavel" class="gavel-showcase">
-  <div class="gs-inner">
-    <div class="gs-head reveal">
-      <span class="ey dk">Featured Product</span>
-      <div class="bl dk sm divider-sm"><div class="s"></div><div class="d"></div><div class="t"></div></div>
+  <!-- Roles -->
+  <section class="band alt" id="roles">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="eyebrow">Who uses it</div>
+        <h2>One sign-in, the right view for each person.</h2>
+        <p>Accounts are created or approved by the firm. Each role opens its own workspace.</p>
+      </div>
+      <table class="roles">
+        <thead><tr><th>Role</th><th>Opens</th><th>Can do</th></tr></thead>
+        <tbody>
+          <tr><td>Partner</td><td>Advocate workspace and Firm Admin</td><td>Everything, including Class A acts: approving invoices and filing documents</td></tr>
+          <tr><td>Associate</td><td>Advocate workspace</td><td>Open matters, run intake, assign tasks, log time, draft and review documents, draft invoices</td></tr>
+          <tr><td>Junior associate and clerk</td><td>Advocate workspace</td><td>The same screens, with their work reviewed before approval</td></tr>
+          <tr><td>Firm administrator</td><td>Firm Admin</td><td>Manage staff, settings and firm-wide billing</td></tr>
+          <tr><td>Client</td><td>Client portal</td><td>See their own matters, approved documents and issued invoices, and message their legal team</td></tr>
+        </tbody>
+      </table>
     </div>
-    <div class="gs-layout">
-      <div class="gs-num reveal">04</div>
-      <div class="gs-left reveal">
-        <div class="gs-subtitle">Gavel — Formalisation<br>Made Simple.</div>
-        <div class="gs-body">The legal-tech platform for Uganda's real economy. Gavel connects individuals, businesses, and legal institutions through verified documentation, digital signatures, and trusted identity — making the formal legal system accessible to everyone.</div>
-        <div class="gs-phases">
-          <div class="gs-phase current">
-            <div class="gs-phase-dot"></div>
-            <div class="gs-phase-name">Phase One — Informal Economy</div>
-            <div class="gs-phase-tag">Active</div>
-          </div>
-          <div class="gs-phase">
-            <div class="gs-phase-dot"></div>
-            <div class="gs-phase-name">Phase Two — SME &amp; Professional</div>
-            <div class="gs-phase-tag">Planned</div>
-          </div>
-          <div class="gs-phase">
-            <div class="gs-phase-dot"></div>
-            <div class="gs-phase-name">Phase Three — Institutional</div>
-            <div class="gs-phase-tag">Planned</div>
-          </div>
-        </div>
-        <div class="gs-cta">
-          <button class="btn btn-v" data-scroll-to="contact">Request Early Access</button>
-        </div>
-      </div>
+  </section>
 
-      <!-- Animated mockup -->
-      <div class="gs-mockup reveal delay-2" id="gavel-mockup">
-        <div class="gm-topbar">
-          <div class="gm-dots">
-            <div class="gm-dot"></div><div class="gm-dot"></div><div class="gm-dot"></div>
-          </div>
-          <div class="gm-title">gavel.mindbridge.co — Dashboard</div>
+  <!-- Closing -->
+  <section class="closing">
+    <div class="wrap">
+      @auth
+        <h2>Welcome back.</h2>
+        <p>Pick up where you left off.</p>
+        <div class="cta"><a class="btn btn-v" href="{{ $appUrl }}">Open the app</a></div>
+      @else
+        <h2>Already working with the firm?</h2>
+        <p>Sign in with the email address the firm registered for you. If you're new, create an account and the firm will approve it.</p>
+        <div class="cta">
+          <a class="btn btn-v" href="{{ route('login') }}">Sign in</a>
+          <a class="btn btn-line" href="{{ route('register') }}">Create an account</a>
         </div>
-        <div class="gm-body">
-          <!-- Stats -->
-          <div class="gm-stats">
-            <div class="gm-stat">
-              <div class="gm-stat-num" id="gm-stat-1">0</div>
-              <div class="gm-stat-lbl">Documents</div>
-            </div>
-            <div class="gm-stat">
-              <div class="gm-stat-num"><span id="gm-stat-2">0</span><span class="vi">%</span></div>
-              <div class="gm-stat-lbl">Verified</div>
-            </div>
-            <div class="gm-stat">
-              <div class="gm-stat-num" id="gm-stat-3">0</div>
-              <div class="gm-stat-lbl">Active Cases</div>
-            </div>
-          </div>
-          <!-- Progress -->
-          <div class="gm-progress">
-            <div class="gm-prog-label">Identity Verification Progress</div>
-            <div class="gm-prog-track">
-              <div class="gm-prog-fill" id="gm-progress"></div>
-            </div>
-          </div>
-          <!-- Documents -->
-          <div class="gm-docs">
-            <div class="gm-doc" id="gm-doc-1">
-              <div class="gm-doc-icon" aria-hidden="true">📄</div>
-              <div class="gm-doc-info">
-                <div class="gm-doc-name">Tenancy Agreement — Plot 14, Ntinda</div>
-                <div class="gm-doc-meta">IRIS-UG-2025-0041 · 2 parties</div>
-              </div>
-              <div class="gm-doc-status verified">Verified</div>
-            </div>
-            <div class="gm-doc" id="gm-doc-2">
-              <div class="gm-doc-icon" aria-hidden="true">📋</div>
-              <div class="gm-doc-info">
-                <div class="gm-doc-name">Business Partnership Agreement</div>
-                <div class="gm-doc-meta">GVL-DOC-2025-0189 · 3 parties</div>
-              </div>
-              <div class="gm-doc-status verified">Verified</div>
-            </div>
-            <div class="gm-doc" id="gm-doc-3">
-              <div class="gm-doc-icon" aria-hidden="true">⚖️</div>
-              <div class="gm-doc-info">
-                <div class="gm-doc-name">Affidavit of Identity — Court Submission</div>
-                <div class="gm-doc-meta">GVL-DOC-2025-0201 · Pending review</div>
-              </div>
-              <div class="gm-doc-status pending">Pending</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      @endauth
     </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════
-   AFRICA MAP
-══════════════════════════ -->
-<section id="africa" class="africa">
-  <div class="africa-inner">
-    <div class="africa-head reveal">
-      <span class="ey v">Built for Africa. Designed for the World.</span>
-      <div class="bl sm divider-sm"><div class="s"></div><div class="d"></div><div class="t"></div></div>
-    </div>
-    <div class="africa-layout">
-      <div class="africa-num reveal">05</div>
-      <div class="africa-text reveal">
-        <div class="at-title">Rooted in Uganda.<br>Reaching every institution<br>that needs us.</div>
-        <div class="at-body">MindBridge begins where the need is greatest — Uganda's legal, financial, and educational systems. But the infrastructure we build is designed to scale across Africa and serve institutional needs anywhere in the world.</div>
-        <div class="africa-hubs">
-          <div class="hub-item"><div class="hub-dot"></div><span class="hub-name">Kampala, Uganda</span><span class="hub-tag">Headquarters</span></div>
-          <div class="hub-item inactive"><div class="hub-dot"></div><span class="hub-name">Nairobi, Kenya</span><span class="hub-tag">Expansion</span></div>
-          <div class="hub-item inactive"><div class="hub-dot"></div><span class="hub-name">Lagos, Nigeria</span><span class="hub-tag">Future</span></div>
-          <div class="hub-item inactive"><div class="hub-dot"></div><span class="hub-name">Accra, Ghana</span><span class="hub-tag">Future</span></div>
-        </div>
-      </div>
-
-      <!-- SVG Africa Map -->
-      <div class="africa-map-wrap reveal delay-2">
-        <svg id="africa-map" viewBox="0 0 300 340" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Map showing MindBridge's hub in Kampala connecting to expansion cities across Africa">
-          <!-- Africa outline — simplified clean path -->
-          <path d="M120 10 C100 8 80 14 65 26 C50 38 42 55 38 72 C34 89 34 107 36 122 C38 137 42 150 38 162 C34 174 26 183 22 196 C18 209 20 225 26 240 C32 255 42 268 54 278 C66 288 80 294 95 296 C110 298 126 295 140 288 C154 281 166 270 175 257 C184 244 189 229 192 215 C195 201 195 187 194 174 C193 161 190 148 192 136 C194 124 202 114 206 103 C210 92 210 79 207 68 C204 57 197 48 188 41 C179 34 168 30 158 26 C148 22 135 12 120 10Z"
-            fill="none" stroke="rgba(28,43,43,0.15)" stroke-width="1.5"/>
-
-          <!-- Interior texture lines -->
-          <path d="M80 80 C90 100 95 130 88 155" stroke="rgba(28,43,43,0.06)" stroke-width="1" fill="none"/>
-          <path d="M140 50 C145 80 148 110 142 140" stroke="rgba(28,43,43,0.06)" stroke-width="1" fill="none"/>
-          <path d="M60 140 C80 145 110 148 140 145" stroke="rgba(28,43,43,0.06)" stroke-width="1" fill="none"/>
-
-          <!-- Connection lines between hubs -->
-          <!-- Kampala → Nairobi -->
-          <path id="mc-1" class="map-connection" d="M148 178 C160 175 168 170 175 162"/>
-          <!-- Kampala → Lagos -->
-          <path id="mc-2" class="map-connection" d="M148 178 C130 165 100 148 75 130"/>
-          <!-- Kampala → Accra -->
-          <path id="mc-3" class="map-connection" d="M148 178 C120 170 90 160 65 148"/>
-          <!-- Kampala → World (north) -->
-          <path id="mc-4" class="map-connection" d="M148 178 C150 140 148 100 142 60" stroke="rgba(90,125,97,0.3)"/>
-
-          <!-- Kampala (HQ) — pulsing -->
-          <circle id="mp-kampala" class="map-pulse" cx="148" cy="178" r="5" fill="#3F5E46"/>
-          <circle id="mr-kampala" class="map-pulse-ring" cx="148" cy="178" r="4"/>
-
-          <!-- Nairobi -->
-          <circle id="mp-nairobi" class="map-pulse" cx="178" cy="160" r="3.5" fill="#8A9BA8" opacity="0"/>
-          <!-- Lagos -->
-          <circle id="mp-lagos" class="map-pulse" cx="72" cy="128" r="3.5" fill="#8A9BA8" opacity="0"/>
-          <!-- Accra -->
-          <circle id="mp-accra" class="map-pulse" cx="62" cy="146" r="3.5" fill="#8A9BA8" opacity="0"/>
-
-          <!-- Labels -->
-          <text x="152" y="192" font-family="Space Mono" font-size="7" fill="rgba(63,94,70,0.7)" letter-spacing="0.05em">Kampala</text>
-          <text x="180" y="158" font-family="Space Mono" font-size="6" fill="rgba(138,155,168,0.4)" letter-spacing="0.04em">Nairobi</text>
-          <text x="52" y="122" font-family="Space Mono" font-size="6" fill="rgba(138,155,168,0.35)" letter-spacing="0.04em">Lagos</text>
-        </svg>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════
-   INSIGHTS
-══════════════════════════ -->
-<section id="insights" class="insights">
-  <div class="insights-inner">
-    <div class="ed-head reveal">
-      <div class="ed-num">06</div>
-      <div>
-        <span class="ey v">Insights</span>
-        <div class="ed-title lg">Thinking carefully about technology,<br>law, and the institutions that shape society.</div>
-      </div>
-    </div>
-    <div class="insights-grid">
-      <button class="ins-card featured reveal" type="button">
-        <div class="ins-cat">Legal Technology</div>
-        <div class="ins-title">Why Legal Technology Matters in Africa — and Why It Must Be Built Differently</div>
-        <div class="ins-underline"></div>
-        <div class="ins-body">Access to justice is not simply a matter of having courts. It is a matter of whether people can navigate those courts — whether they understand the documents, trust the process, and can afford to participate. Legal technology in Africa must start from that reality.</div>
-        <div class="ins-read">5 min read</div>
-      </button>
-      <div class="ins-side">
-        <button class="ins-small reveal delay-1" type="button">
-          <div class="ins-small-cat">AI &amp; Society</div>
-          <div class="ins-small-title">Building Human-Centred AI for Institutional Contexts</div>
-          <div class="ins-read-time">4 min read</div>
-        </button>
-        <button class="ins-small reveal delay-2" type="button">
-          <div class="ins-small-cat">Digital Governance</div>
-          <div class="ins-small-title">Digital Transformation for Institutions That Cannot Afford to Get It Wrong</div>
-          <div class="ins-read-time">6 min read</div>
-        </button>
-        <button class="ins-small reveal delay-3" type="button">
-          <div class="ins-small-cat">Trust &amp; Technology</div>
-          <div class="ins-small-title">Why Trust Is the Foundation of Innovation — Not the Product of It</div>
-          <div class="ins-read-time">3 min read</div>
-        </button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════
-   FAQ
-══════════════════════════ -->
-<section id="faq" class="faq">
-  <div class="faq-inner">
-    <div class="ed-head reveal">
-      <div class="ed-num">07</div>
-      <div>
-        <span class="ey v">Frequently Asked</span>
-        <div class="ed-title lg">Questions worth<br>asking upfront.</div>
-      </div>
-    </div>
-    <div class="faq-list">
-      <div class="faq-item reveal">
-        <button class="faq-q" type="button" aria-expanded="false">
-          <span>What does MindBridge actually build?</span>
-          <span class="faq-icon" aria-hidden="true"></span>
-        </button>
-        <div class="faq-a"><p>Four connected products on one foundation: IRIS for verified identity, Gavel for legal documentation, Bridge Chain as the trust and audit layer, and Smart SACCO for cooperative finance. Every product references the same identity record instead of duplicating it.</p></div>
-      </div>
-      <div class="faq-item reveal delay-1">
-        <button class="faq-q" type="button" aria-expanded="false">
-          <span>Is Gavel available to the public yet?</span>
-          <span class="faq-icon" aria-hidden="true"></span>
-        </button>
-        <div class="faq-a"><p>Gavel is currently in Phase One, focused on Uganda's informal economy. Request early access through the contact form below and we'll reach out as later phases open to SMEs and institutions.</p></div>
-      </div>
-      <div class="faq-item reveal delay-2">
-        <button class="faq-q" type="button" aria-expanded="false">
-          <span>How is Bridge Chain different from public blockchains?</span>
-          <span class="faq-icon" aria-hidden="true"></span>
-        </button>
-        <div class="faq-a"><p>Bridge Chain is permissioned infrastructure built for institutions, not speculation. Every participant is identity-verified through IRIS, and the chain exists to make records auditable and tamper-proof — not to be traded.</p></div>
-      </div>
-      <div class="faq-item reveal delay-3">
-        <button class="faq-q" type="button" aria-expanded="false">
-          <span>Does MindBridge operate outside Uganda?</span>
-          <span class="faq-icon" aria-hidden="true"></span>
-        </button>
-        <div class="faq-a"><p>Not yet. We're deliberately starting where the need is greatest, proving the infrastructure in Uganda, then expanding to Nairobi, Lagos, and Accra as each product matures.</p></div>
-      </div>
-      <div class="faq-item reveal delay-4">
-        <button class="faq-q" type="button" aria-expanded="false">
-          <span>How do I get in touch about a partnership or pilot?</span>
-          <span class="faq-icon" aria-hidden="true"></span>
-        </button>
-        <div class="faq-a"><p>Use the "What are you building?" form below and choose the path closest to your goal. Every serious inquiry gets a response within two business days.</p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════
-   CONTACT
-══════════════════════════ -->
-<section id="contact" class="contact-section">
-  <div class="contact-inner">
-    <div class="contact-head ed-head">
-      <div class="ed-num on-dark">08</div>
-      <div>
-        <span class="ey dk">Let's Begin</span>
-        <div class="bl dk sm divider-sm"><div class="s"></div><div class="d"></div><div class="t"></div></div>
-      </div>
-    </div>
-    <div class="contact-q reveal">What are you<br>building?</div>
-    <p class="reveal section-intro on-dark">Tell us what you have in mind. We will respond to every serious inquiry within two business days.</p>
-
-    <div class="contact-paths">
-      <button class="cp reveal" type="button" data-path="institution">
-        <span class="cp-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-6h6v6"/><path d="M4 21h16"/></svg></span>
-        <div class="cp-title">Modernise an Institution</div>
-        <div class="cp-desc">Law firms, universities, government agencies, and NGOs looking to upgrade their systems and infrastructure.</div>
-        <div class="cp-select">Selected →</div>
-      </button>
-      <button class="cp reveal delay-1" type="button" data-path="legal">
-        <span class="cp-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M5 7h14"/><path d="M5 7l-3 6a3 3 0 006 0l-3-6z"/><path d="M19 7l-3 6a3 3 0 006 0l-3-6z"/></svg></span>
-        <div class="cp-title">Transform Legal Services</div>
-        <div class="cp-desc">Legal practitioners, courts, and legal-tech innovators building the future of legal practice in Africa.</div>
-        <div class="cp-select">Selected →</div>
-      </button>
-      <button class="cp reveal delay-2" type="button" data-path="new">
-        <span class="cp-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c2.5 2 4 5.5 4 9 0 2-.5 3.5-1 4.5l-3 3-3-3c-.5-1-1-2.5-1-4.5 0-3.5 1.5-7 4-9z"/><circle cx="12" cy="10" r="1.5"/><path d="M9 16l-3 3 1 3 3-1M15 16l3 3-1 3-3-1"/></svg></span>
-        <div class="cp-title">Build Something New</div>
-        <div class="cp-desc">Investors, partners, and builders who want to co-create with MindBridge on the next generation of institutional infrastructure.</div>
-        <div class="cp-select">Selected →</div>
-      </button>
-    </div>
-
-    <div class="contact-form-wrap" id="contact-form-wrap">
-      <div class="cf-context" id="cf-context"></div>
-      <form class="contact-form" id="contact-form">
-        <div class="fg">
-          <label for="cf-name">Full Name</label>
-          <input type="text" id="cf-name" name="name" placeholder="Your name" required>
-        </div>
-        <div class="fg">
-          <label for="cf-org">Organisation</label>
-          <input type="text" id="cf-org" name="organisation" placeholder="Company, firm, or institution">
-        </div>
-        <div class="fg">
-          <label for="cf-email">Email Address</label>
-          <input type="email" id="cf-email" name="email" placeholder="your@email.com" required>
-        </div>
-        <div class="fg">
-          <label for="cf-country">Country</label>
-          <input type="text" id="cf-country" name="country" placeholder="Uganda">
-        </div>
-        <div class="fg cf-full">
-          <label for="cf-message">Tell us what you're building</label>
-          <textarea id="cf-message" name="message" rows="4" placeholder="Describe what you have in mind — the problem, the goal, or simply where you are." required></textarea>
-        </div>
-        <div class="fg cf-full cf-start">
-          <button class="btn btn-v" type="submit">Send Message</button>
-          <div class="cf-status" id="cf-status" role="status" aria-live="polite"></div>
-        </div>
-      </form>
-    </div>
-  </div>
-</section>
+  </section>
 </main>
 
-<button id="back-to-top" class="back-to-top" aria-label="Back to top" type="button">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
-</button>
-
-<!-- ══════════════════════════
-   FOOTER
-══════════════════════════ -->
-<footer id="footer">
-  <div class="footer-i">
-    <div class="footer-bridge-complete" id="footer-bridge">
-      <div class="fbc-left"></div>
-      <div class="fbc-dot"></div>
-      <div class="fbc-right"></div>
-    </div>
-    <div class="footer-top">
-      <div class="f-brand">
-        <div class="f-wm">Mind<span class="vi" id="footer-vi">Bridge</span></div>
-        <div class="bl dk sm divider-sm"><div class="s"></div><div class="d"></div><div class="t"></div></div>
-        <p class="f-tagline">Building intelligent systems that empower people, strengthen institutions, and shape the future.</p>
-      </div>
-      <div class="f-col">
-        <div class="f-col-h">Company</div>
-        <ul><li><a href="#">About</a></li><li><a href="#">Leadership</a></li><li><a href="#">Careers</a></li><li><a href="#insights">Insights</a></li></ul>
-      </div>
-      <div class="f-col">
-        <div class="f-col-h">Products</div>
-        <ul><li><a href="#capabilities">IRIS</a></li><li><a href="#gavel">Gavel</a></li><li><a href="#capabilities">Bridge Chain</a></li><li><a href="#capabilities">Smart SACCO</a></li></ul>
-      </div>
-      <div class="f-col">
-        <div class="f-col-h">Connect</div>
-        <ul>
-          <li><a href="#contact">Contact Us</a></li>
-          <li><a href="mailto:gavel@gmail.com">gavel@gmail.com</a></li>
-          <li><span>Kampala, Uganda</span></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <div class="f-copy">© 2026 MindBridge (U) Ltd. — All rights reserved.</div>
-      <div class="f-principle">"MindBridge does not stand between law and technology. It exists to make one strengthen the other."</div>
-    </div>
+<footer>
+  <div class="wrap">
+    <div>&copy; {{ date('Y') }} {{ $firmName }}@if ($firmAddress) · {{ $firmAddress }}@endif</div>
+    <nav aria-label="Footer">
+      <a href="#features">What it does</a>
+      <a href="#portal">Client portal</a>
+      @auth
+        <a href="{{ $appUrl }}">Open the app</a>
+      @else
+        <a href="{{ route('login') }}">Sign in</a>
+      @endauth
+    </nav>
   </div>
 </footer>
-
-<script src="{{ asset('js/main.js') }}"></script>
 </body>
 </html>

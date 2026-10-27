@@ -37,17 +37,21 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Invoice::class, InvoicePolicy::class);
         Gate::policy(Notification::class, NotificationPolicy::class);
 
-        // The sign-in pages show the firm's name from its settings.
-        View::composer('auth.*', function ($view) {
+        // The public homepage and the sign-in pages show the firm's name (and the
+        // homepage its address) from its settings.
+        View::composer(['welcome', 'auth.*'], function ($view) {
             $name = 'Virtual Law Firm';
+            $address = null;
             try {
                 if (Schema::hasTable('vlf_settings')) {
-                    $name = Setting::where('key', 'firm_name')->first()?->value ?: $name;
+                    $settings = Setting::whereIn('key', ['firm_name', 'firm_address'])->pluck('value', 'key');
+                    $name = ($settings['firm_name'] ?? '') ?: $name;
+                    $address = ($settings['firm_address'] ?? '') ?: null;
                 }
             } catch (Throwable) {
-                // No database yet — keep the default name.
+                // No database yet — keep the defaults.
             }
-            $view->with('firmName', $name);
+            $view->with(['firmName' => $name, 'firmAddress' => $address]);
         });
     }
 }
