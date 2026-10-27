@@ -17,7 +17,7 @@
     --line:rgba(31,42,42,.1);
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-  html{scroll-behavior:smooth;}
+  html{scroll-behavior:smooth;scroll-padding-top:84px;}
   body{font-family:var(--sans);background:var(--cream);color:var(--ink);line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased;}
   a{color:inherit;}
   img,svg{display:block;max-width:100%;}
@@ -45,11 +45,20 @@
   .brand{display:flex;align-items:center;gap:12px;text-decoration:none;min-width:0;}
   .mark{width:40px;height:40px;border-radius:50%;background:var(--green);color:var(--cream);display:flex;align-items:center;justify-content:center;font:600 18px var(--serif);flex-shrink:0;}
   .brand .firm{font:600 21px/1.1 var(--serif);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .nav{display:flex;align-items:center;gap:26px;}
+  .nav,.nav .links{display:flex;align-items:center;gap:26px;}
   .nav a.link{text-decoration:none;font-size:14.5px;color:var(--text);}
   .nav a.link:hover{color:var(--ink);}
   .nav .btn{padding:11px 20px;font-size:14px;}
-  @media (max-width:860px){ .nav a.link{display:none;} }
+  @media (max-width:860px){
+    /* Phones and small tablets: the links move to their own row under the name and the button. */
+    html{scroll-padding-top:130px;}
+    .top .wrap{flex-wrap:wrap;height:auto;padding-top:10px;row-gap:0;}
+    .nav{display:contents;}
+    .nav .links{order:3;flex-basis:100%;display:flex;gap:20px;overflow-x:auto;white-space:nowrap;padding:10px 0 12px;margin-top:10px;border-top:1px solid var(--line);scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+    .nav .links::-webkit-scrollbar{display:none;}
+    .nav a.link{flex-shrink:0;padding:4px 0;color:var(--text);}
+  }
+  @media (max-width:420px){ .nav .links{gap:10px;justify-content:space-between;} .nav a.link{font-size:13px;} }
   .brand .firm{min-width:0;}
   @media (max-width:520px){
     .top .wrap{height:auto;min-height:68px;padding-top:10px;padding-bottom:10px;}
@@ -182,10 +191,12 @@
       <span class="firm">{{ $firmName }}</span>
     </a>
     <nav class="nav" aria-label="Main">
-      <a class="link" href="#how">How we work</a>
-      <a class="link" href="#portal">Your portal</a>
-      <a class="link" href="#care">Our promise</a>
-      <a class="link" href="#questions">Questions</a>
+      <div class="links">
+        <a class="link" href="#how">How we work</a>
+        <a class="link" href="#portal">Your portal</a>
+        <a class="link" href="#care">Our promise</a>
+        <a class="link" href="#questions">Questions</a>
+      </div>
       @auth
         <a class="btn btn-main" href="{{ $appUrl }}">Open my account</a>
       @else
